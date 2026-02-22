@@ -385,92 +385,105 @@
     width:100%;
     background:var(--skin-panel-bg);
     border-top:1px solid var(--skin-panel-border);
-    padding:6px 14px;
+    padding:4px 10px;
     display:flex;
-    align-items:center;
+    align-items:stretch;
     justify-content:space-between;
-    gap:16px;
+    gap:10px;
     box-shadow:0 -8px 25px rgba(0,0,0,.6);
   }
 
   .toggleRow{
-    flex:1.4;
     display:flex;
-    flex-wrap:wrap;
-    gap:6px;
+    flex-wrap:nowrap;
+    gap:4px;
     align-items:center;
   }
 
   .toggleBtn{
-    padding:6px 10px;
+    padding:4px 8px;
     border-radius:999px;
     border:1px solid var(--skin-panel-border);
     background:var(--skin-primary);
     color:var(--skin-muted);
     font-size:9px;
-    letter-spacing:.16em;
+    letter-spacing:.1em;
     text-transform:uppercase;
     cursor:pointer;
+    white-space:nowrap;
+    line-height:1.3;
   }
   .toggleBtn .key{
-    opacity:.9;
-    margin-right:4px;
+    opacity:.8;
+    margin-right:3px;
+    font-size:8px;
   }
   .toggleBtn.on{
     background:linear-gradient(90deg,var(--skin-accent),var(--skin-accent2));
     color:#020308;
     border-color:transparent;
-    box-shadow:0 0 0 1px rgba(0,0,0,.6),0 0 22px rgba(0,212,255,.55);
+    box-shadow:0 0 0 1px rgba(0,0,0,.6),0 0 14px rgba(0,212,255,.45);
   }
 
-  .decay{
-    flex:0.9;
+  .toggleContainer{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+    min-width:0;
+    overflow:hidden;
+    justify-content:center;
+  }
+  .slidersGroup{
+    display:flex;
+    gap:6px;
+    flex-shrink:0;
+    align-items:flex-end;
+  }
+  .vSlider{
     display:flex;
     flex-direction:column;
     align-items:center;
-    min-width:180px;
+    gap:2px;
   }
-  .decay label{
-    font-size:10px;
-    letter-spacing:.12em;
+  .vSlider label{
+    font-size:7px;
+    letter-spacing:.1em;
     text-transform:uppercase;
     color:var(--skin-muted);
-    margin-bottom:2px;
   }
-  .decay .range{width:100%;}
-
+  .vRange{
+    writing-mode:vertical-lr;
+    direction:rtl;
+    appearance:slider-vertical;
+    width:14px;
+    height:60px;
+  }
+  .bottomRightStack{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    align-items:flex-end;
+    flex-shrink:0;
+    justify-content:center;
+  }
   .resRow{
     display:flex;
     align-items:center;
-    gap:6px;
+    gap:4px;
   }
   .resRow .resLabel{
-    font-size:10px;
-    letter-spacing:.12em;
-    text-transform:uppercase;
-    color:var(--skin-muted);
-    margin-right:4px;
-  }
-  .postRow{
-    display:flex;
-    align-items:center;
-    gap:6px;
-    flex-wrap:wrap;
-  }
-  .postRow label{
     font-size:9px;
     letter-spacing:.1em;
     text-transform:uppercase;
     color:var(--skin-muted);
   }
-  .postRow .range{ width:52px; }
 
   .bottomRight{
-    flex:0.5;
     display:flex;
     justify-content:flex-end;
     align-items:center;
-    gap:8px;
+    gap:6px;
   }
   .presetTrigger{
     padding:8px 14px;
@@ -778,6 +791,107 @@
   }
   .skinCard .skinCardDel:hover{color:#ff4444;background:rgba(255,60,60,.1);}
 
+  /* LIBRARY OVERLAY */
+  .libOverlay{
+    position:fixed;inset:0;background:rgba(0,0,0,.85);
+    display:none;align-items:center;justify-content:center;z-index:35;
+  }
+  .libOverlay.open{display:flex;}
+  .libPanel{
+    width:680px;max-width:92vw;max-height:85vh;
+    padding:0;border-radius:16px;
+    background:var(--skin-panel-bg);
+    border:1px solid var(--skin-panel-border);
+    box-shadow:0 24px 60px rgba(0,0,0,.9);
+    display:flex;flex-direction:column;overflow:hidden;
+  }
+  .libHeader{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:14px 18px 10px;border-bottom:1px solid var(--skin-panel-border);
+    flex-shrink:0;
+  }
+  .libTitle{
+    font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--skin-muted);
+  }
+  .libTabs{
+    display:flex;gap:4px;
+  }
+  .libTab{
+    padding:6px 14px;border-radius:999px;border:1px solid var(--skin-panel-border);
+    background:rgba(255,255,255,.03);color:var(--skin-muted);
+    font-size:10px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;
+  }
+  .libTab.active{
+    background:linear-gradient(90deg,var(--skin-accent),var(--skin-accent2));
+    color:#020308;border-color:transparent;
+  }
+  .libBody{
+    flex:1;overflow-y:auto;padding:14px 18px 18px;
+  }
+  .libCatLabel{
+    font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--skin-accent);margin:14px 0 8px;
+  }
+  .libCatLabel:first-child{margin-top:0;}
+  .libGrid{
+    display:flex;flex-wrap:wrap;gap:6px;
+  }
+  .libCard{
+    padding:7px 12px;border-radius:8px;
+    background:rgba(255,255,255,.03);border:1px solid var(--skin-panel-border);
+    cursor:pointer;font-size:10px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--skin-ink);transition:all .12s;user-select:none;
+  }
+  .libCard:hover{border-color:var(--skin-accent2);background:rgba(255,255,255,.06);}
+  .libCard.on{
+    border-color:var(--skin-accent);background:rgba(124,92,255,.15);
+    box-shadow:0 0 0 1px var(--skin-accent);
+  }
+  .libCard .libCardSub{
+    display:block;font-size:8px;color:var(--skin-muted);margin-top:2px;
+    letter-spacing:.04em;
+  }
+  .libSlots{
+    margin-top:16px;padding-top:14px;border-top:1px solid var(--skin-panel-border);
+  }
+  .libSlotsLabel{
+    font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--skin-muted);margin-bottom:8px;
+  }
+  .libSlotRow{
+    display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;
+  }
+  .libSlotRowLabel{
+    font-size:8px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--skin-muted);margin-bottom:3px;
+  }
+  .libSlot{
+    padding:5px 10px;border-radius:6px;
+    background:rgba(255,255,255,.04);border:1px solid var(--skin-panel-border);
+    font-size:9px;letter-spacing:.06em;text-transform:uppercase;
+    cursor:pointer;color:var(--skin-ink);transition:all .12s;
+  }
+  .libSlot:hover{border-color:var(--skin-accent2);}
+  .libSlot.on{
+    border-color:#0ff;background:rgba(0,255,255,.12);
+    box-shadow:0 0 6px rgba(0,255,255,.2);
+  }
+  .libEffectCard{
+    padding:7px 12px;border-radius:8px;
+    background:rgba(255,255,255,.03);border:1px solid var(--skin-panel-border);
+    cursor:pointer;font-size:10px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--skin-muted);transition:all .12s;user-select:none;
+  }
+  .libEffectCard:hover{border-color:var(--skin-accent2);color:var(--skin-ink);}
+  .libEffectCard.on{
+    border-color:var(--skin-accent);color:var(--skin-ink);
+    background:rgba(124,92,255,.15);
+  }
+  .libEffectCard .libEffKey{
+    display:inline-block;margin-right:4px;opacity:.7;font-size:9px;
+  }
+  .toggleRow.row2{margin-top:2px;}
+
   /* SKIN: Cybersigilism – obsidian surface, branded sigils, violet bleed */
   body[data-skin="cybersigilism"]{
     --skin-panel-bg:var(--skin-primary);
@@ -1054,41 +1168,8 @@
     </div>
 
     <div class="main">
-      <!-- LEFT RAIL -->
-      <aside class="rail left">
-        <div class="knob">
-          <div class="dial" id="knobTempo"><div class="cap"></div><div class="marker"></div></div>
-          <div class="label">TEMPO<span class="shortcut">T</span></div>
-        </div>
-        <div class="knob">
-          <div class="dial" id="knobChaos"><div class="cap"></div><div class="marker"></div></div>
-          <div class="label">CHAOS<span class="shortcut">X</span></div>
-        </div>
-        <div class="knob">
-          <div class="dial" id="knobGlitch"><div class="cap"></div><div class="marker"></div></div>
-          <div class="label">GLITCH<span class="shortcut">G</span></div>
-        </div>
-        <div class="knob">
-          <div class="dial" id="knobPixel"><div class="cap"></div><div class="marker"></div></div>
-          <div class="label">PIXELATE<span class="shortcut">P</span></div>
-        </div>
-        <div class="knob">
-          <div class="dial" id="knobRGB"><div class="cap"></div><div class="marker"></div></div>
-          <div class="label">RGB SHIFT<span class="shortcut">R</span></div>
-        </div>
-        <div class="knob">
-          <div class="dial" id="knobFeedback"><div class="cap"></div><div class="marker"></div></div>
-          <div class="label">FEEDBACK<span class="shortcut">F</span></div>
-        </div>
-        <div class="knob">
-          <div class="dial" id="knobHue"><div class="cap"></div><div class="marker"></div></div>
-          <div class="label">HUE<span class="shortcut">H</span></div>
-        </div>
-        <div class="knob">
-          <div class="dial" id="knobPalette"><div class="cap"></div><div class="marker"></div></div>
-          <div class="label">PALETTE<span class="shortcut">L</span></div>
-        </div>
-      </aside>
+      <!-- LEFT RAIL (dynamically populated) -->
+      <aside class="rail left" id="railLeft"></aside>
 
       <!-- STAGE -->
       <div class="stage" id="stage">
@@ -1650,83 +1731,35 @@
         </div>
       </div>
 
-      <!-- RIGHT RAIL -->
-      <aside class="rail right">
-        <div class="knob">
-          <div class="dial" id="knobSat"><div class="cap"></div><div class="marker"></div></div>
-          <div class="label">SAT<span class="shortcut">S</span></div>
-        </div>
-        <div class="knob">
-          <div class="dial" id="knobBright"><div class="cap"></div><div class="marker"></div></div>
-          <div class="label">BRIGHT<span class="shortcut">B</span></div>
-        </div>
-        <div class="knob">
-          <div class="dial" id="knobContr"><div class="cap"></div><div class="marker"></div></div>
-          <div class="label">CONTRAST<span class="shortcut">C</span></div>
-        </div>
-        <div class="knob">
-          <div class="dial" id="knobBloom"><div class="cap"></div><div class="marker"></div></div>
-          <div class="label">BLOOM<span class="shortcut">O</span></div>
-        </div>
-        <div class="knob">
-          <div class="dial" id="knobSwirl"><div class="cap"></div><div class="marker"></div></div>
-          <div class="label">SWIRL<span class="shortcut">W</span></div>
-        </div>
-        <div class="knob">
-          <div class="dial" id="knobRipple"><div class="cap"></div><div class="marker"></div></div>
-          <div class="label">RIPPLE<span class="shortcut">I</span></div>
-        </div>
-        <div class="knob">
-          <div class="dial" id="knobWarp"><div class="cap"></div><div class="marker"></div></div>
-          <div class="label">WARP<span class="shortcut">A</span></div>
-        </div>
-        <div class="knob">
-          <div class="dial" id="knobPoster"><div class="cap"></div><div class="marker"></div></div>
-          <div class="label">POSTER<span class="shortcut">D</span></div>
-        </div>
-      </aside>
+      <!-- RIGHT RAIL (dynamically populated) -->
+      <aside class="rail right" id="railRight"></aside>
     </div>
 
     <aside class="bottomPanel">
-      <div class="toggleRow">
-        <button id="displaceBtn" class="toggleBtn"><span class="key">1</span>DISPLACE</button>
-        <button id="scanBtn" class="toggleBtn"><span class="key">2</span>SCANLINES</button>
-        <button id="invertBtn" class="toggleBtn"><span class="key">3</span>INVERT</button>
-        <button id="strobeBtn" class="toggleBtn"><span class="key">4</span>STROBE</button>
-        <button id="mirrorBtn" class="toggleBtn"><span class="key">5</span>MIRROR</button>
-        <button id="edgeBtn" class="toggleBtn"><span class="key">6</span>EDGE</button>
-        <button id="solarBtn" class="toggleBtn"><span class="key">7</span>SOLARIZE</button>
-        <button id="slitBtn" class="toggleBtn"><span class="key">8</span>SLIT-SCAN</button>
-        <button id="kaleidoBtn" class="toggleBtn"><span class="key">9</span>KALEIDO</button>
-        <button id="moshBtn" class="toggleBtn"><span class="key">0</span>MELT</button>
-        <button id="vectorBtn" class="toggleBtn"><span class="key">-</span>VORTEX</button>
-        <button id="scopeBtn" class="toggleBtn" title="Oscilloscope from mic (room audio)">SCOPE</button>
-        <button id="pulseBtn" class="toggleBtn" title="Brightness pulses with audio">PULSE</button>
-        <button id="rhythmBtn" class="toggleBtn" title="Subtle bounce with audio">RHYTHM</button>
+      <div id="toggleContainer" class="toggleContainer">
+        <div class="toggleRow" id="toggleRow1"></div>
+        <div class="toggleRow row2" id="toggleRow2"></div>
       </div>
-      <div class="decay">
-        <label>Feedback Decay</label>
-        <input id="decayRange" class="range" type="range" min="0" max="1" step="0.01" value="0.98" />
+      <div class="slidersGroup">
+        <div class="vSlider"><label>DCY</label><input id="decayRange" class="range vRange" type="range" min="0" max="1" step="0.01" value="0.98" /></div>
+        <div class="vSlider"><label>CHR</label><input id="chromaticRange" class="range vRange" type="range" min="0" max="1" step="0.01" value="0" /></div>
+        <div class="vSlider"><label>VIG</label><input id="vignetteRange" class="range vRange" type="range" min="0" max="1" step="0.01" value="0" /></div>
+        <div class="vSlider"><label>GRN</label><input id="filmGrainRange" class="range vRange" type="range" min="0" max="0.3" step="0.01" value="0" /></div>
       </div>
-      <div class="resRow">
-        <span class="resLabel">Res</span>
-        <button id="res720" class="sourceBtn" type="button">720p</button>
-        <button id="res1080" class="sourceBtn on" type="button">1080p</button>
-        <button id="res4k" class="sourceBtn" type="button">4K</button>
-      </div>
-      <div class="postRow">
-        <label>Chromatic</label>
-        <input id="chromaticRange" class="range" type="range" min="0" max="1" step="0.01" value="0" />
-        <label>Vignette</label>
-        <input id="vignetteRange" class="range" type="range" min="0" max="1" step="0.01" value="0" />
-        <label>Grain</label>
-        <input id="filmGrainRange" class="range" type="range" min="0" max="0.3" step="0.01" value="0" />
-      </div>
-      <div class="bottomRight">
-        <button id="fullscreenBtn" class="presetTrigger iconBtn" title="Fullscreen (Esc to exit)">⛶</button>
-        <button id="uiHideBtn" class="presetTrigger iconBtn" title="Hide UI (keyboard still active)">◎</button>
-        <button id="skinTrigger" class="presetTrigger">SKINS</button>
-        <button id="presetTrigger" class="presetTrigger">PRESETS</button>
+      <div class="bottomRightStack">
+        <div class="bottomRight">
+          <button id="fullscreenBtn" class="presetTrigger iconBtn" title="Fullscreen (Esc to exit)">⛶</button>
+          <button id="uiHideBtn" class="presetTrigger iconBtn" title="Hide UI (keyboard still active)">◎</button>
+          <button id="libraryTrigger" class="presetTrigger">LIBRARY</button>
+          <button id="skinTrigger" class="presetTrigger">SKINS</button>
+          <button id="presetTrigger" class="presetTrigger">PRESETS</button>
+        </div>
+        <div class="resRow">
+          <span class="resLabel">Res</span>
+          <button id="res720" class="sourceBtn" type="button">720p</button>
+          <button id="res1080" class="sourceBtn on" type="button">1080p</button>
+          <button id="res4k" class="sourceBtn" type="button">4K</button>
+        </div>
       </div>
     </aside>
 
@@ -1848,6 +1881,21 @@
       </div>
     </div>
 
+    <!-- LIBRARY OVERLAY -->
+    <div id="libOverlay" class="libOverlay">
+      <div class="libPanel">
+        <div class="libHeader">
+          <div class="libTitle">EFFECT LIBRARY</div>
+          <div class="libTabs">
+            <button class="libTab active" id="libTabKnobs">KNOBS</button>
+            <button class="libTab" id="libTabEffects">EFFECTS</button>
+          </div>
+          <button id="libClose" class="presetTrigger" style="padding:4px 10px;font-size:9px;">ESC TO CLOSE</button>
+        </div>
+        <div class="libBody" id="libBody"></div>
+      </div>
+    </div>
+
     <!-- PRESET POPUP -->
     <div id="presetOverlay" class="presetOverlay">
       <div class="presetPanel">
@@ -1935,16 +1983,13 @@
  uniform vec2 u_res;
  uniform vec2 u_texRes;
  uniform float u_time;
+ // -- knob uniforms (float) --
  uniform float u_glitch;
  uniform float u_pixel;
  uniform float u_rgb;
  uniform float u_noise;
  uniform float u_feedbackAmt;
  uniform float u_decay;
- uniform int   u_displace;
- uniform int   u_scan;
- uniform int   u_invert;
- uniform int   u_strobe;
  uniform float u_sat;
  uniform float u_bright;
  uniform float u_contrast;
@@ -1952,14 +1997,103 @@
  uniform float u_swirl;
  uniform float u_ripple;
  uniform float u_warp;
- uniform float u_posterSteps;
- uniform int   u_mirror;
- uniform int   u_edge;
- uniform int   u_solar;
- uniform int   u_slit;
- uniform int   u_kaleido;
- uniform int   u_mosh;
- uniform int   u_vector;
+ uniform float u_poster;
+ uniform float u_hue;
+ uniform float u_palette;
+ uniform float u_tempo;
+ uniform float u_chaos;
+ uniform float u_zoom;
+ uniform float u_frameRotate;
+ uniform float u_tile;
+ uniform float u_barrel;
+ uniform float u_turbulence;
+ uniform float u_drift;
+ uniform float u_fractal;
+ uniform float u_temperature;
+ uniform float u_vibrance;
+ uniform float u_gamma;
+ uniform float u_threshold;
+ uniform float u_tint;
+ uniform float u_duotone;
+ uniform float u_echo;
+ uniform float u_speed;
+ uniform float u_halftone;
+ uniform float u_emboss;
+ uniform float u_sharpen;
+ uniform float u_blur;
+ uniform float u_dither;
+ uniform float u_vhsWobble;
+ uniform float u_morph;
+ uniform float u_waveSlice;
+ uniform float u_crystal;
+ uniform float u_foldAmt;
+ uniform float u_contour;
+ // -- toggle uniforms (int) --
+ uniform int u_displace;
+ uniform int u_scan;
+ uniform int u_invert;
+ uniform int u_strobe;
+ uniform int u_mirror;
+ uniform int u_edge;
+ uniform int u_solar;
+ uniform int u_slit;
+ uniform int u_kaleido;
+ uniform int u_mosh;
+ uniform int u_vector;
+ uniform int u_scope;
+ uniform int u_pulse;
+ uniform int u_rhythm;
+ uniform int u_thermal;
+ uniform int u_nightVis;
+ uniform int u_prism;
+ uniform int u_freeze;
+ uniform int u_stutter;
+ uniform int u_pixelSort;
+ uniform int u_glitchBlocks;
+ uniform int u_staticTV;
+ uniform int u_rainbowWash;
+ uniform int u_zoomBlur;
+ uniform int u_spinBlur;
+ uniform int u_crossProcess;
+ uniform int u_colorNeg;
+ uniform int u_tile4x;
+ uniform int u_filmBurn;
+ uniform int u_bitCrush;
+ uniform int u_liquid;
+ uniform int u_tunnel;
+ uniform int u_shatter;
+ uniform int u_holo;
+ uniform int u_plasma;
+ uniform int u_echo3d;
+ uniform int u_sineSlice;
+ uniform int u_refract;
+ uniform int u_fold;
+ uniform int u_reaction;
+ uniform int u_conway;
+ uniform int u_fractalMap;
+ uniform int u_xorMelt;
+ uniform int u_phaseWarp;
+ uniform int u_topo;
+ uniform int u_smear;
+ uniform int u_datamosh;
+ uniform int u_automata;
+ uniform int u_strange;
+ uniform int u_tessellate;
+ uniform int u_delta;
+ uniform int u_interference;
+ uniform int u_shred;
+ uniform int u_corrupt;
+ uniform int u_ringMod;
+ uniform int u_overflow;
+ uniform int u_recurse;
+ uniform int u_glitchDNA;
+ uniform int u_logistic;
+ uniform int u_hashMelt;
+ uniform int u_mirrorFold;
+ uniform int u_powerCrush;
+ uniform int u_staircase;
+ uniform int u_digit;
+ // -- LFO uniforms --
  uniform float u_g_rate; uniform float u_g_depth; uniform int u_g_wave; uniform float u_g_seed;
  uniform float u_p_rate; uniform float u_p_depth; uniform int u_p_wave; uniform float u_p_seed;
  uniform float u_r_rate; uniform float u_r_depth; uniform int u_r_wave; uniform float u_r_seed;
@@ -1971,23 +2105,15 @@
 
  float hash(float n){ return fract(sin(n)*43758.5453123); }
  float rand(vec2 c){ return fract(sin(dot(c,vec2(12.9898,78.233)))*43758.5453); }
-
  float vnoise(vec2 p){
-   vec2 i=floor(p), f=fract(p);
-   f=f*f*(3.0-2.0*f);
-   float a=hash(i.x+i.y*57.0);
-   float b=hash(i.x+1.0+i.y*57.0);
-   float c=hash(i.x+(i.y+1.0)*57.0);
-   float d=hash(i.x+1.0+(i.y+1.0)*57.0);
+   vec2 i=floor(p), f=fract(p); f=f*f*(3.0-2.0*f);
+   float a=hash(i.x+i.y*57.0), b=hash(i.x+1.0+i.y*57.0);
+   float c=hash(i.x+(i.y+1.0)*57.0), d=hash(i.x+1.0+(i.y+1.0)*57.0);
    return mix(mix(a,b,f.x), mix(c,d,f.x), f.y);
  }
  float fbm(vec2 p){
    float s=0.0, a=0.5;
-   for(int i=0;i<4;i++){
-     s+=a*vnoise(p);
-     p*=2.02;
-     a*=0.5;
-   }
+   for(int i=0;i<4;i++){ s+=a*vnoise(p); p*=2.02; a*=0.5; }
    return s;
  }
  float wave(float t,float r,int ty){
@@ -1995,8 +2121,7 @@
    if(ty==0) return 0.5+0.5*sin(6.28318*x);
    if(ty==1){ float f=fract(x); return 1.0-abs(2.0*f-1.0); }
    if(ty==2) return step(0.5,fract(x));
-   float k=floor(x*8.0);
-   return hash(k);
+   return hash(floor(x*8.0));
  }
  float chaos(float t,float rate,int type,float seed){
    if(rate==0.0) return 0.0;
@@ -2013,27 +2138,20 @@
  }
  vec2 contain(vec2 uv, vec2 res, vec2 texRes){
    float tex=texRes.x/texRes.y, can=res.x/res.y;
-   if(can>tex){
-     float sc=tex/can, pad=(1.0-sc)*0.5;
-     uv.x=(uv.x-pad)/sc;
-   } else {
-     float sc=can/tex, pad=(1.0-sc)*0.5;
-     uv.y=(uv.y-pad)/sc;
-   }
+   if(can>tex){ float sc=tex/can, pad=(1.0-sc)*0.5; uv.x=(uv.x-pad)/sc; }
+   else { float sc=can/tex, pad=(1.0-sc)*0.5; uv.y=(uv.y-pad)/sc; }
    return clamp(uv,0.0,1.0);
  }
  vec2 pixelate(vec2 uv,float px){
    if(px<=1.0) return uv;
-   vec2 p=floor(uv*u_res/px)+0.5;
-   return p*px/u_res;
+   vec2 p=floor(uv*u_res/px)+0.5; return p*px/u_res;
  }
  vec3 hueShift(vec3 c,float a){
    float ca=cos(a), sa=sin(a);
    mat3 R=mat3(
      0.299+0.701*ca+0.168*sa, 0.587-0.587*ca+0.330*sa, 0.114-0.114*ca-0.497*sa,
      0.299-0.299*ca-0.328*sa, 0.587+0.413*ca+0.035*sa, 0.114-0.114*ca+0.292*sa,
-     0.299-0.300*ca+1.250*sa, 0.587-0.588*ca-1.050*sa, 0.114+0.886*ca-0.203*sa
-   );
+     0.299-0.300*ca+1.250*sa, 0.587-0.588*ca-1.050*sa, 0.114+0.886*ca-0.203*sa);
    return clamp(R*c,0.0,1.0);
  }
  vec3 paletteCos(vec3 c,float a){
@@ -2043,7 +2161,8 @@
  }
 
  void main(){
-   float t=u_time;
+   float tBase=u_time;
+   float t=tBase*(0.5 + u_tempo*2.0)*(0.2 + u_speed*2.8);
 
    float MG=u_g_depth*chaos(t,u_g_rate,u_g_wave,u_g_seed);
    float MP=u_p_depth*chaos(t,u_p_rate,u_p_wave,u_p_seed);
@@ -2054,56 +2173,223 @@
 
    vec2 uv=contain(v_uv,u_res,u_texRes);
 
-   // geometric
+   // -- chaos: stochastic UV disruption --
+   if(u_chaos > 0.01){
+     float cN = fbm(uv*8.0 + t*u_chaos*2.0);
+     float cSpike = step(0.97, rand(vec2(floor(uv.y*60.0), floor(t*u_chaos*5.0))));
+     uv += (vec2(cN, fbm(uv*8.0+100.0+t)) - 0.5) * u_chaos * 0.06;
+     uv += cSpike * vec2((rand(vec2(t,uv.y*99.0))-0.5)*0.12, 0.0) * u_chaos;
+   }
+
+   // -- NEW: zoom --
+   if(u_zoom > 0.001){
+     uv = (uv - 0.5) / (1.0 + u_zoom * 4.0) + 0.5;
+   }
+   // -- NEW: frame rotate --
+   if(abs(u_frameRotate) > 0.001){
+     vec2 rc = uv - 0.5;
+     float ra = u_frameRotate * 6.28318;
+     uv = vec2(rc.x*cos(ra)-rc.y*sin(ra), rc.x*sin(ra)+rc.y*cos(ra)) + 0.5;
+   }
+   // -- NEW: tile --
+   if(u_tile > 0.001){
+     uv = fract(uv * (1.0 + u_tile * 7.0));
+   }
+   // -- NEW: barrel distortion --
+   if(abs(u_barrel) > 0.001){
+     vec2 bc = uv - 0.5;
+     float br2 = dot(bc, bc);
+     uv = bc * (1.0 + u_barrel * br2 * 3.0) + 0.5;
+   }
+   // -- NEW: drift --
+   if(u_drift > 0.001){
+     uv.x += sin(tBase*0.2)*u_drift*0.1;
+     uv.y += cos(tBase*0.15)*u_drift*0.08;
+   }
+   // -- NEW: turbulence --
+   if(u_turbulence > 0.001){
+     vec2 tn=vec2(fbm(uv*4.0+t*0.3), fbm(uv*4.0+t*0.4+10.0));
+     uv += (tn-0.5)*u_turbulence*0.15;
+   }
+
+   // -- PHASE WARP: feedback luminance drives UV vortices --
+   if(u_phaseWarp==1){
+     vec3 pwFB = texture(u_feedback, uv).rgb;
+     float pwLuma = dot(pwFB, vec3(0.299,0.587,0.114));
+     float pwAng = pwLuma * 6.28318 + t*1.5;
+     float pwStr = (pwLuma - 0.5) * 0.04;
+     uv += vec2(cos(pwAng), sin(pwAng)) * pwStr;
+     vec3 pwFB2 = texture(u_feedback, uv + vec2(0.01,0.0)).rgb;
+     float pwL2 = dot(pwFB2, vec3(0.299,0.587,0.114));
+     uv += vec2(pwLuma - pwL2, pwL2 - pwLuma) * 0.03;
+   }
+   // -- FRACTAL MAP: Julia set iteration on UV --
+   if(u_fractalMap==1){
+     vec3 fmFB = texture(u_feedback, v_uv).rgb;
+     float fmL = dot(fmFB, vec3(0.299,0.587,0.114));
+     vec2 fmZ = (uv - 0.5) * 2.5;
+     vec2 fmC = vec2(-0.7 + sin(t*0.3)*0.2, 0.27 + cos(t*0.4)*0.15);
+     fmC += (fmFB.rg - 0.5) * 0.3;
+     for(int i=0; i<3; i++){
+       fmZ = vec2(fmZ.x*fmZ.x - fmZ.y*fmZ.y, 2.0*fmZ.x*fmZ.y) + fmC;
+       if(dot(fmZ,fmZ) > 4.0) break;
+     }
+     vec2 fmUV = fmZ * 0.2 + 0.5;
+     fmUV = clamp(fmUV, 0.0, 1.0);
+     uv = mix(uv, fmUV, 0.35);
+   }
+   // -- TESSELLATE: voronoi feedback remapping --
+   if(u_tessellate==1){
+     vec2 tsCell = floor(uv * 6.0);
+     vec2 tsFract = fract(uv * 6.0);
+     float tsLuma = dot(texture(u_feedback, (tsCell+0.5)/6.0).rgb, vec3(0.299,0.587,0.114));
+     float tsAng = tsLuma * 6.2832 + t;
+     mat2 tsRot = mat2(cos(tsAng), -sin(tsAng), sin(tsAng), cos(tsAng));
+     vec2 tsOff = (tsFract - 0.5) * tsRot * (0.6 + tsLuma*0.4) + 0.5;
+     vec2 tsUV = (tsCell + tsOff) / 6.0;
+     tsUV = clamp(tsUV, 0.0, 1.0);
+     uv = mix(uv, tsUV, 0.5);
+   }
+
+   // -- LIQUID: fluid dynamics displacement --
+   if(u_liquid==1){
+     float lT = t*0.6;
+     vec2 lP = uv*3.0;
+     float l1 = fbm(lP + vec2(lT*0.4, lT*0.3));
+     float l2 = fbm(lP + vec2(-lT*0.35, lT*0.45) + 5.0);
+     float l3 = fbm(vec2(l1, l2)*2.0 + lT*0.2);
+     vec2 lFlow = vec2(l1 - 0.5 + l3*0.3, l2 - 0.5 + l3*0.3);
+     float lPulse = 0.7 + 0.3*sin(t*1.2);
+     uv += lFlow * 0.07 * lPulse;
+   }
+   // -- MORPH: organic morphing displacement --
+   if(u_morph > 0.001){
+     float mT = t*0.4;
+     float m1 = fbm(uv*5.0 + vec2(mT, -mT*0.7));
+     float m2 = fbm(uv*5.0 + vec2(-mT*0.6, mT*0.9) + 7.0);
+     float m3 = fbm(vec2(m1*3.0, m2*3.0) + mT*0.3);
+     uv += vec2(m1-0.5, m2-0.5) * u_morph * 0.12 * (0.5 + m3);
+   }
+   // -- WAVE SLICE: sine wave displacement --
+   if(u_waveSlice > 0.001){
+     float wFreq = 8.0 + u_waveSlice*25.0;
+     float wAmp = u_waveSlice*0.04;
+     uv.x += sin(uv.y*wFreq + t*4.0)*wAmp;
+     uv.y += cos(uv.x*wFreq*0.7 + t*3.0)*wAmp*0.6;
+   }
+   // -- CRYSTAL: voronoi tessellation --
+   if(u_crystal > 0.001){
+     float crScale = 4.0 + u_crystal*12.0;
+     vec2 crCell = floor(uv*crScale);
+     vec2 crF = fract(uv*crScale);
+     float crMin = 1.0;
+     vec2 crOff = vec2(0.0);
+     for(int cy=-1;cy<=1;cy++){
+       for(int cx=-1;cx<=1;cx++){
+         vec2 cn = vec2(float(cx),float(cy));
+         vec2 cp = vec2(rand(crCell+cn), rand(crCell+cn+99.0));
+         cp = 0.5 + 0.4*sin(t*0.5 + 6.28318*cp);
+         float cd = length(cn + cp - crF);
+         if(cd < crMin){ crMin = cd; crOff = (cn + cp - crF); }
+       }
+     }
+     uv += crOff * 0.015 * u_crystal;
+   }
+   // -- SHATTER: animated glass break --
+   if(u_shatter==1){
+     float shScale = 6.0;
+     vec2 shCell = floor(uv*shScale);
+     vec2 shF = fract(uv*shScale);
+     float shN = rand(shCell + floor(t*2.0));
+     float shAng = shN*6.28318 + t*2.0;
+     float shMag = step(0.7, shN) * 0.04;
+     uv += vec2(cos(shAng), sin(shAng)) * shMag;
+     float shEdge = min(min(shF.x, 1.0-shF.x), min(shF.y, 1.0-shF.y));
+     if(shEdge < 0.04) uv += (vec2(rand(shCell+t), rand(shCell*2.0+t))-0.5)*0.02;
+   }
+   // -- SINE SLICE: strip displacement --
+   if(u_sineSlice==1){
+     float sliceH = 0.03 + 0.02*sin(t*0.7);
+     float sliceId = floor(uv.y / sliceH);
+     float slicePhase = sliceId*0.8 + t*3.0;
+     float sliceAmt = sin(slicePhase)*0.035 * (0.5 + 0.5*sin(t*1.3+sliceId*0.5));
+     uv.x += sliceAmt;
+     float sliceGap = abs(fract(uv.y/sliceH) - 0.5)*2.0;
+     if(sliceGap > 0.94) uv.x += (rand(vec2(sliceId, t))-0.5)*0.08;
+   }
+   // -- REFRACT: light through moving liquid surface --
+   if(u_refract==1){
+     float rT = t*0.8;
+     float rN1 = fbm(uv*6.0 + vec2(rT*0.5, rT*0.3));
+     float rN2 = fbm(uv*6.0 + vec2(-rT*0.4, rT*0.6) + 3.0);
+     vec2 rNormal = vec2(
+       fbm(uv*8.0 + vec2(rT*0.7, 0.0)) - fbm(uv*8.0 + vec2(rT*0.7+0.01, 0.0)),
+       fbm(uv*8.0 + vec2(0.0, rT*0.5)) - fbm(uv*8.0 + vec2(0.0, rT*0.5+0.01))
+     );
+     uv += rNormal * 3.0 * (0.7 + 0.3*sin(t*0.4));
+   }
+
+   // -- existing geometric --
    vec2 p = uv - 0.5;
    float r = length(p);
    float th = atan(p.y,p.x);
    th += u_swirl * (0.6 - r) * 2.5;
    p = vec2(cos(th), sin(th)) * r;
-   p += normalize(p+1e-5) * (sin(r*40.0 + t*8.0) * 0.002 * u_ripple);
-   p *= (1.0 + u_warp * r*r*1.8);
+   p += normalize(p+1e-5) * (sin(r*40.0+t*8.0)*0.002*u_ripple);
+   p *= (1.0 + u_warp*r*r*1.8);
    vec2 uvG = p + 0.5;
-   if(u_mirror==1){
-     uvG.x = (uvG.x>0.5) ? 1.0-uvG.x : uvG.x;
-   }
+   if(u_mirror==1) uvG.x = (uvG.x>0.5) ? 1.0-uvG.x : uvG.x;
    uv = clamp(uvG,0.0,1.0);
 
    if(u_kaleido==1){
-     vec2 kc = uv - 0.5;
-     float kr = length(kc);
-     float ka = atan(kc.y, kc.x);
-     float seg = 8.0;
-     float slice = 6.28318/seg;
-     ka = mod(ka, slice);
-     if(ka > slice*0.5) ka = slice - ka;
-     kc = vec2(cos(ka), sin(ka)) * kr;
-     uv = clamp(kc + 0.5, 0.0, 1.0);
+     vec2 kc=uv-0.5; float kr=length(kc); float ka=atan(kc.y,kc.x);
+     float seg=8.0, slice=6.28318/seg;
+     ka=mod(ka,slice); if(ka>slice*0.5) ka=slice-ka;
+     uv=clamp(vec2(cos(ka),sin(ka))*kr+0.5, 0.0, 1.0);
    }
 
+   // -- NEW: tile 4x toggle --
+   if(u_tile4x==1) uv = fract(uv * 4.0);
+
    float motion=clamp(MG+MR,0.0,1.0);
-   vec2 n2=vec2(
-     fbm(uv*6.0+vec2(t*0.6+u_g_seed,-t*0.5+u_r_seed)),
-     fbm(uv*6.0+vec2(-t*0.4+u_p_seed,t*0.7+u_f_seed))
-   );
-   vec2 warp=(n2-0.5)*(0.12*motion);
-   uv+=warp;
+   vec2 n2=vec2(fbm(uv*6.0+vec2(t*0.6+u_g_seed,-t*0.5+u_r_seed)),
+                fbm(uv*6.0+vec2(-t*0.4+u_p_seed,t*0.7+u_f_seed)));
+   uv += (n2-0.5)*(0.12*motion);
+
+   // -- NEW: vhs wobble --
+   if(u_vhsWobble > 0.001){
+     float vhsY = uv.y + sin(t*4.0+uv.y*20.0)*u_vhsWobble*0.005;
+     uv.x += (rand(vec2(floor(vhsY*100.0),t))-0.5)*u_vhsWobble*0.015;
+     uv.y = vhsY;
+   }
 
    float px=u_pixel+(MP)*50.0;
    uv=pixelate(uv,px);
 
-   vec3 vid=texture(u_tex,uv).rgb;
-
-   if(u_slit==1){
-     vec2 su = vec2(mod(v_uv.x + t*0.05, 1.0), v_uv.y);
-     vid = mix(vid, texture(u_feedback, su).rgb, 0.6);
+   // -- freeze: use feedback only --
+   if(u_freeze==1){
+     outCol=vec4(texture(u_feedback,v_uv).rgb,1.0); return;
    }
 
-   float fbmw=fbm(uv*3.0 + vec2(t*0.3,-t*0.25));
+   vec3 vid=texture(u_tex,uv).rgb;
+
+   // -- stutter --
+   if(u_stutter==1){
+     float stOn=step(0.5, fract(floor(t*4.0)*0.5));
+     vid=mix(texture(u_feedback,v_uv).rgb, vid, stOn);
+   }
+
+   if(u_slit==1){
+     vec2 su=vec2(mod(v_uv.x+t*0.05,1.0), v_uv.y);
+     vid=mix(vid, texture(u_feedback,su).rgb, 0.6);
+   }
+
+   float fbmw=fbm(uv*3.0+vec2(t*0.3,-t*0.25));
    float rgbAmt=u_rgb+MR;
-   float off=rgbAmt*0.05*(0.5+fbmw);
-   float r1=texture(u_tex,uv+vec2(off,0.0)).r;
-   float g1=texture(u_tex,uv+vec2(0.0,off*0.6)).g;
-   float b1=texture(u_tex,uv-vec2(off,0.0)).b;
+   float off2=rgbAmt*0.05*(0.5+fbmw);
+   float r1=texture(u_tex,uv+vec2(off2,0.0)).r;
+   float g1=texture(u_tex,uv+vec2(0.0,off2*0.6)).g;
+   float b1=texture(u_tex,uv-vec2(off2,0.0)).b;
    vec3 col=mix(vid,vec3(r1,g1,b1),clamp(rgbAmt,0.0,1.0));
 
    if(u_displace==1){
@@ -2118,101 +2404,533 @@
        if(band>0.5){
          float dir=(rand(vec2(t*3.0+float(i),uv.y*99.0))>0.5)?1.0:-1.0;
          float amp=gAmt*(0.02+0.15*rand(vec2(uv.y*333.0+float(i),t*2.0)));
-         col=texture(u_tex, clamp(uv+vec2(dir*amp,0.0), vec2(0.0), vec2(1.0))).rgb;
+         col=texture(u_tex, clamp(uv+vec2(dir*amp,0.0), 0.0, 1.0)).rgb;
        }
      }
      vec2 d=(vec2(rand(uv+t),rand(uv*2.0-t))-0.5)*(gAmt*0.02);
      col=mix(col,texture(u_tex,uv+d).rgb,0.5);
    }
 
-   col += (rand(uv*(1.0+t*0.3)) - 0.5) * (u_noise + (MG)*0.3) * 0.5;
+   col += (rand(uv*(1.0+t*0.3))-0.5)*(u_noise+(MG)*0.3)*0.5;
+
+   // -- NEW: glitch blocks --
+   if(u_glitchBlocks==1){
+     vec2 gbId=floor(v_uv*vec2(u_res.x/32.0,u_res.y/32.0));
+     float gbR=rand(gbId+floor(t*3.0));
+     if(gbR>0.92){
+       vec2 gbOff=(vec2(rand(gbId*3.0+t),rand(gbId*7.0+t))-0.5)*0.15;
+       col=texture(u_tex, clamp(uv+gbOff,0.0,1.0)).rgb;
+     }
+   }
+   // -- NEW: pixel sort --
+   if(u_pixelSort==1){
+     float psL=dot(col,vec3(0.299,0.587,0.114));
+     if(psL>0.3) col=texture(u_tex, vec2(uv.x+psL*0.05, uv.y)).rgb;
+   }
+   // -- NEW: static TV --
+   if(u_staticTV==1){
+     col=mix(col, vec3(rand(uv*800.0+t*100.0)), 0.6);
+   }
 
    if(u_vector==1){
-     vec2 vc = v_uv - 0.5;
-     float rr = length(vc);
-     float aa = atan(vc.y, vc.x);
-     float arms = 5.0;
-     float seg = 6.28318 / arms;
-     float aFold = mod(aa + 0.3*sin(t*0.3), seg);
-     if(aFold > seg*0.5) aFold = seg - aFold;
-     float ring = sin(rr*40.0 - t*6.0) * 0.03;
-     float twist = sin(rr*6.0 - t*2.0) * 0.5;
-     float rr2 = rr + ring;
-     float aa2 = aFold + twist;
-     vec2 warp1 = vec2(cos(aa2), sin(aa2)) * rr2;
-     vec2 uv1 = warp1 + 0.5;
-     vec2 warp2 = warp1 * (0.7 + 0.2*sin(t*0.4));
-     vec2 centerDrift = vec2(0.5 + 0.18*sin(t*0.21), 0.5 + 0.18*cos(t*0.19));
-     vec2 uv2 = warp2 + centerDrift;
-     vec3 s1 = texture(u_tex, clamp(uv1, 0.0, 1.0)).rgb;
-     vec3 s2 = texture(u_feedback, clamp(uv2, 0.0, 1.0)).rgb;
-     vec3 vortexCol = mix(s1, s2, 0.6);
-     float fade = smoothstep(0.0, 0.9, rr);
-     vortexCol = mix(vortexCol, col, fade*0.2);
-     col = mix(col, vortexCol, 0.9);
+     vec2 vc=v_uv-0.5; float rr=length(vc); float aa=atan(vc.y,vc.x);
+     float arms=5.0, seg2=6.28318/arms;
+     float aFold=mod(aa+0.3*sin(t*0.3), seg2);
+     if(aFold>seg2*0.5) aFold=seg2-aFold;
+     float ring=sin(rr*40.0-t*6.0)*0.03, twist=sin(rr*6.0-t*2.0)*0.5;
+     vec2 warp1=vec2(cos(aFold+twist),sin(aFold+twist))*(rr+ring);
+     vec2 warp2=warp1*(0.7+0.2*sin(t*0.4));
+     vec2 cd=vec2(0.5+0.18*sin(t*0.21),0.5+0.18*cos(t*0.19));
+     vec3 s1=texture(u_tex, clamp(warp1+0.5,0.0,1.0)).rgb;
+     vec3 s2=texture(u_feedback, clamp(warp2+cd,0.0,1.0)).rgb;
+     vec3 vortexCol=mix(s1,s2,0.6);
+     float fade=smoothstep(0.0,0.9,rr);
+     col=mix(col, mix(vortexCol,col,fade*0.2), 0.9);
    }
 
    if(u_scan==1){
      float scan=sin((v_uv.y*u_res.y)*(1.0+(MR)*6.0)+t*60.0);
      col*=mix(1.0, scan*0.55+0.45, 0.7);
    }
-   if(u_strobe==1){
-     float s=step(0.5, fract(t*(2.0+(MG)*12.0)));
-     col*=mix(1.0,0.15,s);
+   if(u_strobe==1) col*=mix(1.0,0.15,step(0.5,fract(t*(2.0+(MG)*12.0))));
+
+   // -- NEW: zoom blur --
+   if(u_zoomBlur==1){
+     vec2 zbDir=v_uv-0.5; vec3 zbCol=col;
+     for(int i=1;i<6;i++) zbCol+=texture(u_tex, uv-zbDir*float(i)*0.012).rgb;
+     col=zbCol/6.0;
+   }
+   // -- NEW: spin blur --
+   if(u_spinBlur==1){
+     vec2 sbC=v_uv-0.5; float sbR=length(sbC); float sbA=atan(sbC.y,sbC.x);
+     vec3 sbCol=col;
+     for(int i=1;i<5;i++){
+       vec2 sbUV=vec2(cos(sbA+float(i)*0.02),sin(sbA+float(i)*0.02))*sbR+0.5;
+       sbCol+=texture(u_tex, clamp(sbUV,0.0,1.0)).rgb;
+     }
+     col=sbCol/5.0;
+   }
+   // -- NEW: prism --
+   if(u_prism==1){
+     float pA=atan(v_uv.y-0.5, v_uv.x-0.5);
+     vec2 pDir=vec2(cos(pA),sin(pA))*0.015;
+     col.r=texture(u_tex, uv+pDir).r;
+     col.b=texture(u_tex, uv-pDir).b;
    }
 
-   float hueA = 6.28318 * pow(clamp(MH,0.0,1.0), 0.85) * 0.65;
+   // -- color: hue (FIXED - direct + LFO) --
+   float hueA = 6.28318 * (u_hue + pow(clamp(MH,0.0,1.0),0.85)*0.65);
    col=hueShift(col,hueA);
-   col=paletteCos(col, clamp(MPL,0.0,1.0)*0.6);
+   // -- tint --
+   if(u_tint > 0.001) col=hueShift(col, u_tint*3.14159);
+   // -- palette (FIXED) --
+   col=paletteCos(col, clamp(u_palette + MPL*0.6, 0.0, 1.0));
 
-   float steps = max(1.0, u_posterSteps);
+   // -- poster --
+   float steps = max(2.0, u_poster);
    col = floor(col*steps)/steps;
 
-   float luma = dot(col, vec3(0.299,0.587,0.114));
-   col = mix(vec3(luma), col, 0.25 + 0.7*u_sat);
-   col = col + (u_bright - 0.5);
-   col = (col-0.5) * (0.5 + u_contrast*2.0) + 0.5;
-
-   float glow = smoothstep(0.75, 1.0, luma) * u_bloom;
-   col += glow * 0.8;
-
-   if(u_edge==1){
-     vec2 px2 = 1.0/u_res;
-     vec3 tl = texture(u_tex, uv+px2*vec2(-1.0,-1.0)).rgb;
-     vec3 tc = texture(u_tex, uv+px2*vec2( 0.0,-1.0)).rgb;
-     vec3 tr = texture(u_tex, uv+px2*vec2( 1.0,-1.0)).rgb;
-     vec3 ml = texture(u_tex, uv+px2*vec2(-1.0, 0.0)).rgb;
-     vec3 mr = texture(u_tex, uv+px2*vec2( 1.0, 0.0)).rgb;
-     vec3 bl = texture(u_tex, uv+px2*vec2(-1.0, 1.0)).rgb;
-     vec3 bc = texture(u_tex, uv+px2*vec2( 0.0, 1.0)).rgb;
-     vec3 br = texture(u_tex, uv+px2*vec2( 1.0, 1.0)).rgb;
-     float gx = dot(tr,vec3(0.2126,0.7152,0.0722)) + 2.0*dot(mr,vec3(0.2126,0.7152,0.0722)) + dot(br,vec3(0.2126,0.7152,0.0722))
-              - dot(tl,vec3(0.2126,0.7152,0.0722)) - 2.0*dot(ml,vec3(0.2126,0.7152,0.0722)) - dot(bl,vec3(0.2126,0.7152,0.0722));
-     float gy = dot(bl,vec3(0.2126,0.7152,0.0722)) + 2.0*dot(bc,vec3(0.2126,0.7152,0.0722)) + dot(br,vec3(0.2126,0.7152,0.0722))
-              - dot(tl,vec3(0.2126,0.7152,0.0722)) - 2.0*dot(tc,vec3(0.2126,0.7152,0.0722)) - dot(tr,vec3(0.2126,0.7152,0.0722));
-     float e = clamp(length(vec2(gx,gy))*1.5,0.0,1.0);
-     col = mix(col, vec3(e), 0.6);
+   // -- NEW: temperature --
+   col.r += u_temperature*0.15;
+   col.b -= u_temperature*0.15;
+   // -- NEW: vibrance --
+   if(u_vibrance>0.001){
+     float vAvg=(col.r+col.g+col.b)/3.0;
+     col=mix(vec3(vAvg), col, 1.0+u_vibrance*1.5);
+   }
+   // -- NEW: gamma --
+   if(abs(u_gamma-0.5)>0.01) col=pow(max(col,0.0), vec3(0.3+u_gamma*2.4));
+   // -- NEW: threshold --
+   if(u_threshold>0.01){
+     float tLuma=dot(col,vec3(0.299,0.587,0.114));
+     col=mix(col, vec3(step(1.0-u_threshold, tLuma)), u_threshold);
+   }
+   // -- NEW: duotone --
+   if(u_duotone>0.01){
+     float dtL=dot(col,vec3(0.299,0.587,0.114));
+     vec3 dtA=vec3(0.1,0.0,0.3), dtB=vec3(1.0,0.6,0.1);
+     col=mix(col, mix(dtA,dtB,dtL), u_duotone);
    }
 
-   if(u_solar==1){
+   float luma=dot(col,vec3(0.299,0.587,0.114));
+   col=mix(vec3(luma), col, 0.25+0.7*u_sat);
+   col=col+(u_bright-0.5);
+   col=(col-0.5)*(0.5+u_contrast*2.0)+0.5;
+   col+=smoothstep(0.75,1.0,luma)*u_bloom*0.8;
+
+   // -- NEW: thermal --
+   if(u_thermal==1){
+     float tL=dot(col,vec3(0.299,0.587,0.114));
+     vec3 therm;
+     if(tL<0.25) therm=mix(vec3(0.0,0.0,0.5),vec3(0.0,0.8,0.0),tL*4.0);
+     else if(tL<0.5) therm=mix(vec3(0.0,0.8,0.0),vec3(1.0,1.0,0.0),(tL-0.25)*4.0);
+     else if(tL<0.75) therm=mix(vec3(1.0,1.0,0.0),vec3(1.0,0.0,0.0),(tL-0.5)*4.0);
+     else therm=mix(vec3(1.0,0.0,0.0),vec3(1.0),  (tL-0.75)*4.0);
+     col=therm;
+   }
+   // -- NEW: night vision --
+   if(u_nightVis==1){
+     float nvL=pow(dot(col,vec3(0.299,0.587,0.114)),0.7)*1.3;
+     float nvN=rand(uv+t)*0.15;
+     col=vec3(nvN*0.3, nvL+nvN, nvN*0.2);
+     col*=clamp(1.0-length(v_uv-0.5)*1.2, 0.0, 1.0);
+   }
+   // -- NEW: cross process --
+   if(u_crossProcess==1){
+     col=clamp(vec3(pow(col.r,0.8),pow(col.g,1.2),pow(col.b,0.7))*vec3(1.1,0.95,1.15),0.0,1.0);
+   }
+   // -- NEW: rainbow wash --
+   if(u_rainbowWash==1){
+     vec3 rb=0.5+0.5*cos(6.28318*(v_uv.x*2.0+v_uv.y+t*0.5+vec3(0.0,0.33,0.67)));
+     col=mix(col, col*rb*1.5, 0.4);
+   }
+   // -- NEW: film burn --
+   if(u_filmBurn==1){
+     float fbEdge=max(abs(v_uv.x-0.5),abs(v_uv.y-0.5))*2.0;
+     float fbN=fbm(vec2(v_uv.x*3.0+t*0.3, v_uv.y*2.0));
+     col=mix(col, vec3(1.0,0.6,0.2), smoothstep(0.5,1.0,fbEdge+fbN*0.3)*0.7);
+   }
+
+   if(u_edge==1){
+     vec2 px2=1.0/u_res;
+     vec3 tl=texture(u_tex,uv+px2*vec2(-1,-1)).rgb, tc=texture(u_tex,uv+px2*vec2(0,-1)).rgb;
+     vec3 tr=texture(u_tex,uv+px2*vec2(1,-1)).rgb, ml=texture(u_tex,uv+px2*vec2(-1,0)).rgb;
+     vec3 mr2=texture(u_tex,uv+px2*vec2(1,0)).rgb, bl=texture(u_tex,uv+px2*vec2(-1,1)).rgb;
+     vec3 bc=texture(u_tex,uv+px2*vec2(0,1)).rgb, br=texture(u_tex,uv+px2*vec2(1,1)).rgb;
+     vec3 L=vec3(0.2126,0.7152,0.0722);
+     float gx=dot(tr,L)+2.0*dot(mr2,L)+dot(br,L)-dot(tl,L)-2.0*dot(ml,L)-dot(bl,L);
+     float gy=dot(bl,L)+2.0*dot(bc,L)+dot(br,L)-dot(tl,L)-2.0*dot(tc,L)-dot(tr,L);
+     col=mix(col, vec3(clamp(length(vec2(gx,gy))*1.5,0.0,1.0)), 0.6);
+   }
+   if(u_solar==1) col=1.0-abs(2.0*col-1.0);
+
+   // -- FOLD: multi-pass wave folding --
+   if(u_fold==1){
+     float folds = 3.0 + u_foldAmt * 3.0;
+     col = sin(col * 3.14159 * folds) * 0.5 + 0.5;
+     col = sin(col * 3.14159 * folds * 0.7) * 0.5 + 0.5;
+     col = sin(col * 3.14159 * folds * 0.5) * 0.5 + 0.5;
+   }
+   // -- FOLD AMT knob: continuous folding independent of toggle --
+   if(u_fold==0 && u_foldAmt>0.01){
+     float fa = u_foldAmt * 4.0;
+     col = sin(col * 3.14159 * fa) * 0.5 + 0.5;
+   }
+   // -- STRANGE: Lorenz-like attractor coloring --
+   if(u_strange==1){
+     vec3 st = col * 2.0 - 1.0;
+     float sigma = 10.0, rho = 28.0, beta = 2.667;
+     float dt = 0.002;
+     float dx = sigma * (st.y - st.x) * dt;
+     float dy = (st.x * (rho - st.z) - st.y) * dt;
+     float dz = (st.x * st.y - beta * st.z) * dt;
+     st += vec3(dx, dy, dz);
+     col = st * 0.5 + 0.5;
+     col = fract(col * 1.5 + t * 0.05);
+   }
+   // -- XOR MELT: pseudo-bitwise XOR with feedback --
+   if(u_xorMelt==1){
+     vec3 xmFB = texture(u_feedback, v_uv).rgb;
+     vec3 q1 = floor(col*8.0), q2 = floor(xmFB*8.0);
+     vec3 xored = mod(q1+q2, 8.0)/8.0;
+     col = mix(col, xored, 0.7);
+     col = sin(col * 6.283 * 2.0) * 0.5 + 0.5;
+   }
+   // -- SHRED: feedback-driven fractional multiplication + tent map --
+   if(u_shred==1){
+     vec3 shFB = texture(u_feedback, v_uv).rgb;
+     vec3 shMul = floor(shFB * 7.0) + 2.0;
+     col = fract(col * shMul);
      col = 1.0 - abs(2.0*col - 1.0);
+   }
+   // -- CORRUPT: cross-channel quantized multiplication cascade --
+   if(u_corrupt==1){
+     float cR = col.r, cG = col.g, cB = col.b;
+     col.r = fract(floor(cR*6.0) * cG * 3.0);
+     col.g = fract(floor(cG*6.0) * cB * 3.0);
+     col.b = fract(floor(cB*6.0) * cR * 3.0);
+     vec3 crFB = texture(u_feedback, v_uv).rgb;
+     col = fract(col + floor(crFB * 4.0) * 0.25);
+   }
+   // -- RING MOD: frame x feedback ring modulation --
+   if(u_ringMod==1){
+     vec3 rmFB = texture(u_feedback, v_uv).rgb;
+     col = fract(col * rmFB * 6.0);
+     col = fract(col * 3.0 + rmFB.gbr * 2.0);
+   }
+   // -- OVERFLOW: 8-bit integer overflow simulation --
+   if(u_overflow==1){
+     vec3 ovFB = texture(u_feedback, v_uv).rgb;
+     col = fract(col * 255.0 + ovFB * 255.0);
+     col = fract(col * 2.0 + 0.1);
+   }
+   // -- RECURSE: solarize applied 4x (tent map cascade) --
+   if(u_recurse==1){
+     col = 1.0 - abs(2.0*col - 1.0);
+     col = 1.0 - abs(2.0*col - 1.0);
+     col = 1.0 - abs(2.0*fract(col*1.1 + 0.05) - 1.0);
+     col = 1.0 - abs(2.0*fract(col*0.9 + 0.02) - 1.0);
+   }
+   // -- GLITCH DNA: quantize -> cross-channel -> mod add -> tent -> sine fold --
+   if(u_glitchDNA==1){
+     vec3 gdFB = texture(u_feedback, v_uv).rgb;
+     col = floor(col * 6.0) / 6.0;
+     col = vec3(col.r*gdFB.g, col.g*gdFB.b, col.b*gdFB.r);
+     col = mod(col * 5.0 + gdFB * 3.0, 1.0);
+     col = 1.0 - abs(2.0*col - 1.0);
+     col = sin(col * 3.14159 * 3.0) * 0.5 + 0.5;
+   }
+   // -- LOGISTIC: logistic map x=r*x*(1-x) in chaotic regime --
+   if(u_logistic==1){
+     vec3 lgFB = texture(u_feedback, v_uv).rgb;
+     float lgR = 3.5 + dot(lgFB, vec3(0.299,0.587,0.114)) * 0.5;
+     col = clamp(col, 0.001, 0.999);
+     col = lgR * col * (1.0 - col);
+     col = clamp(col, 0.001, 0.999);
+     col = lgR * col * (1.0 - col);
+     col = clamp(col, 0.001, 0.999);
+     col = lgR * col * (1.0 - col);
+     col = clamp(col, 0.001, 0.999);
+     col = lgR * col * (1.0 - col);
+   }
+   // -- HASH MELT: deterministic hash on quantized color --
+   if(u_hashMelt==1){
+     vec3 hmQ = floor(col * 16.0);
+     col.r = fract(sin(dot(hmQ.rg, vec2(12.9898, 78.233))) * 43758.5453);
+     col.g = fract(sin(dot(hmQ.gb, vec2(45.164, 93.9898))) * 43758.5453);
+     col.b = fract(sin(dot(hmQ.br, vec2(78.233, 12.9898))) * 43758.5453);
+     vec3 hmFB = texture(u_feedback, v_uv).rgb;
+     col = fract(col + floor(hmFB * 8.0) / 8.0);
+   }
+   // -- MIRROR FOLD: abs-value folding with feedback-driven axis --
+   if(u_mirrorFold==1){
+     vec3 mfFB = texture(u_feedback, v_uv).rgb;
+     col = abs(abs(col - mfFB) - 0.5);
+     col = abs(abs(col - mfFB.gbr) - 0.5);
+     col = abs(abs(col - mfFB.brg) - 0.5);
+   }
+   // -- POWER CRUSH: feedback-driven power curve + fract wrap --
+   if(u_powerCrush==1){
+     vec3 pcFB = texture(u_feedback, v_uv).rgb;
+     col = clamp(col, 0.001, 0.999);
+     col = pow(col, 1.0 + pcFB * 4.0);
+     col = fract(col * 3.0);
+     col = 1.0 - abs(2.0*col - 1.0);
+   }
+   // -- STAIRCASE: feedback-driven variable quantization + cross-channel diff --
+   if(u_staircase==1){
+     vec3 scFB = texture(u_feedback, v_uv).rgb;
+     vec3 scN = 2.0 + floor(scFB * 6.0);
+     col = floor(col * scN) / scN;
+     float scR = col.r;
+     col.r = abs(col.r - col.g);
+     col.g = abs(col.g - col.b);
+     col.b = abs(col.b - scR);
+     col = fract(col * 4.0);
+   }
+   // -- DIGIT: modular digit extraction per channel --
+   if(u_digit==1){
+     vec3 dgFB = texture(u_feedback, v_uv).rgb;
+     col.r = fract(floor(col.r * 64.0) / 8.0);
+     col.g = fract(floor(col.g * 32.0) / 4.0);
+     col.b = fract(floor(col.b * 48.0) / 6.0);
+     col = fract(col + dgFB * floor(dgFB * 4.0 + 1.0));
+   }
+   // -- DATAMOSH: per-channel drift from feedback difference --
+   if(u_datamosh==1){
+     vec3 dmFB = texture(u_feedback, v_uv).rgb;
+     vec3 diff = col - dmFB;
+     float dR = diff.r * 0.03;
+     float dG = diff.g * 0.03;
+     float dB = diff.b * 0.03;
+     col.r = texture(u_feedback, v_uv + vec2(dR, dG)).r;
+     col.g = texture(u_feedback, v_uv + vec2(-dG, dB)).g;
+     col.b = texture(u_feedback, v_uv + vec2(dB, -dR)).b;
+     col = mix(texture(u_tex, uv).rgb, col, 0.75);
+   }
+   // -- TOPO: topographic contour lines --
+   if(u_topo==1){
+     float topoL = dot(col, vec3(0.299,0.587,0.114));
+     float lines = 10.0 + u_contour * 40.0;
+     float contourVal = fract(topoL * lines + t * 0.5);
+     float edge = smoothstep(0.0, 0.08, contourVal) * (1.0 - smoothstep(0.92, 1.0, contourVal));
+     vec3 topoCol = col * edge;
+     vec3 lineCol = vec3(0.1, 0.9, 0.6) * (1.0 - edge);
+     col = mix(col, topoCol + lineCol, 0.6);
+   }
+   // -- CONTOUR knob: continuous posterize/contour lines --
+   if(u_topo==0 && u_contour>0.01){
+     float cL = dot(col, vec3(0.299,0.587,0.114));
+     float cLines = 4.0 + u_contour * 30.0;
+     float cEdge = abs(fract(cL * cLines) - 0.5) * 2.0;
+     cEdge = smoothstep(0.3, 0.5, cEdge);
+     col = mix(col * 0.3, col, cEdge);
+   }
+   // -- INTERFERENCE: double-slit wave pattern --
+   if(u_interference==1){
+     vec2 ifPx = 3.0/u_res;
+     float ifL1 = dot(texture(u_feedback, v_uv + vec2(ifPx.x*3.0, 0.0)).rgb, vec3(0.299,0.587,0.114));
+     float ifL2 = dot(texture(u_feedback, v_uv - vec2(ifPx.x*3.0, 0.0)).rgb, vec3(0.299,0.587,0.114));
+     float d1 = length(uv - vec2(0.4, 0.5));
+     float d2 = length(uv - vec2(0.6, 0.5));
+     float wave1 = sin((d1 * 60.0 + ifL1 * 12.0) - t * 3.0);
+     float wave2 = sin((d2 * 60.0 + ifL2 * 12.0) - t * 3.0);
+     float pattern = (wave1 + wave2) * 0.5;
+     vec3 ifCol = col + col * pattern * 0.5;
+     col = mix(col, ifCol, 0.6);
+   }
+
+   // -- NEW: halftone --
+   if(u_halftone>0.001){
+     float htSz=3.0+u_halftone*12.0;
+     vec2 htCell=floor(uv*u_res/htSz)*htSz/u_res;
+     float htL=dot(texture(u_tex,htCell).rgb, vec3(0.299,0.587,0.114));
+     float htDot=length(mod(uv*u_res,htSz)/htSz-0.5)*2.0;
+     col=mix(col, vec3(step(htDot,htL)), u_halftone);
+   }
+   // -- NEW: emboss --
+   if(u_emboss>0.001){
+     vec2 ePx=1.0/u_res;
+     col=mix(col, texture(u_tex,uv+ePx).rgb-texture(u_tex,uv-ePx).rgb+0.5, u_emboss);
+   }
+   // -- NEW: sharpen --
+   if(u_sharpen>0.001){
+     vec2 sPx=1.0/u_res; float sA=u_sharpen*2.0;
+     vec3 sC=col*(1.0+4.0*sA);
+     sC-=texture(u_tex,uv+vec2(sPx.x,0)).rgb*sA;
+     sC-=texture(u_tex,uv-vec2(sPx.x,0)).rgb*sA;
+     sC-=texture(u_tex,uv+vec2(0,sPx.y)).rgb*sA;
+     sC-=texture(u_tex,uv-vec2(0,sPx.y)).rgb*sA;
+     col=max(sC,0.0);
+   }
+   // -- NEW: blur --
+   if(u_blur>0.001){
+     vec2 bPx=u_blur*3.0/u_res;
+     col=col*0.2
+       +texture(u_tex,uv+vec2(bPx.x,0)).rgb*0.2
+       +texture(u_tex,uv-vec2(bPx.x,0)).rgb*0.2
+       +texture(u_tex,uv+vec2(0,bPx.y)).rgb*0.2
+       +texture(u_tex,uv-vec2(0,bPx.y)).rgb*0.2;
+   }
+   // -- NEW: dither --
+   if(u_dither>0.001){
+     float dBayer=mod(dot(floor(mod(gl_FragCoord.xy,4.0)),vec2(4.0,1.0))*17.0,16.0)/16.0-0.5;
+     float dLvl=max(2.0, 32.0*(1.0-u_dither));
+     col=floor(col*dLvl+dBayer)/dLvl;
+   }
+   // -- NEW: bit crush --
+   if(u_bitCrush==1) col=floor(col*4.0)/4.0;
+   // -- NEW: color negative --
+   if(u_colorNeg==1) col=clamp(vec3(1.0-col.b,1.0-col.r,1.0-col.g)*1.1, 0.0, 1.0);
+
+   // -- HOLO: holographic rainbow interference --
+   if(u_holo==1){
+     float holoY = v_uv.y*u_res.y;
+     float holoScan = sin(holoY*1.5 + t*8.0)*0.5+0.5;
+     float holoRainbow = sin(holoY*0.08 + t*2.0 + v_uv.x*12.0);
+     vec3 holoCol = 0.5 + 0.5*cos(6.28318*(holoRainbow + vec3(0.0, 0.33, 0.67)));
+     float holoFlicker = 0.85 + 0.15*sin(t*30.0+v_uv.y*80.0);
+     col = mix(col, col*holoCol*1.6, 0.45*holoScan) * holoFlicker;
+     col.r = texture(u_tex, uv+vec2(sin(holoY*0.02+t*3.0)*0.003, 0.0)).r * mix(1.0, holoCol.r*1.4, 0.3);
+   }
+   // -- PLASMA: organic demo-scene plasma --
+   if(u_plasma==1){
+     float px1 = sin(v_uv.x*10.0 + t*2.0);
+     float px2 = sin(v_uv.y*8.0 + t*1.5);
+     float px3 = sin((v_uv.x+v_uv.y)*6.0 + t*3.0);
+     float px4 = sin(length(v_uv-0.5)*14.0 - t*4.0);
+     float pVal = (px1+px2+px3+px4)*0.25;
+     vec3 plasma = 0.5+0.5*cos(6.28318*(pVal*1.5 + vec3(0.0, 0.25, 0.5) + t*0.1));
+     float pLuma = dot(col, vec3(0.299,0.587,0.114));
+     col = mix(col, plasma*(0.3+pLuma*1.4), 0.5);
+   }
+   // -- ECHO3D: anaglyph triple-delay feedback --
+   if(u_echo3d==1){
+     vec2 e3off = vec2(0.008, 0.003);
+     vec3 e3L = texture(u_feedback, v_uv - e3off).rgb;
+     vec3 e3R = texture(u_feedback, v_uv + e3off).rgb;
+     vec3 e3C = texture(u_feedback, v_uv + vec2(0.0, 0.005)).rgb;
+     col = vec3(
+       max(col.r, e3L.r*0.8),
+       max(col.g, e3C.g*0.7),
+       max(col.b, e3R.b*0.8)
+     );
+     float e3depth = abs(e3L.r - e3R.r);
+     col += vec3(0.0, e3depth*0.3, e3depth*0.5);
+   }
+   // -- TUNNEL: infinite recursive zoom --
+   if(u_tunnel==1){
+     vec2 tc = v_uv - 0.5;
+     float tr = length(tc);
+     float ta = atan(tc.y, tc.x);
+     ta += sin(tr*8.0 - t*3.0)*0.3;
+     float tunnelDepth = 0.2/(tr + 0.01);
+     float tunnelZ = fract(tunnelDepth*0.15 + t*0.3);
+     vec2 tunnelUV = vec2(ta/6.28318+0.5, tunnelZ);
+     tunnelUV = clamp(tunnelUV, 0.0, 1.0);
+     vec3 tunnelSrc = texture(u_feedback, tunnelUV).rgb;
+     vec3 tunnelTex = texture(u_tex, tunnelUV).rgb;
+     vec3 tunnelCol = mix(tunnelSrc, tunnelTex, 0.4);
+     float rings = sin(tunnelDepth*2.0 - t*6.0)*0.5+0.5;
+     tunnelCol *= (0.7 + 0.6*rings);
+     float tunnelMask = smoothstep(0.0, 0.35, tr);
+     col = mix(tunnelCol, col, tunnelMask*0.25);
    }
 
    if(u_mosh==1){
-     vec3 prev = texture(u_feedback, v_uv).rgb;
-     float blocksX = 96.0;
-     float blocksY = 54.0;
-     vec2 blockId = floor(v_uv * vec2(blocksX, blocksY));
-     vec2 blockUV = blockId / vec2(blocksX, blocksY);
-     float slowT = t * 0.35;
-     float n1 = fbm(blockUV * 4.0 + vec2(slowT, -slowT*0.7));
-     float n2 = fbm(blockUV * 6.0 + vec2(-slowT*0.4, slowT));
-     vec2 flow = (vec2(n1, n2) - 0.5) * 0.18;
-     vec2 meltUV = clamp(v_uv + flow, 0.0, 1.0);
-     vec3 smear = texture(u_feedback, meltUV).rgb;
-     float diff = length(col - prev);
-     float melt = smoothstep(0.02, 0.3, diff);
-     col = mix(col, smear, 0.68 + 0.25 * melt);
+     vec3 prev=texture(u_feedback,v_uv).rgb;
+     vec2 blockId=floor(v_uv*vec2(96.0,54.0));
+     vec2 blockUV=blockId/vec2(96.0,54.0);
+     float slowT=t*0.35;
+     vec2 flow=(vec2(fbm(blockUV*4.0+vec2(slowT,-slowT*0.7)),
+                     fbm(blockUV*6.0+vec2(-slowT*0.4,slowT)))-0.5)*0.18;
+     vec3 smear=texture(u_feedback, clamp(v_uv+flow,0.0,1.0)).rgb;
+     float diff=length(col-prev);
+     col=mix(col, smear, 0.68+0.25*smoothstep(0.02,0.3,diff));
+   }
+
+   // -- NEW: echo --
+   if(u_echo>0.001){
+     vec3 echoCol=texture(u_feedback, v_uv+vec2(0.005,0.003)).rgb;
+     col=mix(col, max(col,echoCol*0.9), u_echo*0.7);
+   }
+   // -- NEW: fractal feedback zoom --
+   if(u_fractal>0.001){
+     vec2 fUV=(v_uv-0.5)*(1.0-u_fractal*0.05)+0.5;
+     col=mix(col, texture(u_feedback,fUV).rgb, u_fractal*0.4);
+   }
+
+   // -- REACTION: Gray-Scott inspired reaction-diffusion --
+   if(u_reaction==1){
+     vec2 rxPx = 1.0/u_res;
+     vec3 rxCenter = texture(u_feedback, v_uv).rgb;
+     vec3 rxLap = -4.0*rxCenter
+       + texture(u_feedback, v_uv+vec2(rxPx.x,0)).rgb
+       + texture(u_feedback, v_uv-vec2(rxPx.x,0)).rgb
+       + texture(u_feedback, v_uv+vec2(0,rxPx.y)).rgb
+       + texture(u_feedback, v_uv-vec2(0,rxPx.y)).rgb;
+     col += rxLap * 0.2;
+     col = clamp(col + col*col*(1.0-col)*0.5 - 0.06*col, 0.0, 1.0);
+   }
+   // -- CONWAY: Game of Life on luminance --
+   if(u_conway==1){
+     vec2 cwPx = 1.5/u_res;
+     float cwCount = 0.0;
+     float cwSelf = dot(texture(u_feedback, v_uv).rgb, vec3(0.299,0.587,0.114));
+     for(int dy=-1; dy<=1; dy++){
+       for(int dx=-1; dx<=1; dx++){
+         if(dx==0 && dy==0) continue;
+         vec3 nb = texture(u_feedback, v_uv + vec2(float(dx),float(dy))*cwPx).rgb;
+         cwCount += step(0.5, dot(nb, vec3(0.299,0.587,0.114)));
+       }
+     }
+     float alive = step(0.5, cwSelf);
+     float born = (1.0-alive)*step(2.5,cwCount)*step(cwCount,3.5);
+     float survive = alive*step(1.5,cwCount)*step(cwCount,3.5);
+     float cwResult = clamp(born+survive, 0.0, 1.0);
+     col = mix(col, col * cwResult + (1.0-cwResult)*col.gbr*0.5, 0.6);
+   }
+   // -- SMEAR: directional pixel smear along luminance gradient --
+   if(u_smear==1){
+     vec2 smPx = 2.0/u_res;
+     vec3 smC = texture(u_feedback, v_uv).rgb;
+     float smL = dot(smC, vec3(0.299,0.587,0.114));
+     float smLR = dot(texture(u_feedback, v_uv+vec2(smPx.x,0)).rgb, vec3(0.299,0.587,0.114));
+     float smLU = dot(texture(u_feedback, v_uv+vec2(0,smPx.y)).rgb, vec3(0.299,0.587,0.114));
+     vec2 smGrad = vec2(smLR - smL, smLU - smL);
+     float smLen = length(smGrad);
+     if(smLen > 0.001){
+       smGrad /= smLen;
+       vec3 smTrail = texture(u_feedback, v_uv - smGrad*smPx*4.0).rgb;
+       col = mix(col, smTrail, 0.45);
+     }
+   }
+   // -- AUTOMATA: 1D cellular automaton (Rule 30/110 hybrid) --
+   if(u_automata==1){
+     vec2 caPx = 1.0/u_res;
+     float caL = dot(texture(u_feedback, v_uv - vec2(caPx.x,0)).rgb, vec3(0.299,0.587,0.114));
+     float caC = dot(texture(u_feedback, v_uv).rgb, vec3(0.299,0.587,0.114));
+     float caR = dot(texture(u_feedback, v_uv + vec2(caPx.x,0)).rgb, vec3(0.299,0.587,0.114));
+     int caState = (int(step(0.5,caL))<<2) | (int(step(0.5,caC))<<1) | int(step(0.5,caR));
+     int rule30 = 30;
+     int rule110 = 110;
+     float r30 = float((rule30 >> caState) & 1);
+     float r110 = float((rule110 >> caState) & 1);
+     float caResult = mix(r30, r110, sin(t*0.5)*0.5+0.5);
+     vec3 caCol = mix(col, col.brg * caResult + col.gbr * (1.0-caResult), 0.55);
+     col = mix(col, caCol, 0.6);
+   }
+   // -- DELTA: temporal difference amplifier --
+   if(u_delta==1){
+     vec3 dlFB = texture(u_feedback, v_uv).rgb;
+     vec3 dlDiff = abs(col - dlFB);
+     dlDiff = dlDiff * dlDiff * 8.0;
+     vec3 dlHeat = vec3(
+       dlDiff.r + dlDiff.g * 0.3,
+       dlDiff.g + dlDiff.b * 0.3,
+       dlDiff.b + dlDiff.r * 0.3
+     );
+     col = mix(col, clamp(col + dlHeat, 0.0, 1.0), 0.7);
    }
 
    vec3 fb=texture(u_feedback,v_uv).rgb;
@@ -2220,10 +2938,8 @@
    col=mix(col,fb,fbAmt);
    col*=u_decay;
 
-   if(u_invert==1){
-     col=1.0-col;
-   }
-   outCol=vec4(col,1.0);
+   if(u_invert==1) col=1.0-col;
+   outCol=vec4(clamp(col,0.0,1.0),1.0);
  }`;
 
   const blitFS = `#version 300 es
@@ -2299,16 +3015,18 @@
     const p=gl.createProgram();
     const vsS=sh(gl.VERTEX_SHADER,vsSrc);
     const fsS=sh(gl.FRAGMENT_SHADER,fsSrc);
+    if(!vsS || !fsS){ console.error('[GlitchLab] Shader compile failed'); return null; }
     gl.attachShader(p,vsS);
     gl.attachShader(p,fsS);
     gl.linkProgram(p);
     if(!gl.getProgramParameter(p,gl.LINK_STATUS)){
-      console.error(gl.getProgramInfoLog(p));
+      console.error('[GlitchLab] Program link failed:', gl.getProgramInfoLog(p));
       return null;
     }
     return p;
   }
   const mainProg=prog(vs,fs);
+  if(!mainProg){ alert('Shader compilation failed — check console for errors.'); return; }
   const blitProg=prog(vs,blitFS);
   const postProg=prog(vs,postFS);
 
@@ -2321,42 +3039,218 @@
   const posPost=gl.getAttribLocation(postProg,'a_pos');
   const U=(p,n)=>gl.getUniformLocation(p,n);
 
-  const uni={
-    res:U(mainProg,'u_res'),
-    texRes:U(mainProg,'u_texRes'),
-    time:U(mainProg,'u_time'),
-    glitch:U(mainProg,'u_glitch'),
-    pixel:U(mainProg,'u_pixel'),
-    rgb:U(mainProg,'u_rgb'),
-    noise:U(mainProg,'u_noise'),
-    fbAmt:U(mainProg,'u_feedbackAmt'),
-    decay:U(mainProg,'u_decay'),
-    displace:U(mainProg,'u_displace'),
-    scan:U(mainProg,'u_scan'),
-    invert:U(mainProg,'u_invert'),
-    strobe:U(mainProg,'u_strobe'),
-    sat:U(mainProg,'u_sat'),
-    bright:U(mainProg,'u_bright'),
-    contrast:U(mainProg,'u_contrast'),
-    bloom:U(mainProg,'u_bloom'),
-    swirl:U(mainProg,'u_swirl'),
-    ripple:U(mainProg,'u_ripple'),
-    warp:U(mainProg,'u_warp'),
-    poster:U(mainProg,'u_posterSteps'),
-    mirror:U(mainProg,'u_mirror'),
-    edge:U(mainProg,'u_edge'),
-    solar:U(mainProg,'u_solar'),
-    slit:U(mainProg,'u_slit'),
-    kaleido:U(mainProg,'u_kaleido'),
-    mosh:U(mainProg,'u_mosh'),
-    vector:U(mainProg,'u_vector'),
-    g_rate:U(mainProg,'u_g_rate'), g_depth:U(mainProg,'u_g_depth'), g_wave:U(mainProg,'u_g_wave'), g_seed:U(mainProg,'u_g_seed'),
-    p_rate:U(mainProg,'u_p_rate'), p_depth:U(mainProg,'u_p_depth'), p_wave:U(mainProg,'u_p_wave'), p_seed:U(mainProg,'u_p_seed'),
-    r_rate:U(mainProg,'u_r_rate'), r_depth:U(mainProg,'u_r_depth'), r_wave:U(mainProg,'u_r_wave'), r_seed:U(mainProg,'u_r_seed'),
-    f_rate:U(mainProg,'u_f_rate'), f_depth:U(mainProg,'u_f_depth'), f_wave:U(mainProg,'u_f_wave'), f_seed:U(mainProg,'u_f_seed'),
-    h_rate:U(mainProg,'u_h_rate'), h_depth:U(mainProg,'u_h_depth'), h_wave:U(mainProg,'u_h_wave'), h_seed:U(mainProg,'u_h_seed'),
-    pal_rate:U(mainProg,'u_pal_rate'), pal_depth:U(mainProg,'u_pal_depth'), pal_wave:U(mainProg,'u_pal_wave'), pal_seed:U(mainProg,'u_pal_seed')
+  const RESOLUTIONS = { '720p': [1280,720], '1080p': [1920,1080], '4K': [3840,2160] };
+
+  // ═══════════════════════════════════════════
+  // KNOB REGISTRY
+  // ═══════════════════════════════════════════
+  const KNOB_REGISTRY = [
+    // -- Core --
+    {id:'tempo',label:'TEMPO',cat:'Core',def:0.35,transform:v=>v,stateKey:'tempo',desc:'Animation speed'},
+    {id:'chaos',label:'CHAOS',cat:'Core',def:0.35,transform:v=>v,stateKey:'chaos',desc:'Random disruption'},
+    {id:'glitch',label:'GLITCH',cat:'Core',def:0,transform:v=>v,stateKey:'glitch',desc:'Glitch bands'},
+    {id:'pixel',label:'PIXELATE',cat:'Core',def:0,transform:v=>1+v*80,stateKey:'pixel',desc:'Pixel size'},
+    {id:'rgb',label:'RGB SHIFT',cat:'Core',def:0,transform:v=>v,stateKey:'rgb',desc:'Channel offset'},
+    {id:'feedback',label:'FEEDBACK',cat:'Core',def:0,transform:v=>v*0.95,stateKey:'feedbackAmt',desc:'Trails intensity'},
+    {id:'noise',label:'NOISE',cat:'Core',def:0,transform:v=>v,stateKey:'noise',desc:'Static noise'},
+    {id:'speed',label:'SPEED',cat:'Core',def:0.33,transform:v=>v,stateKey:'speed',desc:'Time multiplier'},
+    // -- Color --
+    {id:'hue',label:'HUE',cat:'Color',def:0,transform:v=>v,stateKey:'hue',desc:'Hue rotation'},
+    {id:'palette',label:'PALETTE',cat:'Color',def:0,transform:v=>v,stateKey:'palette',desc:'Cosmic palette'},
+    {id:'sat',label:'SAT',cat:'Color',def:0.5,transform:v=>v,stateKey:'sat',desc:'Saturation'},
+    {id:'bright',label:'BRIGHT',cat:'Color',def:0.52,transform:v=>v,stateKey:'bright',desc:'Brightness'},
+    {id:'contrast',label:'CONTRAST',cat:'Color',def:0.5,transform:v=>v,stateKey:'contrast',desc:'Contrast'},
+    {id:'temperature',label:'TEMP',cat:'Color',def:0.5,transform:v=>(v-0.5)*2,stateKey:'temperature',desc:'Warm / cool'},
+    {id:'vibrance',label:'VIBRANCE',cat:'Color',def:0,transform:v=>v,stateKey:'vibrance',desc:'Color pop'},
+    {id:'gamma',label:'GAMMA',cat:'Color',def:0.5,transform:v=>v,stateKey:'gamma',desc:'Gamma curve'},
+    {id:'threshold',label:'THRESHOLD',cat:'Color',def:0,transform:v=>v,stateKey:'threshold',desc:'B/W cutoff'},
+    {id:'tint',label:'TINT',cat:'Color',def:0,transform:v=>v,stateKey:'tint',desc:'Color tint'},
+    {id:'duotone',label:'DUOTONE',cat:'Color',def:0,transform:v=>v,stateKey:'duotone',desc:'Two-tone map'},
+    // -- Geometric --
+    {id:'swirl',label:'SWIRL',cat:'Geo',def:0,transform:v=>v*2,stateKey:'swirl',desc:'Spiral warp'},
+    {id:'ripple',label:'RIPPLE',cat:'Geo',def:0,transform:v=>v*1.5,stateKey:'ripple',desc:'Wave ripple'},
+    {id:'warp',label:'WARP',cat:'Geo',def:0,transform:v=>v*1.2,stateKey:'warp',desc:'Radial warp'},
+    {id:'zoom',label:'ZOOM',cat:'Geo',def:0,transform:v=>v,stateKey:'zoom',desc:'Center zoom'},
+    {id:'rotate',label:'ROTATE',cat:'Geo',def:0,transform:v=>v,stateKey:'frameRotate',desc:'Frame rotation'},
+    {id:'tile',label:'TILE',cat:'Geo',def:0,transform:v=>v,stateKey:'tile',desc:'Grid repeat'},
+    {id:'barrel',label:'BARREL',cat:'Geo',def:0,transform:v=>v,stateKey:'barrel',desc:'Lens distortion'},
+    {id:'turbulence',label:'TURB',cat:'Geo',def:0,transform:v=>v,stateKey:'turbulence',desc:'Noise warp'},
+    {id:'drift',label:'DRIFT',cat:'Geo',def:0,transform:v=>v,stateKey:'drift',desc:'Slow panning'},
+    {id:'fractal',label:'FRACTAL',cat:'Geo',def:0,transform:v=>v,stateKey:'fractal',desc:'Fractal zoom'},
+    // -- Creative --
+    {id:'bloom',label:'BLOOM',cat:'Creative',def:0.1,transform:v=>v,stateKey:'bloom',desc:'Glow bloom'},
+    {id:'poster',label:'POSTER',cat:'Creative',def:0.33,transform:v=>2+Math.floor(v*14),stateKey:'poster',desc:'Color steps'},
+    {id:'halftone',label:'HALFTONE',cat:'Creative',def:0,transform:v=>v,stateKey:'halftone',desc:'Dot screen'},
+    {id:'emboss',label:'EMBOSS',cat:'Creative',def:0,transform:v=>v,stateKey:'emboss',desc:'Relief effect'},
+    {id:'sharpen',label:'SHARPEN',cat:'Creative',def:0,transform:v=>v,stateKey:'sharpen',desc:'Edge sharpen'},
+    {id:'blur',label:'BLUR',cat:'Creative',def:0,transform:v=>v,stateKey:'blur',desc:'Soft blur'},
+    {id:'dither',label:'DITHER',cat:'Creative',def:0,transform:v=>v,stateKey:'dither',desc:'Ordered dither'},
+    {id:'vhsWobble',label:'VHS',cat:'Creative',def:0,transform:v=>v,stateKey:'vhsWobble',desc:'VHS wobble'},
+    {id:'echo',label:'ECHO',cat:'Creative',def:0,transform:v=>v,stateKey:'echo',desc:'Ghost trails'},
+    {id:'morph',label:'MORPH',cat:'Geo',def:0,transform:v=>v,stateKey:'morph',desc:'Organic displacement'},
+    {id:'waveSlice',label:'WAVE',cat:'Geo',def:0,transform:v=>v,stateKey:'waveSlice',desc:'Sine wave warp'},
+    {id:'crystal',label:'CRYSTAL',cat:'Geo',def:0,transform:v=>v,stateKey:'crystal',desc:'Voronoi facets'},
+    {id:'foldAmt',label:'FOLD AMT',cat:'Chaos',def:0,transform:v=>v,stateKey:'foldAmt',desc:'Wave folding intensity'},
+    {id:'contour',label:'CONTOUR',cat:'Chaos',def:0,transform:v=>v,stateKey:'contour',desc:'Topo contour spacing'},
+  ];
+
+  // ═══════════════════════════════════════════
+  // EFFECT (TOGGLE) REGISTRY
+  // ═══════════════════════════════════════════
+  const EFFECT_REGISTRY = [
+    {id:'displace',label:'DISPLACE',cat:'Glitch',stateKey:'displace'},
+    {id:'scan',label:'SCANLINES',cat:'Glitch',stateKey:'scan'},
+    {id:'invert',label:'INVERT',cat:'Color',stateKey:'invert'},
+    {id:'strobe',label:'STROBE',cat:'Temporal',stateKey:'strobe'},
+    {id:'mirror',label:'MIRROR',cat:'Geo',stateKey:'mirror'},
+    {id:'edge',label:'EDGE',cat:'Creative',stateKey:'edge'},
+    {id:'solar',label:'SOLARIZE',cat:'Color',stateKey:'solar'},
+    {id:'slit',label:'SLIT-SCAN',cat:'Temporal',stateKey:'slit'},
+    {id:'kaleido',label:'KALEIDO',cat:'Geo',stateKey:'kaleido'},
+    {id:'mosh',label:'MELT',cat:'Glitch',stateKey:'mosh'},
+    {id:'vector',label:'VORTEX',cat:'Geo',stateKey:'vector'},
+    {id:'scope',label:'SCOPE',cat:'Audio',stateKey:'scope'},
+    {id:'pulse',label:'PULSE',cat:'Audio',stateKey:'pulse'},
+    {id:'rhythm',label:'RHYTHM',cat:'Audio',stateKey:'rhythm'},
+    {id:'thermal',label:'THERMAL',cat:'Color',stateKey:'thermal'},
+    {id:'nightVis',label:'NIGHT VIS',cat:'Color',stateKey:'nightVis'},
+    {id:'prism',label:'PRISM',cat:'Color',stateKey:'prism'},
+    {id:'freeze',label:'FREEZE',cat:'Temporal',stateKey:'freeze'},
+    {id:'stutter',label:'STUTTER',cat:'Temporal',stateKey:'stutter'},
+    {id:'pixelSort',label:'PIX SORT',cat:'Glitch',stateKey:'pixelSort'},
+    {id:'glitchBlocks',label:'BLOCKS',cat:'Glitch',stateKey:'glitchBlocks'},
+    {id:'staticTV',label:'STATIC',cat:'Glitch',stateKey:'staticTV'},
+    {id:'rainbowWash',label:'RAINBOW',cat:'Color',stateKey:'rainbowWash'},
+    {id:'zoomBlur',label:'ZOOM BLUR',cat:'Blur',stateKey:'zoomBlur'},
+    {id:'spinBlur',label:'SPIN BLUR',cat:'Blur',stateKey:'spinBlur'},
+    {id:'crossProcess',label:'CROSS',cat:'Color',stateKey:'crossProcess'},
+    {id:'colorNeg',label:'NEGATIVE',cat:'Color',stateKey:'colorNeg'},
+    {id:'tile4x',label:'TILE 4X',cat:'Geo',stateKey:'tile4x'},
+    {id:'filmBurn',label:'FILM BURN',cat:'Creative',stateKey:'filmBurn'},
+    {id:'bitCrush',label:'BIT CRUSH',cat:'Creative',stateKey:'bitCrush'},
+    {id:'liquid',label:'LIQUID',cat:'Movement',stateKey:'liquid'},
+    {id:'tunnel',label:'TUNNEL',cat:'Movement',stateKey:'tunnel'},
+    {id:'shatter',label:'SHATTER',cat:'Movement',stateKey:'shatter'},
+    {id:'holo',label:'HOLO',cat:'Color',stateKey:'holo'},
+    {id:'plasma',label:'PLASMA',cat:'Color',stateKey:'plasma'},
+    {id:'echo3d',label:'ECHO 3D',cat:'Movement',stateKey:'echo3d'},
+    {id:'sineSlice',label:'SINE CUT',cat:'Movement',stateKey:'sineSlice'},
+    {id:'refract',label:'REFRACT',cat:'Movement',stateKey:'refract'},
+    {id:'fold',label:'FOLD',cat:'Chaos',stateKey:'fold'},
+    {id:'reaction',label:'REACTION',cat:'Chaos',stateKey:'reaction'},
+    {id:'conway',label:'CONWAY',cat:'Chaos',stateKey:'conway'},
+    {id:'fractalMap',label:'FRACTAL MAP',cat:'Chaos',stateKey:'fractalMap'},
+    {id:'xorMelt',label:'XOR MELT',cat:'Chaos',stateKey:'xorMelt'},
+    {id:'phaseWarp',label:'PHASE WARP',cat:'Chaos',stateKey:'phaseWarp'},
+    {id:'topo',label:'TOPO',cat:'Chaos',stateKey:'topo'},
+    {id:'smear',label:'SMEAR',cat:'Chaos',stateKey:'smear'},
+    {id:'datamosh',label:'DATAMOSH',cat:'Chaos',stateKey:'datamosh'},
+    {id:'automata',label:'AUTOMATA',cat:'Chaos',stateKey:'automata'},
+    {id:'strange',label:'STRANGE',cat:'Chaos',stateKey:'strange'},
+    {id:'tessellate',label:'TESSELLATE',cat:'Chaos',stateKey:'tessellate'},
+    {id:'delta',label:'DELTA',cat:'Chaos',stateKey:'delta'},
+    {id:'interference',label:'INTERFERE',cat:'Chaos',stateKey:'interference'},
+    {id:'shred',label:'SHRED',cat:'Chaos',stateKey:'shred'},
+    {id:'corrupt',label:'CORRUPT',cat:'Chaos',stateKey:'corrupt'},
+    {id:'ringMod',label:'RING MOD',cat:'Chaos',stateKey:'ringMod'},
+    {id:'overflow',label:'OVERFLOW',cat:'Chaos',stateKey:'overflow'},
+    {id:'recurse',label:'RECURSE',cat:'Chaos',stateKey:'recurse'},
+    {id:'glitchDNA',label:'GLITCH DNA',cat:'Chaos',stateKey:'glitchDNA'},
+    {id:'logistic',label:'LOGISTIC',cat:'Chaos',stateKey:'logistic'},
+    {id:'hashMelt',label:'HASH MELT',cat:'Chaos',stateKey:'hashMelt'},
+    {id:'mirrorFold',label:'MIRROR FOLD',cat:'Chaos',stateKey:'mirrorFold'},
+    {id:'powerCrush',label:'PWR CRUSH',cat:'Chaos',stateKey:'powerCrush'},
+    {id:'staircase',label:'STAIRCASE',cat:'Chaos',stateKey:'staircase'},
+    {id:'digit',label:'DIGIT',cat:'Chaos',stateKey:'digit'},
+  ];
+
+  const LEFT_KEYS = ['KeyQ','KeyW','KeyE','KeyR','KeyT','KeyY','KeyU','KeyI'];
+  const LEFT_LABELS = ['Q','W','E','R','T','Y','U','I'];
+  const RIGHT_KEYS = ['KeyA','KeyS','KeyD','KeyF','KeyG','KeyH','KeyJ','KeyK'];
+  const RIGHT_LABELS = ['A','S','D','F','G','H','J','K'];
+  const EFF_CODES_R1 = ['Digit1','Digit2','Digit3','Digit4','Digit5','Digit6','Digit7','Digit8','Digit9','Digit0','Minus','Equal'];
+  const EFF_LABELS_R1 = ['1','2','3','4','5','6','7','8','9','0','-','='];
+  const EFF_LABELS_R2 = ['⇧1','⇧2','⇧3','⇧4','⇧5','⇧6','⇧7','⇧8','⇧9','⇧0','⇧-','⇧='];
+
+  const ACTIVE_STORAGE = 'glitchlab-active-config';
+
+  function defaultActiveConfig(){
+    return {
+      left:['tempo','chaos','glitch','pixel','rgb','feedback','hue','palette'],
+      right:['sat','bright','contrast','bloom','foldAmt','contour','warp','poster'],
+      effectsR1:['fold','solar','slit','xorMelt','phaseWarp','fractalMap','shred','corrupt','ringMod','overflow','recurse','glitchDNA'],
+      effectsR2:['reaction','conway','logistic','hashMelt','mirrorFold','powerCrush','staircase','digit','smear','topo','mosh','freeze'],
+    };
+  }
+
+  const CONFIG_VERSION = 5;
+  let activeConfig;
+  try {
+    const stored = localStorage.getItem(ACTIVE_STORAGE);
+    activeConfig = stored ? JSON.parse(stored) : defaultActiveConfig();
+    if(!activeConfig.left || activeConfig._v !== CONFIG_VERSION) activeConfig = defaultActiveConfig();
+  } catch(e){ activeConfig = defaultActiveConfig(); }
+  activeConfig._v = CONFIG_VERSION;
+
+  function saveActiveConfig(){ localStorage.setItem(ACTIVE_STORAGE, JSON.stringify(activeConfig)); }
+
+  // ═══════════════════════════════════════════
+  // STATE + DEFAULTS
+  // ═══════════════════════════════════════════
+  const defaults={
+    tempo:0.35, chaos:0.35, speed:0.33,
+    glitch:0.0, pixel:1.0, rgb:0.0, noise:0.0,
+    feedbackAmt:0.0, decay:0.98,
+    hue:0.0, palette:0.0,
+    sat:0.5, bright:0.52, contrast:0.5, bloom:0.1,
+    swirl:0.0, ripple:0.0, warp:0.0,
+    zoom:0.0, frameRotate:0.0, tile:0.0, barrel:0.0,
+    turbulence:0.0, drift:0.0, fractal:0.0,
+    temperature:0.0, vibrance:0.0, gamma:0.5, threshold:0.0,
+    tint:0.0, duotone:0.0, echo:0.0,
+    halftone:0.0, emboss:0.0, sharpen:0.0, blur:0.0, dither:0.0, vhsWobble:0.0,
+    morph:0.0, waveSlice:0.0, crystal:0.0,
+    poster:6.0,
+    displace:0, scan:0, invert:0, strobe:0, mirror:0, edge:0,
+    solar:0, slit:0, kaleido:0, mosh:0, vector:0,
+    scope:0, pulse:0, rhythm:0,
+    thermal:0, nightVis:0, prism:0, freeze:0, stutter:0,
+    pixelSort:0, glitchBlocks:0, staticTV:0, rainbowWash:0,
+    zoomBlur:0, spinBlur:0, crossProcess:0, colorNeg:0,
+    tile4x:0, filmBurn:0, bitCrush:0,
+    liquid:0, tunnel:0, shatter:0, holo:0, plasma:0,
+    echo3d:0, sineSlice:0, refract:0,
+    fold:0, reaction:0, conway:0, fractalMap:0,
+    xorMelt:0, phaseWarp:0, topo:0, smear:0,
+    foldAmt:0, contour:0,
+    datamosh:0, automata:0, strange:0, tessellate:0, delta:0, interference:0,
+    shred:0, corrupt:0, ringMod:0, overflow:0, recurse:0, glitchDNA:0,
+    logistic:0, hashMelt:0, mirrorFold:0, powerCrush:0, staircase:0, digit:0,
+    g:{rate:0.0,depth:0.0,wave:3,seed:Math.random()*100},
+    p:{rate:0.0,depth:0.0,wave:1,seed:Math.random()*100},
+    r:{rate:0.0,depth:0.0,wave:0,seed:Math.random()*100},
+    f:{rate:0.0,depth:0.0,wave:2,seed:Math.random()*100},
+    h:{rate:0.0,depth:0.0,wave:0,seed:Math.random()*100},
+    pal:{rate:0.0,depth:0.0,wave:1,seed:Math.random()*100},
+    mod:{g:0, p:0, r:0, f:0, h:0, pal:0},
+    internalRes:'1080p',
+    chromatic:0.0, vignette:0.0, filmGrain:0.0,
   };
+  let state=JSON.parse(JSON.stringify(defaults));
+  let freqData = null;
+  if(analyser) freqData = new Uint8Array(analyser.frequencyBinCount);
+
+  // Dynamic uniform cache from registries
+  const uni={ res:U(mainProg,'u_res'), texRes:U(mainProg,'u_texRes'), time:U(mainProg,'u_time'), decay:U(mainProg,'u_decay') };
+  const knobUni = {};
+  KNOB_REGISTRY.forEach(k => { knobUni[k.stateKey] = U(mainProg, 'u_'+k.stateKey); });
+  const effUni = {};
+  EFFECT_REGISTRY.forEach(e => { effUni[e.stateKey] = U(mainProg, 'u_'+e.stateKey); });
+  const lfoUni = {};
+  ['g','p','r','f','h','pal'].forEach(k => {
+    lfoUni[k+'_rate']=U(mainProg,'u_'+k+'_rate'); lfoUni[k+'_depth']=U(mainProg,'u_'+k+'_depth');
+    lfoUni[k+'_wave']=U(mainProg,'u_'+k+'_wave'); lfoUni[k+'_seed']=U(mainProg,'u_'+k+'_seed');
+  });
   const blitU={ src:U(blitProg,'u_src') };
   const postUni={
     src:U(postProg,'u_src'),
@@ -2412,30 +3306,6 @@
     });
   };
 
-  const RESOLUTIONS = { '720p': [1280,720], '1080p': [1920,1080], '4K': [3840,2160] };
-  const defaults={
-    tempo:0.35, chaos:0.35,
-    glitch:0.0, pixel:1.0, rgb:0.0, noise:0.0,
-    feedbackAmt:0.0, decay:0.98,
-    displace:0, scan:0, invert:0, strobe:0,
-    g:{rate:0.0,depth:0.0,wave:3,seed:Math.random()*100},
-    p:{rate:0.0,depth:0.0,wave:1,seed:Math.random()*100},
-    r:{rate:0.0,depth:0.0,wave:0,seed:Math.random()*100},
-    f:{rate:0.0,depth:0.0,wave:2,seed:Math.random()*100},
-    h:{rate:0.0,depth:0.0,wave:0,seed:Math.random()*100},
-    pal:{rate:0.0,depth:0.0,wave:1,seed:Math.random()*100},
-    mod:{g:0, p:0, r:0, f:0, h:0, pal:0},
-    sat:0.5, bright:0.52, contrast:0.5, bloom:0.1,
-    swirl:0.0, ripple:0.0, warp:0.0,
-    poster:6.0, mirror:0, edge:0, solar:0, slit:0, kaleido:0, mosh:0, vector:0,
-    internalRes:'1080p',
-    chromatic:0.0, vignette:0.0, filmGrain:0.0,
-    scope:0, pulse:0, rhythm:0
-  };
-  let state=JSON.parse(JSON.stringify(defaults));
-  let freqData = null;
-  if(analyser) freqData = new Uint8Array(analyser.frequencyBinCount);
-
   // sizing: internal resolution (720p / 1080p / 4K), display via CSS
   function fitCanvas(){
     const [iw, ih] = RESOLUTIONS[state.internalRes] || RESOLUTIONS['1080p'];
@@ -2482,40 +3352,17 @@
     const vw = src.videoWidth || 1280, vh = src.videoHeight || 720;
     gl.uniform2f(uni.texRes, vw, vh);
     gl.uniform1f(uni.time,t);
-
-    gl.uniform1f(uni.glitch,state.glitch);
-    gl.uniform1f(uni.pixel,state.pixel);
-    gl.uniform1f(uni.rgb,state.rgb);
-    gl.uniform1f(uni.noise,state.noise);
-    gl.uniform1f(uni.fbAmt,state.feedbackAmt);
     gl.uniform1f(uni.decay,state.decay);
-    gl.uniform1i(uni.displace,state.displace);
-    gl.uniform1i(uni.scan,state.scan);
-    gl.uniform1i(uni.invert,state.invert);
-    gl.uniform1i(uni.strobe,state.strobe);
 
-    gl.uniform1f(uni.sat,state.sat);
-    gl.uniform1f(uni.bright,state.bright);
-    gl.uniform1f(uni.contrast,state.contrast);
-    gl.uniform1f(uni.bloom,state.bloom);
-    gl.uniform1f(uni.swirl,state.swirl);
-    gl.uniform1f(uni.ripple,state.ripple);
-    gl.uniform1f(uni.warp,state.warp);
-    gl.uniform1f(uni.poster,state.poster);
-    gl.uniform1i(uni.mirror,state.mirror);
-    gl.uniform1i(uni.edge,state.edge);
-    gl.uniform1i(uni.solar,state.solar);
-    gl.uniform1i(uni.slit,state.slit);
-    gl.uniform1i(uni.kaleido,state.kaleido);
-    gl.uniform1i(uni.mosh,state.mosh);
-    gl.uniform1i(uni.vector,state.vector);
-
-    gl.uniform1f(uni.g_rate,state.g.rate); gl.uniform1f(uni.g_depth,state.g.depth); gl.uniform1i(uni.g_wave,state.g.wave); gl.uniform1f(uni.g_seed,state.g.seed);
-    gl.uniform1f(uni.p_rate,state.p.rate); gl.uniform1f(uni.p_depth,state.p.depth); gl.uniform1i(uni.p_wave,state.p.wave); gl.uniform1f(uni.p_seed,state.p.seed);
-    gl.uniform1f(uni.r_rate,state.r.rate); gl.uniform1f(uni.r_depth,state.r.depth); gl.uniform1i(uni.r_wave,state.r.wave); gl.uniform1f(uni.r_seed,state.r.seed);
-    gl.uniform1f(uni.f_rate,state.f.rate); gl.uniform1f(uni.f_depth,state.f.depth); gl.uniform1i(uni.f_wave,state.f.wave); gl.uniform1f(uni.f_seed,state.f.seed);
-    gl.uniform1f(uni.h_rate,state.h.rate); gl.uniform1f(uni.h_depth,state.h.depth); gl.uniform1i(uni.h_wave,state.h.wave); gl.uniform1f(uni.h_seed,state.h.seed);
-    gl.uniform1f(uni.pal_rate,state.pal.rate); gl.uniform1f(uni.pal_depth,state.pal.depth); gl.uniform1i(uni.pal_wave,state.pal.wave); gl.uniform1f(uni.pal_seed,state.pal.seed);
+    // upload all knob uniforms dynamically
+    for(const sk in knobUni){ if(knobUni[sk]!==null) gl.uniform1f(knobUni[sk], state[sk]??0); }
+    // upload all effect uniforms dynamically
+    for(const sk in effUni){ if(effUni[sk]!==null) gl.uniform1i(effUni[sk], state[sk]??0); }
+    // LFO uniforms
+    ['g','p','r','f','h','pal'].forEach(k=>{
+      gl.uniform1f(lfoUni[k+'_rate'],state[k].rate); gl.uniform1f(lfoUni[k+'_depth'],state[k].depth);
+      gl.uniform1i(lfoUni[k+'_wave'],state[k].wave); gl.uniform1f(lfoUni[k+'_seed'],state[k].seed);
+    });
 
     gl.drawArrays(gl.TRIANGLES,0,6);
 
@@ -2734,18 +3581,23 @@
   // hidden LFOs
   function updateHidden(){
     const tempo = 0.05 + state.tempo * 1.4;
-    const chaos = state.chaos * 0.8;
+    const chaosAmt = state.chaos * 0.8;
     const randR = ()=> (0.3 + Math.random()*0.5);
-    const k = m => ({ rate: tempo * randR(), depth: m * (0.2 + 0.6*chaos) });
-    const gg=k(state.mod.g), pp=k(state.mod.p),
-          rr=k(state.mod.r), ff=k(state.mod.f),
-          hh=k(state.mod.h), pl=k(state.mod.pal);
-    state.g.rate=gg.rate; state.g.depth=gg.depth;
-    state.p.rate=pp.rate; state.p.depth=pp.depth;
-    state.r.rate=rr.rate; state.r.depth=rr.depth;
-    state.f.rate=ff.rate; state.f.depth=ff.depth;
-    state.h.rate=hh.rate; state.h.depth=hh.depth;
-    state.pal.rate=pl.rate; state.pal.depth=pl.depth;
+    // Use the knob value as base activity -- if a knob like glitch, pixel, rgb, feedback, hue, palette is >0,
+    // Tempo drives rate and Chaos drives depth variation
+    const lfoMap = {
+      g: state.glitch,
+      p: state.pixel > 1 ? (state.pixel-1)/80 : 0,
+      r: state.rgb,
+      f: state.feedbackAmt,
+      h: state.hue,
+      pal: state.palette
+    };
+    for(const k of ['g','p','r','f','h','pal']){
+      const activity = Math.min(lfoMap[k] * 2, 1);
+      state[k].rate = tempo * randR() * (0.3 + activity * 0.7);
+      state[k].depth = activity * (0.2 + 0.6 * chaosAmt);
+    }
   }
   setInterval(updateHidden, 250);
 
@@ -2793,56 +3645,90 @@
     return api;
   }
 
-  // wire knobs
-  const setGlitch = makeKnob('knobGlitch', v=> state.glitch = v, 0.0);
-  const setPixel  = makeKnob('knobPixel',  v=> state.pixel = 1.0 + v*80.0, 0.0);
-  const setRGB    = makeKnob('knobRGB',    v=> state.rgb = v*1.0, 0.0);
-  const setFB     = makeKnob('knobFeedback', v=> state.feedbackAmt = v*0.95, 0.0);
-  const setHue    = makeKnob('knobHue', v=> state.h.depth = v, 0.0);
-  const setPal    = makeKnob('knobPalette', v=> state.pal.depth = v, 0.0);
-  const setTempo  = makeKnob('knobTempo', v=> state.tempo = v, 0.35);
-  const setChaos  = makeKnob('knobChaos', v=> state.chaos = v, 0.35);
-  const setSat    = makeKnob('knobSat',    v=> state.sat = v, 0.5);
-  const setBright = makeKnob('knobBright', v=> state.bright = v, 0.52);
-  const setContr  = makeKnob('knobContr',  v=> state.contrast = v, 0.5);
-  const setBloom  = makeKnob('knobBloom',  v=> state.bloom = v, 0.1);
-  const setSwirl  = makeKnob('knobSwirl',  v=> state.swirl = v*2.0, 0.0);
-  const setRipple = makeKnob('knobRipple', v=> state.ripple = v*1.5, 0.0);
-  const setWarp   = makeKnob('knobWarp',   v=> state.warp = v*1.2, 0.0);
-  const setPoster = makeKnob('knobPoster', v=> state.poster = 2.0 + Math.floor(v*14.0), 0.33);
-
-  // Keyboard performance: hold letters, scroll/move to sweep grouped knobs
-  const knobKeyMap = {
-    KeyT: setTempo,
-    KeyX: setChaos,
-    KeyG: setGlitch,
-    KeyP: setPixel,
-    KeyR: setRGB,
-    KeyF: setFB,
-    KeyH: setHue,
-    KeyL: setPal,
-    KeyS: setSat,
-    KeyB: setBright,
-    KeyC: setContr,
-    KeyO: setBloom,
-    KeyW: setSwirl,
-    KeyI: setRipple,
-    KeyA: setWarp,
-    KeyD: setPoster
-  };
+  // ═══════════════════════════════════════════
+  // DYNAMIC RAIL + TOGGLE RENDERING
+  // ═══════════════════════════════════════════
+  let knobKeyMap = {};
+  let knobApis = {};
   const activeKnobs = new Set();
+  let toggleKeyMap = {};
+  let toggleBtns = {};
+
+  function getKnobDef(id){ return KNOB_REGISTRY.find(k=>k.id===id); }
+  function getEffDef(id){ return EFFECT_REGISTRY.find(e=>e.id===id); }
+
+  function buildRails(){
+    knobKeyMap = {};
+    knobApis = {};
+    const railL = document.getElementById('railLeft');
+    const railR = document.getElementById('railRight');
+    if(!railL || !railR) return;
+    railL.innerHTML = ''; railR.innerHTML = '';
+
+    function buildSide(container, ids, keys, labels){
+      ids.forEach((knobId, i)=>{
+        const def = getKnobDef(knobId);
+        if(!def) return;
+        const dialId = 'knob_'+knobId;
+        const div = document.createElement('div');
+        div.className = 'knob';
+        div.innerHTML = `<div class="dial" id="${dialId}"><div class="cap"></div><div class="marker"></div></div>`
+          + `<div class="label">${def.label}<span class="shortcut">${labels[i]||''}</span></div>`;
+        container.appendChild(div);
+        const api = makeKnob(dialId, v=> { state[def.stateKey] = def.transform(v); }, def.def);
+        knobApis[knobId] = api;
+        if(keys[i]) knobKeyMap[keys[i]] = api;
+      });
+    }
+    buildSide(railL, activeConfig.left, LEFT_KEYS, LEFT_LABELS);
+    buildSide(railR, activeConfig.right, RIGHT_KEYS, RIGHT_LABELS);
+  }
+
+  function buildToggles(){
+    toggleKeyMap = {};
+    toggleBtns = {};
+    const row1 = document.getElementById('toggleRow1');
+    const row2 = document.getElementById('toggleRow2');
+    if(!row1 || !row2) return;
+    row1.innerHTML = ''; row2.innerHTML = '';
+
+    function buildRow(container, ids, codes, labels, useShift){
+      ids.forEach((effId, i)=>{
+        const def = getEffDef(effId);
+        if(!def) return;
+        const btn = document.createElement('button');
+        btn.className = 'toggleBtn';
+        btn.innerHTML = `<span class="key">${labels[i]||''}</span>${def.label}`;
+        btn.addEventListener('click', ()=>{
+          state[def.stateKey] = state[def.stateKey] ? 0 : 1;
+          btn.classList.toggle('on', !!state[def.stateKey]);
+        });
+        if(state[def.stateKey]) btn.classList.add('on');
+        container.appendChild(btn);
+        toggleBtns[effId] = btn;
+        if(codes[i]) toggleKeyMap[(useShift?'S_':'')+codes[i]] = btn;
+      });
+    }
+    buildRow(row1, activeConfig.effectsR1, EFF_CODES_R1, EFF_LABELS_R1, false);
+    buildRow(row2, activeConfig.effectsR2, EFF_CODES_R1, EFF_LABELS_R2, true);
+  }
+
+  function rebuildUI(){
+    buildRails();
+    buildToggles();
+  }
+  rebuildUI();
 
   // decay slider
-  const decay=document.getElementById('decayRange');
-  if(decay) decay.addEventListener('input', e=> state.decay=parseFloat(e.target.value));
+  const decayEl=document.getElementById('decayRange');
+  if(decayEl) decayEl.addEventListener('input', e=> state.decay=parseFloat(e.target.value));
 
   // resolution selector
   function updateResUI(){
     ['res720','res1080','res4k'].forEach((id,i)=>{
-      const el = document.getElementById(id);
-      if(!el) return;
+      const el = document.getElementById(id); if(!el) return;
       const key = ['720p','1080p','4K'][i];
-      if(state.internalRes === key) el.classList.add('on'); else el.classList.remove('on');
+      el.classList.toggle('on', state.internalRes === key);
     });
   }
   document.getElementById('res720')?.addEventListener('click', ()=>{ state.internalRes='720p'; updateResUI(); fitCanvas(); });
@@ -2850,7 +3736,6 @@
   document.getElementById('res4k')?.addEventListener('click', ()=>{ state.internalRes='4K'; updateResUI(); fitCanvas(); });
   updateResUI();
 
-  // post effects (chromatic, vignette, film grain)
   const chromaticRange = document.getElementById('chromaticRange');
   const vignetteRange = document.getElementById('vignetteRange');
   const filmGrainRange = document.getElementById('filmGrainRange');
@@ -2858,51 +3743,162 @@
   if(vignetteRange) vignetteRange.addEventListener('input', e=> state.vignette=parseFloat(e.target.value));
   if(filmGrainRange) filmGrainRange.addEventListener('input', e=> state.filmGrain=parseFloat(e.target.value));
 
-  // bottom toggles (with UI state)
-  function makeToggle(id,key){
-    const el=document.getElementById(id);
-    if(!el) return;
-    const update=()=>{
-      if(state[key]) el.classList.add('on'); else el.classList.remove('on');
-    };
-    el.addEventListener('click',()=>{
-      state[key]=state[key]?0:1;
-      update();
-    });
-    update();
-    return el;
-  }
-  const displaceBtn = makeToggle('displaceBtn','displace');
-  const scanBtn     = makeToggle('scanBtn','scan');
-  const invertBtn   = makeToggle('invertBtn','invert');
-  const strobeBtn   = makeToggle('strobeBtn','strobe');
-  const mirrorBtn   = makeToggle('mirrorBtn','mirror');
-  const edgeBtn     = makeToggle('edgeBtn','edge');
-  const solarBtn    = makeToggle('solarBtn','solar');
-  const slitBtn     = makeToggle('slitBtn','slit');
-  const kaleidoBtn  = makeToggle('kaleidoBtn','kaleido');
-  const moshBtn     = makeToggle('moshBtn','mosh');
-  const vectorBtn   = makeToggle('vectorBtn','vector');
-  const scopeBtn    = makeToggle('scopeBtn','scope');
-  const pulseBtn    = makeToggle('pulseBtn','pulse');
-  const rhythmBtn   = makeToggle('rhythmBtn','rhythm');
+  // ═══════════════════════════════════════════
+  // LIBRARY PANEL
+  // ═══════════════════════════════════════════
+  (function initLibrary(){
+    const libOvl = document.getElementById('libOverlay');
+    const libBody = document.getElementById('libBody');
+    const tabKnobs = document.getElementById('libTabKnobs');
+    const tabEffects = document.getElementById('libTabEffects');
+    const libClose = document.getElementById('libClose');
+    const libTrigger = document.getElementById('libraryTrigger');
+    if(!libOvl || !libBody) return;
 
-  const toggleKeyMap = {
-    Digit1: displaceBtn,
-    Digit2: scanBtn,
-    Digit3: invertBtn,
-    Digit4: strobeBtn,
-    Digit5: mirrorBtn,
-    Digit6: edgeBtn,
-    Digit7: solarBtn,
-    Digit8: slitBtn,
-    Digit9: kaleidoBtn,
-    Digit0: moshBtn,
-    Minus: vectorBtn,
-    BracketLeft: scopeBtn,
-    BracketRight: pulseBtn,
-    Backquote: rhythmBtn
-  };
+    let activeTab = 'knobs';
+    let swapTarget = null; // {side:'left'|'right'|'effectsR1'|'effectsR2', idx:number}
+
+    function openLib(){ libOvl.classList.add('open'); renderLib(); }
+    function closeLib(){ libOvl.classList.remove('open'); swapTarget=null; }
+    if(libTrigger) libTrigger.addEventListener('click', openLib);
+    if(libClose) libClose.addEventListener('click', closeLib);
+    libOvl.addEventListener('click', e=>{ if(e.target===libOvl) closeLib(); });
+
+    tabKnobs.addEventListener('click', ()=>{ activeTab='knobs'; tabKnobs.classList.add('active'); tabEffects.classList.remove('active'); renderLib(); });
+    tabEffects.addEventListener('click', ()=>{ activeTab='effects'; tabEffects.classList.add('active'); tabKnobs.classList.remove('active'); renderLib(); });
+
+    function allActiveKnobs(){ return [...activeConfig.left, ...activeConfig.right]; }
+    function allActiveEffects(){ return [...activeConfig.effectsR1, ...activeConfig.effectsR2]; }
+
+    function addResetButton(){
+      const resetRow = document.createElement('div');
+      resetRow.style.cssText = 'display:flex;justify-content:flex-end;margin-bottom:10px;';
+      const resetBtn = document.createElement('button');
+      resetBtn.className = 'presetTrigger';
+      resetBtn.style.cssText = 'padding:6px 14px;font-size:9px;letter-spacing:.1em;';
+      resetBtn.textContent = 'RESET TO DEFAULTS';
+      resetBtn.addEventListener('click', ()=>{
+        activeConfig = defaultActiveConfig();
+        saveActiveConfig();
+        swapTarget = null;
+        rebuildUI();
+        renderLib();
+      });
+      resetRow.appendChild(resetBtn);
+      libBody.appendChild(resetRow);
+    }
+
+    function renderLib(){
+      libBody.innerHTML = '';
+      addResetButton();
+      if(activeTab === 'knobs') renderKnobLib();
+      else renderEffectLib();
+    }
+
+    function renderKnobLib(){
+      // slot picker
+      const slotsDiv = document.createElement('div'); slotsDiv.className='libSlots';
+      slotsDiv.innerHTML = '<div class="libSlotsLabel">YOUR ACTIVE KNOBS (click to pick swap target)</div>';
+
+      function addSlotRow(label, side, ids, keyLabels){
+        const rowLabel = document.createElement('div'); rowLabel.className='libSlotRowLabel'; rowLabel.textContent=label;
+        const row = document.createElement('div'); row.className='libSlotRow';
+        ids.forEach((kid, i)=>{
+          const def = getKnobDef(kid);
+          const slot = document.createElement('div'); slot.className='libSlot';
+          if(swapTarget && swapTarget.side===side && swapTarget.idx===i) slot.classList.add('on');
+          slot.innerHTML = `<span class="key">${keyLabels[i]||''}</span>${def?def.label:'?'}`;
+          slot.addEventListener('click', ()=>{ swapTarget={side,idx:i}; renderLib(); });
+          row.appendChild(slot);
+        });
+        slotsDiv.appendChild(rowLabel);
+        slotsDiv.appendChild(row);
+      }
+      addSlotRow('LEFT RAIL', 'left', activeConfig.left, LEFT_LABELS);
+      addSlotRow('RIGHT RAIL', 'right', activeConfig.right, RIGHT_LABELS);
+      libBody.appendChild(slotsDiv);
+
+      if(swapTarget){
+        const hint = document.createElement('div');
+        hint.style.cssText='text-align:center;color:#0ff;font-size:10px;padding:6px;';
+        hint.textContent = 'Now click a knob below to swap it in';
+        libBody.appendChild(hint);
+      }
+
+      // knob catalog by category
+      const cats = {};
+      KNOB_REGISTRY.forEach(k=>{ (cats[k.cat]=cats[k.cat]||[]).push(k); });
+      const active = allActiveKnobs();
+      for(const cat in cats){
+        const catLabel = document.createElement('div'); catLabel.className='libCatLabel'; catLabel.textContent=cat;
+        const grid = document.createElement('div'); grid.className='libGrid';
+        cats[cat].forEach(k=>{
+          const card = document.createElement('div'); card.className='libCard';
+          if(active.includes(k.id)) card.classList.add('on');
+          card.innerHTML = `<strong>${k.label}</strong><small>${k.desc}</small>`;
+          card.addEventListener('click', ()=>{
+            if(!swapTarget) return;
+            activeConfig[swapTarget.side][swapTarget.idx] = k.id;
+            saveActiveConfig(); rebuildUI(); renderLib();
+          });
+          grid.appendChild(card);
+        });
+        libBody.appendChild(catLabel);
+        libBody.appendChild(grid);
+      }
+    }
+
+    function renderEffectLib(){
+      const slotsDiv = document.createElement('div'); slotsDiv.className='libSlots';
+      slotsDiv.innerHTML = '<div class="libSlotsLabel">YOUR ACTIVE EFFECTS (click to pick swap target)</div>';
+
+      function addSlotRow(label, side, ids, keyLabels){
+        const rowLabel = document.createElement('div'); rowLabel.className='libSlotRowLabel'; rowLabel.textContent=label;
+        const row = document.createElement('div'); row.className='libSlotRow';
+        ids.forEach((eid, i)=>{
+          const def = getEffDef(eid);
+          const slot = document.createElement('div'); slot.className='libSlot';
+          if(swapTarget && swapTarget.side===side && swapTarget.idx===i) slot.classList.add('on');
+          slot.innerHTML = `<span class="key">${keyLabels[i]||''}</span>${def?def.label:'?'}`;
+          slot.addEventListener('click', ()=>{ swapTarget={side,idx:i}; renderLib(); });
+          row.appendChild(slot);
+        });
+        slotsDiv.appendChild(rowLabel);
+        slotsDiv.appendChild(row);
+      }
+      addSlotRow('ROW 1', 'effectsR1', activeConfig.effectsR1, EFF_LABELS_R1);
+      addSlotRow('ROW 2', 'effectsR2', activeConfig.effectsR2, EFF_LABELS_R2);
+      libBody.appendChild(slotsDiv);
+
+      if(swapTarget){
+        const hint = document.createElement('div');
+        hint.style.cssText='text-align:center;color:#0ff;font-size:10px;padding:6px;';
+        hint.textContent = 'Now click an effect below to swap it in';
+        libBody.appendChild(hint);
+      }
+
+      const cats = {};
+      EFFECT_REGISTRY.forEach(e=>{ (cats[e.cat]=cats[e.cat]||[]).push(e); });
+      const active = allActiveEffects();
+      for(const cat in cats){
+        const catLabel = document.createElement('div'); catLabel.className='libCatLabel'; catLabel.textContent=cat;
+        const grid = document.createElement('div'); grid.className='libGrid';
+        cats[cat].forEach(e=>{
+          const card = document.createElement('div'); card.className='libEffectCard';
+          if(active.includes(e.id)) card.classList.add('on');
+          card.innerHTML = `<strong>${e.label}</strong>`;
+          card.addEventListener('click', ()=>{
+            if(!swapTarget) return;
+            activeConfig[swapTarget.side][swapTarget.idx] = e.id;
+            saveActiveConfig(); rebuildUI(); renderLib();
+          });
+          grid.appendChild(card);
+        });
+        libBody.appendChild(catLabel);
+        libBody.appendChild(grid);
+      }
+    }
+  })();
 
   // Preset popup wiring
   const overlay = document.getElementById('presetOverlay');
@@ -3810,6 +4806,10 @@
     if(e.repeat) return;
 
     if(e.key === 'Escape'){
+      const libOvl = document.getElementById('libOverlay');
+      if(libOvl && libOvl.classList.contains('open')){
+        libOvl.classList.remove('open'); return;
+      }
       const skinOverlayEl = document.getElementById('skinOverlay');
       if(skinOverlayEl && skinOverlayEl.classList.contains('open')){
         skinOverlayEl.classList.remove('open');
@@ -3865,7 +4865,8 @@
       return;
     }
 
-    const toggleEl = toggleKeyMap[e.code];
+    const toggleKey = (e.shiftKey ? 'S_' : '') + e.code;
+    const toggleEl = toggleKeyMap[toggleKey];
     if(toggleEl){
       toggleEl.click();
       e.preventDefault();
@@ -3957,63 +4958,59 @@
   });
 
   // presets
+  function setKnobByName(id, val){
+    const api = knobApis[id];
+    if(api) api(val);
+    // also set state directly for knobs not in active config
+    const def = getKnobDef(id);
+    if(def) state[def.stateKey] = def.transform(val);
+  }
+  function syncAllToggleUI(){
+    for(const eid in toggleBtns){
+      const def = getEffDef(eid);
+      if(!def) continue;
+      toggleBtns[eid].classList.toggle('on', !!state[def.stateKey]);
+    }
+  }
   function applyPreset(name){
     if(name==='reset'){
       state=JSON.parse(JSON.stringify(defaults));
-      setGlitch(0.0); setPixel(0.0); setRGB(0.0); setFB(0.0); setHue(0.0); setPal(0.0);
-      setSat(0.5); setBright(0.52); setContr(0.5); setBloom(0.1);
-      setSwirl(0.0); setRipple(0.0); setWarp(0.0); setPoster(1);
-      if(decay) decay.value = defaults.decay;
-      setTempo(defaults.tempo); setChaos(defaults.chaos);
-      ['displace','scan','invert','strobe','mirror','edge','solar','slit','kaleido','mosh','vector','scope','pulse','rhythm'].forEach(k=> state[k]=0);
-      [displaceBtn,scanBtn,invertBtn,strobeBtn,mirrorBtn,edgeBtn,solarBtn,slitBtn,kaleidoBtn,moshBtn,vectorBtn,scopeBtn,pulseBtn,rhythmBtn].forEach(b=> b && b.classList.remove('on'));
+      KNOB_REGISTRY.forEach(k=>{ const api=knobApis[k.id]; if(api) api(k.def); });
+      EFFECT_REGISTRY.forEach(e=> state[e.stateKey]=0);
+      syncAllToggleUI();
+      const decaySlider=document.getElementById('decayRange');
+      if(decaySlider) decaySlider.value = defaults.decay;
       updateResUI(); fitCanvas();
       if(chromaticRange) chromaticRange.value = state.chromatic;
       if(vignetteRange) vignetteRange.value = state.vignette;
       if(filmGrainRange) filmGrainRange.value = state.filmGrain;
       return;
     }
-    if(name==='neon'){
-      setGlitch(0.45); setPixel(0.22); setRGB(0.8); setFB(0.35); setHue(0.55); setPal(0.6); setSat(0.85); setBright(0.55); setContr(0.75); setBloom(0.6); setSwirl(0.6); setRipple(0.4); setWarp(0.2); setPoster(0.5); state.decay=0.94; state.displace=1; state.scan=0; state.invert=0; state.strobe=1; state.mirror=0; state.edge=0; state.solar=0; state.slit=0;
+    const presets = {
+      neon:{glitch:0.45,pixel:0.22,rgb:0.8,feedback:0.35,hue:0.55,palette:0.6,sat:0.85,bright:0.55,contrast:0.75,bloom:0.6,swirl:0.6,ripple:0.4,warp:0.2,poster:0.5,tempo:0.35,chaos:0.35,_decay:0.94,_on:['displace','strobe']},
+      databend:{glitch:0.9,pixel:0.95,rgb:0.8,feedback:0.7,hue:0.25,palette:0.35,sat:0.8,bright:0.5,contrast:0.7,bloom:0.3,swirl:0.2,ripple:0.8,warp:0.3,poster:0.8,tempo:0.35,chaos:0.35,_decay:0.88,_on:['displace','scan','mirror']},
+      vhs:{glitch:0.3,pixel:0.15,rgb:0.5,feedback:0.5,hue:0.12,palette:0.5,sat:0.6,bright:0.52,contrast:0.65,bloom:0.25,swirl:0.05,ripple:0.1,warp:0.12,poster:0.4,tempo:0.35,chaos:0.35,vhsWobble:0.7,_decay:0.92,_on:['displace','scan']},
+      monochrome:{glitch:0.1,pixel:0.2,rgb:0.05,feedback:0.2,hue:0.0,palette:0.0,sat:0.0,bright:0.5,contrast:0.9,bloom:0.0,swirl:0.0,ripple:0.0,warp:0.0,poster:0.7,tempo:0.35,chaos:0.35,_decay:0.96,_on:['scan','edge']},
+      ocean:{glitch:0.22,pixel:0.14,rgb:0.4,feedback:0.35,hue:0.45,palette:0.75,sat:0.85,bright:0.52,contrast:0.55,bloom:0.35,swirl:0.35,ripple:1.0,warp:0.25,poster:0.45,tempo:0.35,chaos:0.35,_decay:0.95,_on:['displace','slit']},
+      cinematic:{glitch:0.05,pixel:0.1,rgb:0.2,feedback:0.1,hue:0.0,palette:0.0,sat:0.7,bright:0.5,contrast:0.6,bloom:0.2,swirl:0.0,ripple:0.0,warp:0.0,poster:0.3,tempo:0.35,chaos:0.35,_decay:0.98,_on:[],_post:{chromatic:0.4,vignette:0.5,filmGrain:0.12}},
+    };
+    const p = presets[name];
+    if(!p) return;
+    EFFECT_REGISTRY.forEach(e=> state[e.stateKey]=0);
+    if(p._on) p._on.forEach(k=> state[k]=1);
+    if(p._decay) state.decay = p._decay;
+    for(const k in p){
+      if(k.startsWith('_')) continue;
+      setKnobByName(k, p[k]);
     }
-    if(name==='databend'){
-      setGlitch(0.9); setPixel(0.95); setRGB(0.8); setFB(0.7); setHue(0.25); setPal(0.35); setSat(0.8); setBright(0.5); setContr(0.7); setBloom(0.3); setSwirl(0.2); setRipple(0.8); setWarp(0.3); setPoster(0.8); state.decay=0.88; state.displace=1; state.scan=1; state.strobe=0; state.mirror=1; state.edge=0; state.solar=0; state.slit=0;
+    if(p._post){
+      for(const pk in p._post){
+        state[pk]=p._post[pk];
+        const el = document.getElementById(pk+'Range');
+        if(el) el.value = p._post[pk];
+      }
     }
-    if(name==='vhs'){
-      setGlitch(0.3); setPixel(0.15); setRGB(0.5); setFB(0.5); setHue(0.12); setPal(0.5); setSat(0.6); setBright(0.52); setContr(0.65); setBloom(0.25); setSwirl(0.05); setRipple(0.1); setWarp(0.12); setPoster(0.4); state.decay=0.92; state.displace=1; state.scan=1; state.strobe=0; state.mirror=0; state.edge=0; state.solar=0; state.slit=0;
-    }
-    if(name==='monochrome'){
-      setGlitch(0.1); setPixel(0.2); setRGB(0.05); setFB(0.2); setHue(0.0); setPal(0.0); setSat(0.0); setBright(0.5); setContr(0.9); setBloom(0.0); setSwirl(0.0); setRipple(0.0); setWarp(0.0); setPoster(0.7); state.decay=0.96; state.displace=0; state.scan=1; state.strobe=0; state.edge=1; state.mirror=0; state.solar=0; state.slit=0;
-    }
-    if(name==='ocean'){
-      setGlitch(0.22); setPixel(0.14); setRGB(0.4); setFB(0.35); setHue(0.45); setPal(0.75); setSat(0.85); setBright(0.52); setContr(0.55); setBloom(0.35); setSwirl(0.35); setRipple(1.0); setWarp(0.25); setPoster(0.45); state.decay=0.95; state.displace=1; state.scan=0; state.strobe=0; state.mirror=0; state.edge=0; state.solar=0; state.slit=1;
-    }
-    if(name==='cinematic'){
-      setGlitch(0.05); setPixel(0.1); setRGB(0.2); setFB(0.1); setHue(0.0); setPal(0.0); setSat(0.7); setBright(0.5); setContr(0.6); setBloom(0.2); setSwirl(0.0); setRipple(0.0); setWarp(0.0); setPoster(0.3); state.decay=0.98; state.displace=0; state.scan=0; state.strobe=0; state.mirror=0; state.edge=0; state.solar=0; state.slit=0;
-      state.chromatic=0.4; state.vignette=0.5; state.filmGrain=0.12;
-      if(chromaticRange) chromaticRange.value=state.chromatic; if(vignetteRange) vignetteRange.value=state.vignette; if(filmGrainRange) filmGrainRange.value=state.filmGrain;
-    }
-
-    // sync toggles
-    [
-      ['displace',displaceBtn],
-      ['scan',scanBtn],
-      ['invert',invertBtn],
-      ['strobe',strobeBtn],
-      ['mirror',mirrorBtn],
-      ['edge',edgeBtn],
-      ['solar',solarBtn],
-      ['slit',slitBtn],
-      ['kaleido',kaleidoBtn],
-      ['mosh',moshBtn],
-      ['vector',vectorBtn],
-      ['scope',scopeBtn],
-      ['pulse',pulseBtn],
-      ['rhythm',rhythmBtn]
-    ].forEach(([k,btn])=>{
-      if(!btn) return;
-      if(state[k]) btn.classList.add('on'); else btn.classList.remove('on');
-    });
+    syncAllToggleUI();
   }
 
   document.querySelectorAll('.preset').forEach(p=>{
