@@ -4,7 +4,9 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>""</title>
+<!-- Supabase SDK hidden: re-enable when payments are live
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+-->
 <style>
   :root{
     /* Primary = surfaces. Third = accent. No visible borders by default. */
@@ -253,6 +255,34 @@
     color:var(--skin-muted); background:transparent; border:1px solid var(--skin-panel-border);
     border-radius:6px; cursor:pointer;
   }
+
+  /* Pro-locked knobs & effects */
+  .knob.pro-locked{ opacity:.35; position:relative; cursor:pointer; }
+  .knob.pro-locked .dial,
+  .knob.pro-locked .cap,
+  .knob.pro-locked .marker{ pointer-events:none !important; }
+  .knob.pro-locked::after{
+    content:'PRO'; position:absolute; bottom:2px; left:50%; transform:translateX(-50%);
+    font-size:7px; font-weight:800; letter-spacing:.08em; color:#ffd700;
+    background:rgba(0,0,0,.7); padding:1px 5px; border-radius:4px; border:1px solid rgba(255,215,0,.3);
+    z-index:5;
+  }
+  .toggleBtn.pro-locked{
+    opacity:.35; position:relative; cursor:pointer !important;
+  }
+  .toggleBtn.pro-locked::after{
+    content:'PRO'; margin-left:4px; font-size:7px; font-weight:800; color:#ffd700;
+    vertical-align:middle;
+  }
+  .comingSoonToast{
+    position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+    background:rgba(10,10,14,.95); border:1px solid rgba(255,215,0,.4); border-radius:12px;
+    padding:20px 32px; z-index:50; text-align:center;
+    box-shadow:0 16px 40px rgba(0,0,0,.7); animation:toastIn .25s ease-out;
+  }
+  .comingSoonToast h4{ margin:0 0 6px; font-size:13px; color:#ffd700; letter-spacing:.06em; text-transform:uppercase; }
+  .comingSoonToast p{ margin:0; font-size:11px; color:var(--skin-muted); }
+  @keyframes toastIn{ from{opacity:0;transform:translate(-50%,-50%) scale(.92);} to{opacity:1;transform:translate(-50%,-50%) scale(1);} }
 
   /* MAIN LAYOUT: rails + stage */
   .main{
@@ -1224,6 +1254,7 @@
           <button id="audioVideo" class="sourceBtn on" type="button" title="Mic or uploaded video audio">Video</button>
         </div>
         <span id="recordingIndicator" class="recordingIndicator">Recording…</span>
+        <!-- Auth row hidden: re-enable when payments are live
         <div id="authRow" class="authRow" style="display:none;">
           <button id="authLoginBtn" class="sourceBtn" type="button">Login</button>
           <span id="authUserEmail" class="userEmail" style="display:none;"></span>
@@ -1231,10 +1262,12 @@
           <button id="goProBtn" class="goProBtn" style="display:none;">Go Pro — $5/mo</button>
           <button id="authLogoutBtn" class="sourceBtn" type="button" style="display:none;">Log out</button>
         </div>
+        -->
         <button id="recordBtn" class="btn">● RECORD</button>
         <button id="downloadBtn" class="btn alt" title="Record first to download">DOWNLOAD</button>
       </div>
     </header>
+    <!-- Auth + Pro overlays hidden: re-enable when payments are live
     <div id="authOverlay" class="authOverlay">
       <div class="authBox">
         <h3>Sign in / Sign up</h3>
@@ -1263,6 +1296,7 @@
         <div id="proError" class="authError" style="text-align:center;"></div>
       </div>
     </div>
+    -->
 
     <div class="main">
       <!-- LEFT RAIL (dynamically populated) -->
@@ -2017,14 +2051,37 @@
 <script>
 (async function(){
   const AUTH_CONFIG = {
-    enabled: true,
+    enabled: false,
     supabaseUrl: 'https://xgixjwbkrrjagwxfkczc.supabase.co',
     supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhnaXhqd2JrcnJqYWd3eGZrY3pjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4MTU0MzEsImV4cCI6MjA5MDM5MTQzMX0.KBdzzlJX-VDalg4uG4rA4VaN0VV0m7vqkcHX27Ap650',
-    requireAuth: true
+    requireAuth: false
   };
   let hasAccess = true;
   let currentUser = null;
   let isPro = false;
+
+  // ── Pro-locked features (configurable) ──
+  // Knobs: from KNOB_REGISTRY ids  |  Effects: from EFFECT_REGISTRY ids
+  const PRO_LOCKED = {
+    knobs: ['fractal', 'crystal', 'morph', 'waveSlice', 'echo', 'turbulence', 'drift', 'gamma'],
+    effects: ['plasma', 'holo', 'echo3d', 'refract', 'shatter', 'tunnel', 'liquid', 'datamosh',
+              'automata', 'strange', 'tessellate', 'delta', 'interference']
+  };
+  const proLockedKnobs = new Set(PRO_LOCKED.knobs);
+  const proLockedEffects = new Set(PRO_LOCKED.effects);
+
+  let _comingSoonTimer = null;
+  function showComingSoon(label){
+    let t = document.querySelector('.comingSoonToast');
+    if(t) t.remove();
+    t = document.createElement('div');
+    t.className = 'comingSoonToast';
+    t.innerHTML = `<h4>${label}</h4><p>Coming soon with Pro upgrade</p>`;
+    document.body.appendChild(t);
+    clearTimeout(_comingSoonTimer);
+    _comingSoonTimer = setTimeout(()=> t.remove(), 1800);
+    t.addEventListener('click', ()=> t.remove());
+  }
 
   const canvas = document.getElementById('gl');
   const gl = canvas.getContext('webgl2', {alpha:false, antialias:false});
@@ -3781,15 +3838,20 @@
       ids.forEach((knobId, i)=>{
         const def = getKnobDef(knobId);
         if(!def) return;
+        const locked = !isPro && proLockedKnobs.has(knobId);
         const dialId = 'knob_'+knobId;
         const div = document.createElement('div');
-        div.className = 'knob';
+        div.className = 'knob' + (locked ? ' pro-locked' : '');
         div.innerHTML = `<div class="dial" id="${dialId}"><div class="cap"></div><div class="marker"></div></div>`
           + `<div class="label">${def.label}<span class="shortcut">${labels[i]||''}</span></div>`;
+        if(locked){
+          div.addEventListener('click', ()=> showComingSoon(def.label));
+        }
         container.appendChild(div);
-        const api = makeKnob(dialId, v=> { state[def.stateKey] = def.transform(v); }, def.def);
+        const noop = ()=>{};
+        const api = makeKnob(dialId, locked ? noop : v=> { state[def.stateKey] = def.transform(v); }, locked ? 0 : def.def);
         knobApis[knobId] = api;
-        if(keys[i]) knobKeyMap[keys[i]] = api;
+        if(keys[i] && !locked) knobKeyMap[keys[i]] = api;
       });
     }
     buildSide(railL, activeConfig.left, LEFT_KEYS, LEFT_LABELS);
@@ -3808,17 +3870,22 @@
       ids.forEach((effId, i)=>{
         const def = getEffDef(effId);
         if(!def) return;
+        const locked = !isPro && proLockedEffects.has(effId);
         const btn = document.createElement('button');
-        btn.className = 'toggleBtn';
+        btn.className = 'toggleBtn' + (locked ? ' pro-locked' : '');
         btn.innerHTML = `<span class="key">${labels[i]||''}</span>${def.label}`;
-        btn.addEventListener('click', ()=>{
-          state[def.stateKey] = state[def.stateKey] ? 0 : 1;
-          btn.classList.toggle('on', !!state[def.stateKey]);
-        });
-        if(state[def.stateKey]) btn.classList.add('on');
+        if(locked){
+          btn.addEventListener('click', (e)=>{ e.stopPropagation(); showComingSoon(def.label); });
+        } else {
+          btn.addEventListener('click', ()=>{
+            state[def.stateKey] = state[def.stateKey] ? 0 : 1;
+            btn.classList.toggle('on', !!state[def.stateKey]);
+          });
+          if(state[def.stateKey]) btn.classList.add('on');
+        }
         container.appendChild(btn);
         toggleBtns[effId] = btn;
-        if(codes[i]) toggleKeyMap[(useShift?'S_':'')+codes[i]] = btn;
+        if(codes[i] && !locked) toggleKeyMap[(useShift?'S_':'')+codes[i]] = btn;
       });
     }
     buildRow(row1, activeConfig.effectsR1, EFF_CODES_R1, EFF_LABELS_R1, false);
@@ -3946,9 +4013,12 @@
         const grid = document.createElement('div'); grid.className='libGrid';
         cats[cat].forEach(k=>{
           const card = document.createElement('div'); card.className='libCard';
+          const kLocked = !isPro && proLockedKnobs.has(k.id);
           if(active.includes(k.id)) card.classList.add('on');
-          card.innerHTML = `<strong>${k.label}</strong><small>${k.desc}</small>`;
+          if(kLocked) card.style.opacity='.4';
+          card.innerHTML = `<strong>${k.label}</strong><small>${k.desc}</small>${kLocked?'<span style="color:#ffd700;font-size:8px;font-weight:700;margin-left:4px">PRO</span>':''}`;
           card.addEventListener('click', ()=>{
+            if(kLocked){ showComingSoon(k.label); return; }
             if(!swapTarget) return;
             activeConfig[swapTarget.side][swapTarget.idx] = k.id;
             saveActiveConfig(); rebuildUI(); renderLib();
@@ -3997,9 +4067,12 @@
         const grid = document.createElement('div'); grid.className='libGrid';
         cats[cat].forEach(e=>{
           const card = document.createElement('div'); card.className='libEffectCard';
+          const eLocked = !isPro && proLockedEffects.has(e.id);
           if(active.includes(e.id)) card.classList.add('on');
-          card.innerHTML = `<strong>${e.label}</strong>`;
+          if(eLocked) card.style.opacity='.4';
+          card.innerHTML = `<strong>${e.label}</strong>${eLocked?'<span style="color:#ffd700;font-size:8px;font-weight:700;margin-left:4px">PRO</span>':''}`;
           card.addEventListener('click', ()=>{
+            if(eLocked){ showComingSoon(e.label); return; }
             if(!swapTarget) return;
             activeConfig[swapTarget.side][swapTarget.idx] = e.id;
             saveActiveConfig(); rebuildUI(); renderLib();
