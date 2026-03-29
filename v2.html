@@ -214,6 +214,46 @@
   .authBox .authActions{ display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
   .authBox .authError{ font-size:11px; color:#e66; margin-top:8px; }
 
+  /* Pro subscription */
+  .proBadge{
+    display:inline-block; padding:2px 7px; border-radius:6px; font-size:9px; font-weight:700;
+    letter-spacing:.08em; text-transform:uppercase; color:#000; background:linear-gradient(135deg,#ffd700,#ffaa00);
+    margin-left:6px; vertical-align:middle; line-height:1.6;
+  }
+  .goProBtn{
+    padding:4px 10px; border-radius:8px; font-size:10px; font-weight:700; letter-spacing:.06em;
+    text-transform:uppercase; border:1px solid #ffd700; color:#ffd700; background:transparent;
+    cursor:pointer; transition:all .2s;
+  }
+  .goProBtn:hover{ background:#ffd700; color:#000; }
+  .proCheckoutOverlay{
+    position:fixed; inset:0; background:rgba(0,0,0,.85); display:none;
+    align-items:center; justify-content:center; z-index:45;
+  }
+  .proCheckoutOverlay.open{ display:flex; }
+  .proBox{
+    min-width:300px; max-width:380px; padding:28px; border-radius:14px; background:var(--skin-panel-bg);
+    border:1px solid var(--skin-panel-border); box-shadow:0 20px 50px rgba(0,0,0,.8); text-align:center;
+  }
+  .proBox h3{ margin:0 0 8px; font-size:18px; color:#ffd700; letter-spacing:.04em; }
+  .proBox .proPrice{ font-size:32px; font-weight:800; color:var(--skin-ink); margin:12px 0 4px; }
+  .proBox .proPrice span{ font-size:14px; font-weight:400; color:var(--skin-muted); }
+  .proBox .proPerks{ list-style:none; padding:0; margin:16px 0 20px; text-align:left; }
+  .proBox .proPerks li{ padding:4px 0; font-size:12px; color:var(--skin-muted); }
+  .proBox .proPerks li::before{ content:'✓ '; color:#ffd700; font-weight:700; }
+  .proSubBtn{
+    width:100%; padding:12px; border-radius:10px; font-size:13px; font-weight:700; letter-spacing:.06em;
+    text-transform:uppercase; border:none; color:#000; background:linear-gradient(135deg,#ffd700,#ffaa00);
+    cursor:pointer; transition:all .2s;
+  }
+  .proSubBtn:hover{ filter:brightness(1.1); transform:translateY(-1px); }
+  .proSubBtn:disabled{ opacity:.5; cursor:wait; }
+  .proBoxClose{
+    display:block; margin:14px auto 0; padding:4px 12px; font-size:11px;
+    color:var(--skin-muted); background:transparent; border:1px solid var(--skin-panel-border);
+    border-radius:6px; cursor:pointer;
+  }
+
   /* MAIN LAYOUT: rails + stage */
   .main{
     position:relative;z-index:2;
@@ -264,6 +304,46 @@
   .knob.active{
     border-color:var(--skin-accent2);
     box-shadow:0 0 0 1px var(--skin-accent2),0 6px 18px rgba(0,0,0,.6);
+  }
+
+  @keyframes frozenPulse{
+    0%,100%{box-shadow:0 0 8px 2px rgba(255,170,60,.25), inset 0 0 6px rgba(255,170,60,.10);}
+    50%{box-shadow:0 0 16px 5px rgba(255,170,60,.45), inset 0 0 10px rgba(255,170,60,.18);}
+  }
+  @keyframes frozenRing{
+    0%{transform:rotate(0deg);}
+    100%{transform:rotate(360deg);}
+  }
+  body.space-held .knob .dial{
+    border-color:rgba(255,170,60,.25);
+    transition:border-color .15s;
+  }
+  .knob.frozen{
+    animation:frozenPulse 1.1s ease-in-out infinite;
+    border-color:rgba(255,170,60,.5);
+    position:relative;
+  }
+  .knob.frozen .dial{
+    border-color:rgba(255,170,60,.55);
+    transition:border-color .1s;
+  }
+  .knob.frozen .marker{
+    background:linear-gradient(180deg,#ffaa3c,#ff6a00);
+    filter:drop-shadow(0 0 4px rgba(255,140,30,.7));
+    transition:filter .15s, background .15s;
+  }
+  .knob.frozen::after{
+    content:'';
+    position:absolute;
+    top:-3px;left:-3px;right:-3px;bottom:-3px;
+    border-radius:12px;
+    border:1.5px dashed rgba(255,170,60,.45);
+    animation:frozenRing 3s linear infinite;
+    pointer-events:none;
+  }
+  .knob.frozen .label{
+    color:rgba(255,170,60,.85);
+    transition:color .15s;
   }
   .dial{
     width:34px;
@@ -1147,6 +1227,8 @@
         <div id="authRow" class="authRow" style="display:none;">
           <button id="authLoginBtn" class="sourceBtn" type="button">Login</button>
           <span id="authUserEmail" class="userEmail" style="display:none;"></span>
+          <span id="proBadge" class="proBadge" style="display:none;">PRO</span>
+          <button id="goProBtn" class="goProBtn" style="display:none;">Go Pro — $5/mo</button>
           <button id="authLogoutBtn" class="sourceBtn" type="button" style="display:none;">Log out</button>
         </div>
         <button id="recordBtn" class="btn">● RECORD</button>
@@ -1164,6 +1246,21 @@
           <button id="authOverlayClose" class="sourceBtn" type="button">Cancel</button>
         </div>
         <div id="authError" class="authError"></div>
+      </div>
+    </div>
+    <div id="proCheckoutOverlay" class="proCheckoutOverlay">
+      <div class="proBox">
+        <h3>GlitchLab Pro</h3>
+        <div class="proPrice">$5<span>/month</span></div>
+        <ul class="proPerks">
+          <li>Unlimited recording length</li>
+          <li>4K export resolution</li>
+          <li>All premium effects unlocked</li>
+          <li>Priority support</li>
+        </ul>
+        <button id="proSubBtn" class="proSubBtn">Subscribe Now</button>
+        <button id="proBoxClose" class="proBoxClose" type="button">Maybe later</button>
+        <div id="proError" class="authError" style="text-align:center;"></div>
       </div>
     </div>
 
@@ -1919,8 +2016,15 @@
 
 <script>
 (async function(){
-  const AUTH_CONFIG = window.__GLITCHLAB_AUTH__ || { enabled: false, supabaseUrl: '', supabaseAnonKey: '', requireAuth: false };
+  const AUTH_CONFIG = {
+    enabled: true,
+    supabaseUrl: 'https://xgixjwbkrrjagwxfkczc.supabase.co',
+    supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhnaXhqd2JrcnJqYWd3eGZrY3pjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4MTU0MzEsImV4cCI6MjA5MDM5MTQzMX0.KBdzzlJX-VDalg4uG4rA4VaN0VV0m7vqkcHX27Ap650',
+    requireAuth: true
+  };
   let hasAccess = true;
+  let currentUser = null;
+  let isPro = false;
 
   const canvas = document.getElementById('gl');
   const gl = canvas.getContext('webgl2', {alpha:false, antialias:false});
@@ -3607,6 +3711,9 @@
     setTimeout(()=>el.classList.remove('flash'),300);
   }
 
+  // Space-hold: suppress effect callbacks while held, flush on release
+  let spaceHeld = false;
+
   // Knobs with API (for keyboard performance)
   function makeKnob(id,on,def){
     const el=document.getElementById(id);
@@ -3615,16 +3722,20 @@
       const noop=function(){};
       noop.nudge=function(){};
       noop.get=function(){return 0;};
+      noop.flush=function(){};
       noop.dialEl=null;
       noop.knobEl=null;
       return noop;
     }
     let v=def||0;
+    let dirty=false;
     const knobEl = el.closest('.knob');
     const apply=n=>{
       v=Math.max(0,Math.min(1,n));
       el.style.transform=`rotate(${(v*270)-135}deg)`;
+      if(spaceHeld){ dirty=true; if(knobEl) knobEl.classList.add('frozen'); return; }
       try{on(v);}catch(_){}
+      dirty=false;
     };
     let drag=false,sy=0,sv=0;
     el.addEventListener('pointerdown',e=>{
@@ -3640,6 +3751,7 @@
     const api=function(n){ if(typeof n==='number') apply(n); };
     api.nudge=function(dv){ apply(v+dv); };
     api.get=function(){ return v; };
+    api.flush=function(){ if(knobEl) knobEl.classList.remove('frozen'); if(dirty){ try{on(v);}catch(_){} dirty=false; } };
     api.dialEl=el;
     api.knobEl=knobEl;
     return api;
@@ -4803,6 +4915,12 @@
 
   // Keyboard: knobs + toggles + Esc/Q + reset
   window.addEventListener('keydown', e=>{
+    if(e.code === 'Space' && !e.repeat){
+      spaceHeld = true;
+      document.body.classList.add('space-held');
+      e.preventDefault();
+      return;
+    }
     if(e.repeat) return;
 
     if(e.key === 'Escape'){
@@ -4875,6 +4993,13 @@
   });
 
   window.addEventListener('keyup', e=>{
+    if(e.code === 'Space'){
+      spaceHeld = false;
+      document.body.classList.remove('space-held');
+      Object.values(knobApis).forEach(api=>{ if(api.flush) api.flush(); });
+      e.preventDefault();
+      return;
+    }
     const knobFn = knobKeyMap[e.code];
     if(!knobFn) return;
     activeKnobs.delete(knobFn);
@@ -4883,6 +5008,11 @@
   });
 
   window.addEventListener('blur', ()=>{
+    if(spaceHeld){
+      spaceHeld = false;
+      document.body.classList.remove('space-held');
+      Object.values(knobApis).forEach(api=>{ if(api.flush) api.flush(); });
+    }
     activeKnobs.forEach(fn=>{
       if(fn.knobEl) fn.knobEl.classList.remove('active');
     });
@@ -5020,7 +5150,7 @@
     });
   });
 
-  // --- Auth (Supabase): optional, enable via window.__GLITCHLAB_AUTH__ ---
+  // --- Auth (Supabase) + Pro Subscription (Stripe) ---
   const authRow = document.getElementById('authRow');
   const authLoginBtn = document.getElementById('authLoginBtn');
   const authUserEmail = document.getElementById('authUserEmail');
@@ -5032,32 +5162,61 @@
   const authSignUp = document.getElementById('authSignUp');
   const authOverlayClose = document.getElementById('authOverlayClose');
   const authError = document.getElementById('authError');
+  const proBadge = document.getElementById('proBadge');
+  const goProBtn = document.getElementById('goProBtn');
+  const proCheckoutOverlay = document.getElementById('proCheckoutOverlay');
+  const proSubBtn = document.getElementById('proSubBtn');
+  const proBoxClose = document.getElementById('proBoxClose');
+  const proError = document.getElementById('proError');
 
   if(AUTH_CONFIG.enabled && AUTH_CONFIG.supabaseUrl && AUTH_CONFIG.supabaseAnonKey && window.supabase){
-    const supabase = window.supabase.createClient(AUTH_CONFIG.supabaseUrl, AUTH_CONFIG.supabaseAnonKey);
+    const sb = window.supabase.createClient(AUTH_CONFIG.supabaseUrl, AUTH_CONFIG.supabaseAnonKey);
     if(authRow) authRow.style.display = 'flex';
+
+    async function checkProStatus(userId){
+      const { data } = await sb.from('profiles').select('is_pro').eq('id', userId).single();
+      isPro = !!data?.is_pro;
+      if(proBadge) proBadge.style.display = isPro ? 'inline-block' : 'none';
+      if(goProBtn) goProBtn.style.display = isPro ? 'none' : 'inline-block';
+    }
 
     function updateAuthUI(session){
       const user = session?.user;
+      currentUser = user || null;
       if(authLoginBtn) authLoginBtn.style.display = user ? 'none' : '';
       if(authUserEmail){ authUserEmail.style.display = user ? 'inline' : 'none'; authUserEmail.textContent = user?.email || ''; }
       if(authLogoutBtn) authLogoutBtn.style.display = user ? '' : 'none';
+      if(proBadge) proBadge.style.display = 'none';
+      if(goProBtn) goProBtn.style.display = 'none';
       if(AUTH_CONFIG.requireAuth && !user && authOverlay) authOverlay.classList.add('open');
       else if(user && authOverlay) authOverlay.classList.remove('open');
+      if(user) checkProStatus(user.id);
     }
 
-    supabase.auth.onAuthStateChange((ev, session)=>{ updateAuthUI(session); });
-    supabase.auth.getSession().then(({ data: { session } })=>{ updateAuthUI(session); });
+    sb.auth.onAuthStateChange((ev, session)=>{ updateAuthUI(session); });
+    sb.auth.getSession().then(({ data: { session } })=>{ updateAuthUI(session); });
+
+    // Handle ?checkout=success by re-checking pro status
+    if(window.location.search.includes('checkout=success') && currentUser){
+      setTimeout(()=> checkProStatus(currentUser.id), 1500);
+      history.replaceState(null, '', window.location.pathname);
+    }
 
     if(authLoginBtn) authLoginBtn.addEventListener('click', ()=>{ if(authOverlay) authOverlay.classList.add('open'); if(authError) authError.textContent = ''; });
-    if(authLogoutBtn) authLogoutBtn.addEventListener('click', ()=>{ supabase.auth.signOut(); });
+    if(authLogoutBtn) authLogoutBtn.addEventListener('click', ()=>{
+      sb.auth.signOut();
+      currentUser = null; isPro = false;
+      if(proBadge) proBadge.style.display = 'none';
+      if(goProBtn) goProBtn.style.display = 'none';
+    });
     if(authOverlayClose) authOverlayClose.addEventListener('click', ()=>{ if(!AUTH_CONFIG.requireAuth && authOverlay) authOverlay.classList.remove('open'); });
+
     if(authSignIn){
       authSignIn.addEventListener('click', async ()=>{
         const email = authEmail?.value?.trim(), password = authPassword?.value;
         if(!email || !password){ if(authError) authError.textContent = 'Email and password required'; return; }
         if(authError) authError.textContent = '';
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        const { data, error } = await sb.auth.signInWithPassword({ email, password });
         if(error){ if(authError) authError.textContent = error.message; return; }
         if(authOverlay) authOverlay.classList.remove('open');
       });
@@ -5067,10 +5226,52 @@
         const email = authEmail?.value?.trim(), password = authPassword?.value;
         if(!email || !password){ if(authError) authError.textContent = 'Email and password required'; return; }
         if(authError) authError.textContent = '';
-        const { data, error } = await supabase.auth.signUp({ email, password });
+        const { data, error } = await sb.auth.signUp({ email, password });
         if(error){ if(authError) authError.textContent = error.message; return; }
         if(authOverlay) authOverlay.classList.remove('open');
       });
+    }
+
+    // Pro checkout flow
+    if(goProBtn) goProBtn.addEventListener('click', ()=>{
+      if(proCheckoutOverlay) proCheckoutOverlay.classList.add('open');
+      if(proError) proError.textContent = '';
+    });
+    if(proBoxClose) proBoxClose.addEventListener('click', ()=>{
+      if(proCheckoutOverlay) proCheckoutOverlay.classList.remove('open');
+    });
+    if(proSubBtn) proSubBtn.addEventListener('click', async ()=>{
+      if(!currentUser){ if(proError) proError.textContent = 'Please sign in first'; return; }
+      proSubBtn.disabled = true;
+      proSubBtn.textContent = 'Redirecting…';
+      if(proError) proError.textContent = '';
+      try {
+        const resp = await fetch('/api/create-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: currentUser.email, userId: currentUser.id })
+        });
+        const json = await resp.json();
+        if(json.url) window.location.href = json.url;
+        else throw new Error(json.error || 'Checkout failed');
+      } catch(e){
+        if(proError) proError.textContent = e.message;
+        proSubBtn.disabled = false;
+        proSubBtn.textContent = 'Subscribe Now';
+      }
+    });
+
+    // Re-check pro status on return from checkout
+    window.addEventListener('focus', ()=>{
+      if(currentUser) checkProStatus(currentUser.id);
+    });
+    if(window.location.search.includes('checkout=success')){
+      const waitAndCheck = ()=>{
+        if(currentUser) checkProStatus(currentUser.id);
+        else setTimeout(waitAndCheck, 500);
+      };
+      setTimeout(waitAndCheck, 1000);
+      history.replaceState(null, '', window.location.pathname);
     }
   }
 })();

@@ -9,32 +9,45 @@ Web-based video effects lab: camera or upload, real-time WebGL effects, record a
 - **Resolution**: 720p / 1080p / 4K internal render
 - **Record**: Capture canvas (with effects) as WebM
 - **Download**: Save last recording
-- **Auth** (optional): Supabase — set `window.__GLITCHLAB_AUTH__` before load to enable
+- **Auth**: Supabase email/password (required)
+- **Pro Subscription**: $5/month via Stripe — unlocks premium features
 
 ## Run locally
 
 Open `v2.html` or `index.html` in a browser (HTTPS or localhost required for camera).
 
-## Deploy (CI/CD)
+## Setup
 
-1. Push this repo to GitHub.
-2. **Vercel**: Create a project at [vercel.com](https://vercel.com) linked to the repo (auto-deploys), or use the GitHub Action:
-   - In repo **Settings > Secrets**, add `VERCEL_TOKEN` (from [vercel.com/account/tokens](https://vercel.com/account/tokens)).
-   - Optionally add `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` from your Vercel project.
-   - Pushing to `main` runs [.github/workflows/deploy.yml](.github/workflows/deploy.yml) and deploys to Vercel.
+### 1. Supabase (Auth + Database)
 
-## Enable auth (Supabase)
+1. Create a project at [supabase.com](https://supabase.com)
+2. In **SQL Editor**, run the migration in the plan to create the `profiles` table
+3. Note your **Project URL**, **anon key**, and **service_role key** from Settings > API
+4. Update the `AUTH_CONFIG` in `v2.html` with your Supabase URL and anon key
 
-Before loading the app, set:
+### 2. Stripe (Payments)
 
-```js
-window.__GLITCHLAB_AUTH__ = {
-  enabled: true,
-  supabaseUrl: 'https://YOUR_PROJECT.supabase.co',
-  supabaseAnonKey: 'YOUR_ANON_KEY',
-  requireAuth: false  // true to force login before using the app
-};
-```
+1. Create an account at [stripe.com](https://stripe.com)
+2. Create a Product: "GlitchLab Pro" with a $5/month recurring price
+3. Note the **Price ID** (`price_...`), **Publishable key** (`pk_...`), **Secret key** (`sk_...`)
 
-Then open the page. Login / Sign up and Log out appear in the header.
-# glitch-lab
+### 3. Deploy (CI/CD via Vercel)
+
+1. Push this repo to GitHub
+2. Create a project at [vercel.com](https://vercel.com) linked to the repo
+3. Add environment variables in Vercel dashboard:
+   - `STRIPE_SECRET_KEY`
+   - `STRIPE_PRICE_ID`
+   - `STRIPE_WEBHOOK_SECRET`
+   - `SUPABASE_URL`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+4. In GitHub repo **Settings > Secrets**, add:
+   - `VERCEL_TOKEN` (from [vercel.com/account/tokens](https://vercel.com/account/tokens))
+   - `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` (from Vercel project settings)
+5. Pushing to `main` auto-deploys via [.github/workflows/deploy.yml](.github/workflows/deploy.yml)
+
+### 4. Stripe Webhook
+
+1. In Stripe Dashboard > Webhooks, add endpoint: `https://your-app.vercel.app/api/webhook`
+2. Listen for: `checkout.session.completed`, `customer.subscription.deleted`
+3. Copy the webhook signing secret to the `STRIPE_WEBHOOK_SECRET` env var in Vercel
