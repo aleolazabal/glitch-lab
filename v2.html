@@ -1343,21 +1343,23 @@
     .bottomPanel{display:none!important;}
     .main{
       grid-template-columns:1fr;
+      grid-template-rows:1fr;
       padding:0;column-gap:0;
       height:100vh;height:100dvh;
+      overflow:hidden;
     }
-    .stage{max-width:none;border-radius:0;box-shadow:none;border:none;}
-    .screen{border-radius:0;padding:0;max-height:100vh;max-height:100dvh;width:100%;aspect-ratio:auto;}
-    canvas{border-radius:0;}
+    .stage{max-width:none;border-radius:0;box-shadow:none;border:none;width:100%;height:100%;}
+    .screen{border-radius:0;padding:0;width:100%;height:100%;max-height:100dvh;aspect-ratio:auto;}
+    canvas{border-radius:0;object-fit:cover;width:100%!important;height:100%!important;}
     .dial{touch-action:none;}
 
     .m-drawer{
       position:fixed;top:50%;bottom:auto;z-index:25;
-      width:66px;
+      width:94px;
       background:transparent;
       transition:transform .3s cubic-bezier(.4,0,.2,1);
       display:flex;flex-direction:column;
-      padding:0 4px;
+      padding:0 8px;
     }
     .m-drawer--left{left:0;transform:translateY(-50%);}
     .m-drawer--left.closed{transform:translate(-100%,-50%);}
@@ -1367,21 +1369,21 @@
 
     .m-knob-grid{
       display:flex;flex-direction:column;
-      gap:6px;padding:0;
+      gap:14px;padding:0;
     }
     .m-knob-grid .knob{
-      padding:5px 3px 3px;
+      padding:8px 6px 5px;
       background:rgba(0,0,0,.35);
       border:1px solid rgba(255,255,255,.10);
-      border-radius:10px;
+      border-radius:14px;
       backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
     }
     .m-knob-grid .dial{
-      width:44px;height:44px;touch-action:none;
+      width:64px;height:64px;touch-action:none;
     }
-    .m-knob-grid .marker{top:4px;width:3px;height:14px;}
-    .m-knob-grid .cap{inset:8px;}
-    .m-knob-grid .label{font-size:7px;margin-top:2px;}
+    .m-knob-grid .marker{top:6px;width:3px;height:20px;}
+    .m-knob-grid .cap{inset:11px;}
+    .m-knob-grid .label{font-size:9px;margin-top:4px;}
     .m-knob-grid .label .shortcut{display:none;}
 
     .m-sheet{
@@ -2363,7 +2365,9 @@
   let cameraStream = null;
   let audioMode = 'video';
   try{
-    const s = await navigator.mediaDevices.getUserMedia({video:{width:1280,height:720,facingMode:'user'}, audio:true});
+    const _mobCam = window.matchMedia('(max-width:768px)').matches;
+    const _vidC = _mobCam ? {width:1080,height:1920,facingMode:'user'} : {width:1280,height:720,facingMode:'user'};
+    const s = await navigator.mediaDevices.getUserMedia({video:_vidC, audio:true});
     cameraStream = s; video.srcObject = s; await video.play(); hasStream = true;
   }catch(e){
     console.warn('[VideoSynth] Camera error', e);
@@ -3463,7 +3467,10 @@
   const posPost=gl.getAttribLocation(postProg,'a_pos');
   const U=(p,n)=>gl.getUniformLocation(p,n);
 
-  const RESOLUTIONS = { '720p': [1280,720], '1080p': [1920,1080], '4K': [3840,2160] };
+  const RESOLUTIONS = {
+    '720p': [1280,720], '1080p': [1920,1080], '4K': [3840,2160],
+    '720p-portrait': [720,1280], '1080p-portrait': [1080,1920], '4K-portrait': [2160,3840]
+  };
 
   // ═══════════════════════════════════════════
   // KNOB REGISTRY
@@ -3785,9 +3792,12 @@
     });
   };
 
-  // sizing: internal resolution (720p / 1080p / 4K), display via CSS
+  const _mobileQuery = window.matchMedia('(max-width:768px)');
   function fitCanvas(){
-    const [iw, ih] = RESOLUTIONS[state.internalRes] || RESOLUTIONS['1080p'];
+    const mob = _mobileQuery.matches;
+    const key = state.internalRes;
+    const pKey = key + '-portrait';
+    const [iw, ih] = (mob && RESOLUTIONS[pKey]) ? RESOLUTIONS[pKey] : (RESOLUTIONS[key] || RESOLUTIONS['1080p']);
     canvas.width = iw;
     canvas.height = ih;
     canvas.style.width = '100%';
@@ -4258,7 +4268,6 @@
   }
 
   let _mobileActive = false;
-  const _mobileQuery = window.matchMedia('(max-width:768px)');
 
   function rebuildUI(){
     buildRails();
@@ -4389,8 +4398,8 @@
         }
       });
     }
-    buildMobileKnobs(gridL, activeConfig.left.slice(0,4), 'left');
-    buildMobileKnobs(gridR, activeConfig.right.slice(0,4), 'right');
+    buildMobileKnobs(gridL, activeConfig.left.slice(0,6), 'left');
+    buildMobileKnobs(gridR, activeConfig.right.slice(0,6), 'right');
 
     const dotsC = document.getElementById('mEffDots');
     if(!dotsC) return;
