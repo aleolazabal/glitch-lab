@@ -669,6 +669,88 @@
   .preset:hover{
     border-color:var(--skin-accent2);
   }
+  .presetPanelWide{ min-width:420px; max-width:720px; }
+  .presetDivider{
+    height:1px; background:var(--skin-panel-border); margin:14px 0;
+  }
+  .modeGrid{
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+    gap:8px; margin-top:12px;
+  }
+  .modeCard{
+    padding:10px 14px; border-radius:10px;
+    background:rgba(255,255,255,.02); border:1px solid var(--skin-panel-border);
+    cursor:pointer; transition:all .15s; user-select:none;
+  }
+  .modeCard:hover{ border-color:var(--skin-accent2); background:rgba(255,255,255,.05); }
+  .modeCard.active{
+    border-color:var(--skin-accent); background:rgba(124,92,255,.12);
+    box-shadow:0 0 0 1px var(--skin-accent);
+  }
+  .modeCard .modeLabel{
+    font-size:11px; font-weight:700; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--skin-ink); margin-bottom:4px;
+  }
+  .modeCard .modeDesc{
+    font-size:9px; line-height:1.4; color:var(--skin-muted);
+    letter-spacing:.02em;
+  }
+
+  /* KNOB POPUP */
+  .knobPopup{
+    position:fixed; z-index:45;
+    width:320px; max-height:360px;
+    background:rgba(10,10,14,.97); border:1px solid var(--skin-panel-border);
+    border-radius:12px; box-shadow:0 16px 48px rgba(0,0,0,.85);
+    overflow:hidden; display:flex; flex-direction:column;
+    animation:popIn .15s ease-out;
+  }
+  @keyframes popIn{ from{opacity:0;transform:scale(.94);} to{opacity:1;transform:scale(1);} }
+  .knobPopup .kpHeader{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 14px 8px; border-bottom:1px solid var(--skin-panel-border); flex-shrink:0;
+  }
+  .knobPopup .kpTitle{
+    font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--skin-muted);
+  }
+  .knobPopup .kpClose{
+    font-size:10px; color:var(--skin-muted); cursor:pointer;
+    background:none; border:1px solid var(--skin-panel-border); border-radius:4px;
+    padding:2px 8px; letter-spacing:.08em;
+  }
+  .knobPopup .kpBody{
+    flex:1; overflow-y:auto; padding:10px 14px 14px;
+  }
+  .knobPopup .kpCat{
+    font-size:8px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--skin-accent); margin:10px 0 5px;
+  }
+  .knobPopup .kpCat:first-child{ margin-top:0; }
+  .knobPopup .kpGrid{
+    display:flex; flex-wrap:wrap; gap:4px;
+  }
+  .knobPopup .kpItem{
+    padding:5px 9px; border-radius:6px;
+    background:rgba(255,255,255,.03); border:1px solid var(--skin-panel-border);
+    cursor:pointer; font-size:9px; letter-spacing:.05em; text-transform:uppercase;
+    color:var(--skin-ink); transition:all .1s; user-select:none;
+  }
+  .knobPopup .kpItem:hover{ border-color:var(--skin-accent2); background:rgba(255,255,255,.06); }
+  .knobPopup .kpItem.current{
+    border-color:var(--skin-accent); background:rgba(124,92,255,.15);
+  }
+  .knobPopup .kpItem.pro-locked{ opacity:.35; }
+
+  /* EFFECT SELECTION highlight */
+  .libEffectCard.selected{
+    border-color:#0ff; background:rgba(0,255,255,.12);
+    box-shadow:0 0 8px rgba(0,255,255,.25);
+  }
+  .effAssignHint{
+    text-align:center; font-size:10px; color:#0ff; padding:8px 0 4px;
+    letter-spacing:.04em; animation:hintPulse 1.5s ease-in-out infinite;
+  }
+  @keyframes hintPulse{ 0%,100%{opacity:1;} 50%{opacity:.5;} }
 
   /* SKIN OVERLAY */
   .skinOverlay{
@@ -901,7 +983,7 @@
   }
   .skinCard .skinCardDel:hover{color:#ff4444;background:rgba(255,60,60,.1);}
 
-  /* LIBRARY OVERLAY */
+  /* EFFECT BROWSER */
   .libOverlay{
     position:fixed;inset:0;background:rgba(0,0,0,.85);
     display:none;align-items:center;justify-content:center;z-index:35;
@@ -1881,7 +1963,7 @@
         <div class="bottomRight">
           <button id="fullscreenBtn" class="presetTrigger iconBtn" title="Fullscreen (Esc to exit)">⛶</button>
           <button id="uiHideBtn" class="presetTrigger iconBtn" title="Hide UI (keyboard still active)">◎</button>
-          <button id="libraryTrigger" class="presetTrigger">LIBRARY</button>
+          <button id="libraryTrigger" class="presetTrigger">EFFECTS</button>
           <button id="skinTrigger" class="presetTrigger">SKINS</button>
           <button id="presetTrigger" class="presetTrigger">PRESETS</button>
         </div>
@@ -2012,15 +2094,12 @@
       </div>
     </div>
 
-    <!-- LIBRARY OVERLAY -->
+    <!-- EFFECT BROWSER -->
     <div id="libOverlay" class="libOverlay">
       <div class="libPanel">
         <div class="libHeader">
-          <div class="libTitle">EFFECT LIBRARY</div>
-          <div class="libTabs">
-            <button class="libTab active" id="libTabKnobs">KNOBS</button>
-            <button class="libTab" id="libTabEffects">EFFECTS</button>
-          </div>
+          <div class="libTitle">EFFECT BROWSER</div>
+          <div class="effAssignHint" id="effAssignHint" style="display:none;"></div>
           <button id="libClose" class="presetTrigger" style="padding:4px 10px;font-size:9px;">ESC TO CLOSE</button>
         </div>
         <div class="libBody" id="libBody"></div>
@@ -2029,11 +2108,14 @@
 
     <!-- PRESET POPUP -->
     <div id="presetOverlay" class="presetOverlay">
-      <div class="presetPanel">
+      <div class="presetPanel presetPanelWide">
         <div class="presetHeader">
-          <div class="presetTitle">PRESET SCENES</div>
+          <div class="presetTitle">MODES</div>
           <button id="presetClose" class="presetTrigger" style="padding:4px 10px;font-size:9px;">ESC TO CLOSE</button>
         </div>
+        <div id="modeGrid" class="modeGrid"></div>
+        <div class="presetDivider"></div>
+        <div class="presetTitle" style="margin-bottom:8px;">SCENE PRESETS</div>
         <div class="presetGrid">
           <div class="preset" data-preset="reset">Reset</div>
           <div class="preset" data-preset="neon">Neon Storm</div>
@@ -3335,13 +3417,68 @@
 
   const ACTIVE_STORAGE = 'glitchlab-active-config';
 
-  function defaultActiveConfig(){
-    return {
+  const MODE_PRESETS = {
+    default:{
+      label:'DEFAULT',
+      desc:'Balanced starter kit with core glitch, color, and geometry tools',
       left:['tempo','chaos','glitch','pixel','rgb','feedback','hue','palette'],
       right:['sat','bright','contrast','bloom','foldAmt','contour','warp','poster'],
       effectsR1:['fold','solar','slit','xorMelt','phaseWarp','fractalMap','shred','corrupt','ringMod','overflow','recurse','glitchDNA'],
       effectsR2:['reaction','conway','logistic','hashMelt','mirrorFold','powerCrush','staircase','digit','smear','topo','mosh','freeze'],
-    };
+    },
+    glitchMaster:{
+      label:'GLITCH MASTER',
+      desc:'Heavy distortion toolkit — pixel sorting, data corruption, and digital destruction',
+      left:['glitch','pixel','rgb','noise','feedback','speed','chaos','tempo'],
+      right:['foldAmt','contour','turbulence','warp','bright','contrast','sat','poster'],
+      effectsR1:['pixelSort','glitchBlocks','staticTV','displace','scan','corrupt','shred','datamosh','mosh','xorMelt','fold','overflow'],
+      effectsR2:['glitchDNA','hashMelt','powerCrush','staircase','mirrorFold','recurse','ringMod','digit','smear','stutter','freeze','slit'],
+    },
+    colorLab:{
+      label:'COLOR LAB',
+      desc:'Deep color manipulation — hue shifting, thermal vision, and chromatic experiments',
+      left:['hue','palette','sat','bright','contrast','temperature','vibrance','tint'],
+      right:['gamma','threshold','duotone','bloom','halftone','dither','poster','blur'],
+      effectsR1:['invert','solar','thermal','nightVis','prism','rainbowWash','crossProcess','colorNeg','holo','plasma','filmBurn','edge'],
+      effectsR2:['fold','reaction','topo','slit','mirror','kaleido','freeze','stutter','scan','displace','mosh','bitCrush'],
+    },
+    motionStudio:{
+      label:'MOTION STUDIO',
+      desc:'Geometric warps and fluid movement — swirls, ripples, and spatial distortion',
+      left:['swirl','ripple','warp','zoom','barrel','drift','morph','waveSlice'],
+      right:['tempo','speed','feedback','bloom','sat','bright','contrast','noise'],
+      effectsR1:['liquid','tunnel','shatter','echo3d','sineSlice','refract','mirror','kaleido','vector','tile4x','zoomBlur','spinBlur'],
+      effectsR2:['displace','slit','freeze','stutter','mosh','fold','reaction','conway','scan','edge','strobe','solar'],
+    },
+    retroVHS:{
+      label:'RETRO / VHS',
+      desc:'Vintage analog aesthetics — tape wobble, scanlines, and film grain textures',
+      left:['glitch','pixel','rgb','feedback','noise','vhsWobble','hue','sat'],
+      right:['bright','contrast','bloom','halftone','emboss','dither','poster','blur'],
+      effectsR1:['scan','displace','staticTV','filmBurn','bitCrush','edge','invert','solar','stutter','freeze','mosh','slit'],
+      effectsR2:['crossProcess','colorNeg','thermal','nightVis','mirror','kaleido','fold','topo','smear','glitchBlocks','pixelSort','datamosh'],
+    },
+    chaosEngine:{
+      label:'CHAOS ENGINE',
+      desc:'Generative systems and emergent patterns — cellular automata, fractals, and feedback loops',
+      left:['foldAmt','contour','chaos','feedback','tempo','speed','turbulence','fractal'],
+      right:['noise','glitch','pixel','rgb','warp','bloom','bright','contrast'],
+      effectsR1:['fold','reaction','conway','fractalMap','xorMelt','phaseWarp','automata','strange','tessellate','delta','interference','logistic'],
+      effectsR2:['shred','corrupt','ringMod','overflow','recurse','glitchDNA','hashMelt','mirrorFold','powerCrush','staircase','datamosh','smear'],
+    },
+    audioReactive:{
+      label:'AUDIO REACTIVE',
+      desc:'Sound-driven visuals — waveform scopes, beat pulses, and rhythm-synced effects',
+      left:['tempo','speed','chaos','feedback','bloom','rgb','noise','glitch'],
+      right:['sat','bright','contrast','hue','palette','warp','swirl','ripple'],
+      effectsR1:['scope','pulse','rhythm','strobe','displace','slit','mirror','kaleido','liquid','tunnel','echo3d','sineSlice'],
+      effectsR2:['fold','reaction','mosh','freeze','stutter','scan','edge','solar','filmBurn','plasma','holo','shatter'],
+    },
+  };
+
+  function defaultActiveConfig(){
+    const m = MODE_PRESETS.default;
+    return { left:[...m.left], right:[...m.right], effectsR1:[...m.effectsR1], effectsR2:[...m.effectsR2] };
   }
 
   const CONFIG_VERSION = 5;
@@ -3772,6 +3909,9 @@
   let spaceHeld = false;
 
   // Knobs with API (for keyboard performance)
+  let _knobClickCb = null;
+  function onKnobClick(cb){ _knobClickCb = cb; }
+
   function makeKnob(id,on,def){
     const el=document.getElementById(id);
     if(!el){
@@ -3794,14 +3934,22 @@
       try{on(v);}catch(_){}
       dirty=false;
     };
-    let drag=false,sy=0,sv=0;
+    let drag=false,sy=0,sv=0,wasDragged=false,downX=0,downY=0;
     el.addEventListener('pointerdown',e=>{
-      drag=true; sy=e.clientY; sv=v;
+      drag=true; wasDragged=false; sy=e.clientY; sv=v;
+      downX=e.clientX; downY=e.clientY;
       el.setPointerCapture(e.pointerId);
     });
-    window.addEventListener('pointerup',()=>drag=false);
+    window.addEventListener('pointerup',e=>{
+      if(!drag) return;
+      drag=false;
+      if(!wasDragged && knobEl && _knobClickCb){
+        _knobClickCb(knobEl, id.replace('knob_',''));
+      }
+    });
     window.addEventListener('pointermove',e=>{
       if(!drag) return;
+      if(Math.abs(e.clientX-downX)>3 || Math.abs(e.clientY-downY)>3) wasDragged=true;
       apply(sv+(sy-e.clientY)/200);
     });
     apply(v);
@@ -3898,6 +4046,68 @@
   }
   rebuildUI();
 
+  // ═══════════════════════════════════════════
+  // KNOB POPUP (click-to-swap)
+  // ═══════════════════════════════════════════
+  let _activeKnobPopup = null;
+  function closeKnobPopup(){
+    if(_activeKnobPopup){ _activeKnobPopup.remove(); _activeKnobPopup=null; }
+  }
+
+  function findKnobSlot(knobId){
+    let idx = activeConfig.left.indexOf(knobId);
+    if(idx>=0) return {side:'left',idx};
+    idx = activeConfig.right.indexOf(knobId);
+    if(idx>=0) return {side:'right',idx};
+    return null;
+  }
+
+  function openKnobPopup(knobEl, knobId){
+    closeKnobPopup();
+    const slot = findKnobSlot(knobId);
+    if(!slot) return;
+    const def = getKnobDef(knobId);
+    const rect = knobEl.getBoundingClientRect();
+    const popup = document.createElement('div');
+    popup.className = 'knobPopup';
+    const isLeft = rect.left < window.innerWidth/2;
+    popup.style.top = Math.max(8, Math.min(rect.top, window.innerHeight-370))+'px';
+    if(isLeft) popup.style.left = (rect.right+8)+'px';
+    else popup.style.right = (window.innerWidth-rect.left+8)+'px';
+    let html = `<div class="kpHeader"><div class="kpTitle">SWAP: ${def?def.label:knobId}</div><button class="kpClose">ESC</button></div><div class="kpBody">`;
+    const cats = {};
+    KNOB_REGISTRY.forEach(k=>{ (cats[k.cat]=cats[k.cat]||[]).push(k); });
+    const allActive = [...activeConfig.left,...activeConfig.right];
+    for(const cat in cats){
+      html += `<div class="kpCat">${cat}</div><div class="kpGrid">`;
+      cats[cat].forEach(k=>{
+        const isCurrent = k.id===knobId;
+        const isLocked = !isPro && proLockedKnobs.has(k.id);
+        const isUsed = !isCurrent && allActive.includes(k.id);
+        html += `<div class="kpItem${isCurrent?' current':''}${isLocked?' pro-locked':''}" data-kid="${k.id}" ${isUsed?'style="opacity:.5"':''}>${k.label}</div>`;
+      });
+      html += '</div>';
+    }
+    html += '</div>';
+    popup.innerHTML = html;
+    document.body.appendChild(popup);
+    _activeKnobPopup = popup;
+    popup.querySelector('.kpClose').addEventListener('click', closeKnobPopup);
+    popup.querySelectorAll('.kpItem').forEach(item=>{
+      item.addEventListener('click', ()=>{
+        const kid = item.dataset.kid;
+        if(!isPro && proLockedKnobs.has(kid)){ showComingSoon(kid); return; }
+        activeConfig[slot.side][slot.idx] = kid;
+        saveActiveConfig();
+        rebuildUI();
+        closeKnobPopup();
+      });
+    });
+    const outsideClick = e=>{ if(!popup.contains(e.target)){ closeKnobPopup(); document.removeEventListener('pointerdown',outsideClick); }};
+    setTimeout(()=> document.addEventListener('pointerdown', outsideClick), 0);
+  }
+  onKnobClick(openKnobPopup);
+
   // decay slider
   const decayEl=document.getElementById('decayRange');
   if(decayEl) decayEl.addEventListener('input', e=> state.decay=parseFloat(e.target.value));
@@ -3923,116 +4133,68 @@
   if(filmGrainRange) filmGrainRange.addEventListener('input', e=> state.filmGrain=parseFloat(e.target.value));
 
   // ═══════════════════════════════════════════
-  // LIBRARY PANEL
+  // EFFECT BROWSER (click effect + press key to assign)
   // ═══════════════════════════════════════════
   (function initLibrary(){
     const libOvl = document.getElementById('libOverlay');
     const libBody = document.getElementById('libBody');
-    const tabKnobs = document.getElementById('libTabKnobs');
-    const tabEffects = document.getElementById('libTabEffects');
     const libClose = document.getElementById('libClose');
     const libTrigger = document.getElementById('libraryTrigger');
+    const hintEl = document.getElementById('effAssignHint');
     if(!libOvl || !libBody) return;
 
-    let activeTab = 'knobs';
-    let swapTarget = null; // {side:'left'|'right'|'effectsR1'|'effectsR2', idx:number}
+    let selectedEffect = null;
+    let _libKeyHandler = null;
 
-    function openLib(){ libOvl.classList.add('open'); renderLib(); }
-    function closeLib(){ libOvl.classList.remove('open'); swapTarget=null; }
+    function allActiveEffects(){ return [...activeConfig.effectsR1, ...activeConfig.effectsR2]; }
+
+    function openLib(){
+      libOvl.classList.add('open');
+      selectedEffect = null;
+      renderEffectLib();
+      _libKeyHandler = e=>{
+        if(e.key==='Escape'){ closeLib(); e.preventDefault(); e.stopPropagation(); return; }
+        if(!selectedEffect) return;
+        const digitMap = {'Digit1':0,'Digit2':1,'Digit3':2,'Digit4':3,'Digit5':4,'Digit6':5,'Digit7':6,'Digit8':7,'Digit9':8,'Digit0':9,'Minus':10,'Equal':11};
+        const idx = digitMap[e.code];
+        if(idx===undefined) return;
+        const side = e.shiftKey ? 'effectsR2' : 'effectsR1';
+        if(idx >= activeConfig[side].length) return;
+        activeConfig[side][idx] = selectedEffect;
+        saveActiveConfig();
+        rebuildUI();
+        selectedEffect = null;
+        renderEffectLib();
+        e.preventDefault();
+        e.stopPropagation();
+      };
+      window.addEventListener('keydown', _libKeyHandler, true);
+    }
+
+    function closeLib(){
+      libOvl.classList.remove('open');
+      selectedEffect = null;
+      if(_libKeyHandler){ window.removeEventListener('keydown', _libKeyHandler, true); _libKeyHandler=null; }
+    }
+
     if(libTrigger) libTrigger.addEventListener('click', openLib);
     if(libClose) libClose.addEventListener('click', closeLib);
     libOvl.addEventListener('click', e=>{ if(e.target===libOvl) closeLib(); });
 
-    tabKnobs.addEventListener('click', ()=>{ activeTab='knobs'; tabKnobs.classList.add('active'); tabEffects.classList.remove('active'); renderLib(); });
-    tabEffects.addEventListener('click', ()=>{ activeTab='effects'; tabEffects.classList.add('active'); tabKnobs.classList.remove('active'); renderLib(); });
-
-    function allActiveKnobs(){ return [...activeConfig.left, ...activeConfig.right]; }
-    function allActiveEffects(){ return [...activeConfig.effectsR1, ...activeConfig.effectsR2]; }
-
-    function addResetButton(){
-      const resetRow = document.createElement('div');
-      resetRow.style.cssText = 'display:flex;justify-content:flex-end;margin-bottom:10px;';
-      const resetBtn = document.createElement('button');
-      resetBtn.className = 'presetTrigger';
-      resetBtn.style.cssText = 'padding:6px 14px;font-size:9px;letter-spacing:.1em;';
-      resetBtn.textContent = 'RESET TO DEFAULTS';
-      resetBtn.addEventListener('click', ()=>{
-        activeConfig = defaultActiveConfig();
-        saveActiveConfig();
-        swapTarget = null;
-        rebuildUI();
-        renderLib();
-      });
-      resetRow.appendChild(resetBtn);
-      libBody.appendChild(resetRow);
-    }
-
-    function renderLib(){
-      libBody.innerHTML = '';
-      addResetButton();
-      if(activeTab === 'knobs') renderKnobLib();
-      else renderEffectLib();
-    }
-
-    function renderKnobLib(){
-      // slot picker
-      const slotsDiv = document.createElement('div'); slotsDiv.className='libSlots';
-      slotsDiv.innerHTML = '<div class="libSlotsLabel">YOUR ACTIVE KNOBS (click to pick swap target)</div>';
-
-      function addSlotRow(label, side, ids, keyLabels){
-        const rowLabel = document.createElement('div'); rowLabel.className='libSlotRowLabel'; rowLabel.textContent=label;
-        const row = document.createElement('div'); row.className='libSlotRow';
-        ids.forEach((kid, i)=>{
-          const def = getKnobDef(kid);
-          const slot = document.createElement('div'); slot.className='libSlot';
-          if(swapTarget && swapTarget.side===side && swapTarget.idx===i) slot.classList.add('on');
-          slot.innerHTML = `<span class="key">${keyLabels[i]||''}</span>${def?def.label:'?'}`;
-          slot.addEventListener('click', ()=>{ swapTarget={side,idx:i}; renderLib(); });
-          row.appendChild(slot);
-        });
-        slotsDiv.appendChild(rowLabel);
-        slotsDiv.appendChild(row);
-      }
-      addSlotRow('LEFT RAIL', 'left', activeConfig.left, LEFT_LABELS);
-      addSlotRow('RIGHT RAIL', 'right', activeConfig.right, RIGHT_LABELS);
-      libBody.appendChild(slotsDiv);
-
-      if(swapTarget){
-        const hint = document.createElement('div');
-        hint.style.cssText='text-align:center;color:#0ff;font-size:10px;padding:6px;';
-        hint.textContent = 'Now click a knob below to swap it in';
-        libBody.appendChild(hint);
-      }
-
-      // knob catalog by category
-      const cats = {};
-      KNOB_REGISTRY.forEach(k=>{ (cats[k.cat]=cats[k.cat]||[]).push(k); });
-      const active = allActiveKnobs();
-      for(const cat in cats){
-        const catLabel = document.createElement('div'); catLabel.className='libCatLabel'; catLabel.textContent=cat;
-        const grid = document.createElement('div'); grid.className='libGrid';
-        cats[cat].forEach(k=>{
-          const card = document.createElement('div'); card.className='libCard';
-          const kLocked = !isPro && proLockedKnobs.has(k.id);
-          if(active.includes(k.id)) card.classList.add('on');
-          if(kLocked) card.style.opacity='.4';
-          card.innerHTML = `<strong>${k.label}</strong><small>${k.desc}</small>${kLocked?'<span style="color:#ffd700;font-size:8px;font-weight:700;margin-left:4px">PRO</span>':''}`;
-          card.addEventListener('click', ()=>{
-            if(kLocked){ showComingSoon(k.label); return; }
-            if(!swapTarget) return;
-            activeConfig[swapTarget.side][swapTarget.idx] = k.id;
-            saveActiveConfig(); rebuildUI(); renderLib();
-          });
-          grid.appendChild(card);
-        });
-        libBody.appendChild(catLabel);
-        libBody.appendChild(grid);
-      }
-    }
-
     function renderEffectLib(){
+      libBody.innerHTML = '';
+      if(hintEl){
+        if(selectedEffect){
+          const def = getEffDef(selectedEffect);
+          hintEl.style.display = '';
+          hintEl.textContent = `${def?def.label:selectedEffect} selected — press 1-0 for Row 1, Shift+1-0 for Row 2`;
+        } else {
+          hintEl.style.display = 'none';
+        }
+      }
+
       const slotsDiv = document.createElement('div'); slotsDiv.className='libSlots';
-      slotsDiv.innerHTML = '<div class="libSlotsLabel">YOUR ACTIVE EFFECTS (click to pick swap target)</div>';
+      slotsDiv.innerHTML = '<div class="libSlotsLabel">YOUR ACTIVE EFFECTS</div>';
 
       function addSlotRow(label, side, ids, keyLabels){
         const rowLabel = document.createElement('div'); rowLabel.className='libSlotRowLabel'; rowLabel.textContent=label;
@@ -4040,24 +4202,15 @@
         ids.forEach((eid, i)=>{
           const def = getEffDef(eid);
           const slot = document.createElement('div'); slot.className='libSlot';
-          if(swapTarget && swapTarget.side===side && swapTarget.idx===i) slot.classList.add('on');
           slot.innerHTML = `<span class="key">${keyLabels[i]||''}</span>${def?def.label:'?'}`;
-          slot.addEventListener('click', ()=>{ swapTarget={side,idx:i}; renderLib(); });
           row.appendChild(slot);
         });
         slotsDiv.appendChild(rowLabel);
         slotsDiv.appendChild(row);
       }
-      addSlotRow('ROW 1', 'effectsR1', activeConfig.effectsR1, EFF_LABELS_R1);
-      addSlotRow('ROW 2', 'effectsR2', activeConfig.effectsR2, EFF_LABELS_R2);
+      addSlotRow('ROW 1 (1-0, -, =)', 'effectsR1', activeConfig.effectsR1, EFF_LABELS_R1);
+      addSlotRow('ROW 2 (Shift + 1-0, -, =)', 'effectsR2', activeConfig.effectsR2, EFF_LABELS_R2);
       libBody.appendChild(slotsDiv);
-
-      if(swapTarget){
-        const hint = document.createElement('div');
-        hint.style.cssText='text-align:center;color:#0ff;font-size:10px;padding:6px;';
-        hint.textContent = 'Now click an effect below to swap it in';
-        libBody.appendChild(hint);
-      }
 
       const cats = {};
       EFFECT_REGISTRY.forEach(e=>{ (cats[e.cat]=cats[e.cat]||[]).push(e); });
@@ -4070,17 +4223,24 @@
           const eLocked = !isPro && proLockedEffects.has(e.id);
           if(active.includes(e.id)) card.classList.add('on');
           if(eLocked) card.style.opacity='.4';
+          if(selectedEffect===e.id) card.classList.add('selected');
           card.innerHTML = `<strong>${e.label}</strong>${eLocked?'<span style="color:#ffd700;font-size:8px;font-weight:700;margin-left:4px">PRO</span>':''}`;
           card.addEventListener('click', ()=>{
             if(eLocked){ showComingSoon(e.label); return; }
-            if(!swapTarget) return;
-            activeConfig[swapTarget.side][swapTarget.idx] = e.id;
-            saveActiveConfig(); rebuildUI(); renderLib();
+            selectedEffect = (selectedEffect===e.id) ? null : e.id;
+            renderEffectLib();
           });
           grid.appendChild(card);
         });
         libBody.appendChild(catLabel);
         libBody.appendChild(grid);
+      }
+
+      if(!selectedEffect){
+        const hint = document.createElement('div');
+        hint.style.cssText='text-align:center;font-size:10px;color:var(--skin-muted);padding:12px 0 4px;letter-spacing:.04em;';
+        hint.textContent = 'Click an effect, then press a number key to assign it to a slot';
+        libBody.insertBefore(hint, slotsDiv.nextSibling);
       }
     }
   })();
@@ -4092,7 +4252,7 @@
   const resetPresetBtn = document.querySelector('.preset[data-preset="reset"]');
 
   if(presetTrigger && overlay){
-    presetTrigger.addEventListener('click',()=> overlay.classList.add('open'));
+    presetTrigger.addEventListener('click',()=>{ buildModeGrid(); overlay.classList.add('open'); });
   }
   if(presetClose && overlay){
     presetClose.addEventListener('click',()=> overlay.classList.remove('open'));
@@ -4102,6 +4262,47 @@
       if(e.target===overlay) overlay.classList.remove('open');
     });
   }
+
+  // Mode presets
+  let currentModeKey = 'default';
+  const MODE_STORAGE = 'glitchlab-mode';
+  try { const sm = localStorage.getItem(MODE_STORAGE); if(sm && MODE_PRESETS[sm]) currentModeKey = sm; } catch(_){}
+
+  function detectCurrentMode(){
+    for(const key in MODE_PRESETS){
+      const m = MODE_PRESETS[key];
+      if(JSON.stringify(activeConfig.left)===JSON.stringify(m.left) &&
+         JSON.stringify(activeConfig.right)===JSON.stringify(m.right)) return key;
+    }
+    return null;
+  }
+  currentModeKey = detectCurrentMode() || currentModeKey;
+
+  function buildModeGrid(){
+    const grid = document.getElementById('modeGrid');
+    if(!grid) return;
+    grid.innerHTML = '';
+    for(const key in MODE_PRESETS){
+      const m = MODE_PRESETS[key];
+      const card = document.createElement('div');
+      card.className = 'modeCard' + (key===currentModeKey?' active':'');
+      card.innerHTML = `<div class="modeLabel">${m.label}</div><div class="modeDesc">${m.desc}</div>`;
+      card.addEventListener('click', ()=>{
+        currentModeKey = key;
+        localStorage.setItem(MODE_STORAGE, key);
+        activeConfig.left = [...m.left];
+        activeConfig.right = [...m.right];
+        activeConfig.effectsR1 = [...m.effectsR1];
+        activeConfig.effectsR2 = [...m.effectsR2];
+        saveActiveConfig();
+        applyPreset('reset');
+        rebuildUI();
+        buildModeGrid();
+      });
+      grid.appendChild(card);
+    }
+  }
+  buildModeGrid();
 
   // Skin system: Primary = bg, Secondary = borders, Third = accent. Per-skin defaults, Reset to preset.
   const SKIN_STORAGE = 'glitchlab-skin';
@@ -4997,6 +5198,7 @@
     if(e.repeat) return;
 
     if(e.key === 'Escape'){
+      if(_activeKnobPopup){ closeKnobPopup(); return; }
       const libOvl = document.getElementById('libOverlay');
       if(libOvl && libOvl.classList.contains('open')){
         libOvl.classList.remove('open'); return;
