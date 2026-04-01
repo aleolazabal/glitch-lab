@@ -79,7 +79,8 @@
     display:grid;
     grid-template-rows:auto minmax(0,1fr) auto;
     height:100vh;
-    width:100vw;
+    width:100%;
+    max-width:100vw;
     background:#0a0a0a;
     overflow:hidden;
   }
@@ -493,6 +494,8 @@
     position:relative;
     z-index:5;
     width:100%;
+    max-width:100%;
+    overflow-x:auto;
     background:var(--skin-panel-bg);
     border-top:1px solid var(--skin-panel-border);
     padding:4px 10px;
@@ -1311,6 +1314,159 @@
   body[data-skin="renaissance"] .knob.active{
     box-shadow:0 0 0 1px var(--skin-accent),0 0 16px rgba(201,168,76,.35),0 6px 18px rgba(0,0,0,.5);
   }
+
+  /* ═══════════════════════════════════════════ */
+  /* MOBILE RESPONSIVE                          */
+  /* ═══════════════════════════════════════════ */
+  .m-drawer,.m-sheet{display:none;}
+  @media(max-width:768px){
+    .app{
+      grid-template-rows:minmax(0,1fr);
+      overflow:hidden;
+    }
+    header{
+      position:absolute;top:0;left:0;right:0;z-index:30;
+      background:linear-gradient(180deg,rgba(0,0,0,.6) 0%,transparent 100%);
+      padding:6px 10px;
+    }
+    header h1{display:none;}
+    .headerControls{gap:6px;flex-wrap:nowrap;justify-content:center;}
+    .headerControls .sourceRow:nth-child(2),
+    .headerControls #fps30,
+    .headerControls #fps60,
+    .headerControls #recordingInfo,
+    .headerControls .sourceFilename,
+    .headerControls #sourceClear{display:none!important;}
+    .headerControls .sourceBtn{padding:5px 8px;font-size:9px;}
+    .headerControls .btn{padding:6px 12px;font-size:10px;}
+    .rail{display:none!important;}
+    .bottomPanel{display:none!important;}
+    .main{
+      grid-template-columns:1fr;
+      padding:0;column-gap:0;
+      height:100vh;height:100dvh;
+    }
+    .stage{max-width:none;border-radius:0;box-shadow:none;border:none;}
+    .screen{border-radius:0;padding:0;max-height:100vh;max-height:100dvh;width:100%;aspect-ratio:auto;}
+    canvas{border-radius:0;}
+    .dial{touch-action:none;}
+
+    .m-drawer{
+      position:fixed;top:50%;bottom:auto;z-index:25;
+      width:66px;
+      background:transparent;
+      transition:transform .3s cubic-bezier(.4,0,.2,1);
+      display:flex;flex-direction:column;
+      padding:0 4px;
+    }
+    .m-drawer--left{left:0;transform:translateY(-50%);}
+    .m-drawer--left.closed{transform:translate(-100%,-50%);}
+    .m-drawer--right{right:0;transform:translateY(-50%);}
+    .m-drawer--right.closed{transform:translate(100%,-50%);}
+    .m-drawer .m-handle{display:none;}
+
+    .m-knob-grid{
+      display:flex;flex-direction:column;
+      gap:6px;padding:0;
+    }
+    .m-knob-grid .knob{
+      padding:5px 3px 3px;
+      background:rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:10px;
+      backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+    }
+    .m-knob-grid .dial{
+      width:44px;height:44px;touch-action:none;
+    }
+    .m-knob-grid .marker{top:4px;width:3px;height:14px;}
+    .m-knob-grid .cap{inset:8px;}
+    .m-knob-grid .label{font-size:7px;margin-top:2px;}
+    .m-knob-grid .label .shortcut{display:none;}
+
+    .m-sheet{
+      position:fixed;left:0;right:0;bottom:0;z-index:25;
+      background:rgba(0,0,0,.45);
+      backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+      transition:transform .3s cubic-bezier(.4,0,.2,1);
+      display:flex;flex-direction:column;
+      border-radius:12px 12px 0 0;
+      overflow:hidden;
+    }
+    .m-sheet.closed{transform:translateY(100%);}
+    .m-sheet-bar{
+      display:flex;align-items:center;
+      padding:4px 8px 2px;flex-shrink:0;
+    }
+    .m-sheet .m-sheet-handle{
+      flex:1;padding:4px 0;
+      display:flex;justify-content:center;cursor:grab;
+    }
+    .m-sheet .m-sheet-handle::after{
+      content:'';width:28px;height:3px;border-radius:2px;
+      background:rgba(255,255,255,.2);
+    }
+    .m-reset-btn{
+      padding:4px 10px;font-size:9px;letter-spacing:.1em;
+      border-radius:999px;border:1px solid rgba(255,100,100,.3);
+      background:rgba(255,60,60,.12);color:rgba(255,160,160,.9);
+      cursor:pointer;white-space:nowrap;flex-shrink:0;
+    }
+    .m-reset-btn:active{background:rgba(255,60,60,.3);}
+    .m-sheet-body{
+      padding:2px 8px 10px;
+    }
+    .m-eff-pager{
+      overflow:hidden;position:relative;
+    }
+    .m-eff-track{
+      display:flex;
+      transition:transform .3s cubic-bezier(.4,0,.2,1);
+    }
+    .m-eff-page{
+      flex:0 0 100%;
+      display:flex;flex-wrap:wrap;gap:4px;
+      padding:2px 4px;
+      box-sizing:border-box;
+    }
+    .m-eff-page .toggleBtn{
+      padding:5px 10px;font-size:10px;
+      border-radius:999px;
+    }
+    .m-eff-page .toggleBtn .key{display:none;}
+    .m-eff-dots{
+      display:flex;justify-content:center;gap:5px;
+      padding:4px 0 2px;
+    }
+    .m-eff-dot{
+      width:6px;height:6px;border-radius:50%;
+      background:rgba(255,255,255,.2);
+      transition:background .2s;
+    }
+    .m-eff-dot.active{background:var(--skin-accent);}
+    .m-section-label{display:none;}
+    .m-slider-row{display:none;}
+    .m-knob-swap{
+      position:fixed;z-index:35;
+      width:180px;max-height:260px;overflow-y:auto;
+      background:rgba(10,10,10,.92);
+      backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:12px;padding:6px;
+      box-shadow:0 8px 30px rgba(0,0,0,.6);
+    }
+    .m-knob-swap .m-swap-cat{
+      font-size:8px;letter-spacing:.12em;text-transform:uppercase;
+      color:var(--skin-muted);padding:4px 2px 2px;
+    }
+    .m-knob-swap .m-swap-item{
+      padding:6px 8px;font-size:11px;color:var(--skin-ink);
+      border-radius:6px;cursor:pointer;
+    }
+    .m-knob-swap .m-swap-item:active{background:rgba(255,255,255,.1);}
+    .m-knob-swap .m-swap-item.current{color:var(--skin-accent);font-weight:600;}
+    .m-knob-swap .m-swap-item.used{opacity:.4;}
+  }
 </style>
 </head>
 <body>
@@ -1336,6 +1492,7 @@
           <button id="audioVideo" class="sourceBtn on" type="button" title="Mic or uploaded video audio">Video</button>
         </div>
         <span id="recordingIndicator" class="recordingIndicator">Recording…</span>
+        <span id="recordingInfo" class="recordingIndicator" style="color:var(--skin-muted);"></span>
         <!-- Auth row hidden: re-enable when payments are live
         <div id="authRow" class="authRow" style="display:none;">
           <button id="authLoginBtn" class="sourceBtn" type="button">Login</button>
@@ -1345,6 +1502,8 @@
           <button id="authLogoutBtn" class="sourceBtn" type="button" style="display:none;">Log out</button>
         </div>
         -->
+        <button id="fps30" class="sourceBtn on" type="button" title="Record at 30fps">30fps</button>
+        <button id="fps60" class="sourceBtn" type="button" title="Record at 60fps">60fps</button>
         <button id="recordBtn" class="btn">● RECORD</button>
         <button id="downloadBtn" class="btn alt" title="Record first to download">DOWNLOAD</button>
       </div>
@@ -1975,6 +2134,28 @@
         </div>
       </div>
     </aside>
+
+    <!-- MOBILE KNOB DRAWERS (populated by JS) -->
+    <div id="mobileDrawerLeft" class="m-drawer m-drawer--left closed">
+      <div class="m-knob-grid" id="mKnobGridLeft"></div>
+    </div>
+    <div id="mobileDrawerRight" class="m-drawer m-drawer--right closed">
+      <div class="m-knob-grid" id="mKnobGridRight"></div>
+    </div>
+
+    <!-- MOBILE EFFECT SHEET (populated by JS) -->
+    <div id="mobileEffectSheet" class="m-sheet closed">
+      <div class="m-sheet-bar">
+        <div class="m-sheet-handle" id="mSheetHandle"></div>
+        <button id="mResetBtn" class="m-reset-btn">RESET</button>
+      </div>
+      <div class="m-sheet-body">
+        <div class="m-eff-pager" id="mEffPager">
+          <div class="m-eff-track" id="mEffTrack"></div>
+        </div>
+        <div class="m-eff-dots" id="mEffDots"></div>
+      </div>
+    </div>
 
     <!-- SKIN OVERLAY -->
     <div id="skinOverlay" class="skinOverlay">
@@ -3795,11 +3976,42 @@
   let recordingChunks = [];
   let isRecording = false;
   let lastRecordedBlob = null;
+  let lastRecordedExt = 'webm';
   let recordAudioContext = null;
-  const RECORD_FPS = 30;
-  const MAX_RECORD_MS = 10 * 60 * 1000; // 10 min cap
+  let recordFps = 30;
+  const MAX_RECORD_MS = 10 * 60 * 1000;
   let recordStartTime = 0;
   let recordMaxTimer = null;
+  const recordInfoEl = document.getElementById('recordingInfo');
+  const fps30Btn = document.getElementById('fps30');
+  const fps60Btn = document.getElementById('fps60');
+
+  const BITRATE_BY_RES = { '720p': 10e6, '1080p': 20e6, '4K': 50e6 };
+
+  function pickMime(hasAudio){
+    const try_ = m => MediaRecorder.isTypeSupported(m) ? m : null;
+    if(hasAudio){
+      return try_('video/mp4;codecs=avc1,opus')
+          || try_('video/mp4;codecs=avc1,mp4a.40.2')
+          || try_('video/webm;codecs=vp9,opus')
+          || try_('video/webm;codecs=vp8,opus')
+          || 'video/webm';
+    }
+    return try_('video/mp4;codecs=avc1')
+        || try_('video/webm;codecs=vp9')
+        || 'video/webm';
+  }
+
+  if(fps30Btn) fps30Btn.addEventListener('click', ()=>{
+    if(isRecording) return;
+    recordFps = 30;
+    fps30Btn.classList.add('on'); if(fps60Btn) fps60Btn.classList.remove('on');
+  });
+  if(fps60Btn) fps60Btn.addEventListener('click', ()=>{
+    if(isRecording) return;
+    recordFps = 60;
+    fps60Btn.classList.add('on'); if(fps30Btn) fps30Btn.classList.remove('on');
+  });
 
   if(recordBtn){
     recordBtn.addEventListener('click', ()=>{
@@ -3813,9 +4025,10 @@
         recordBtn.textContent = '● RECORD';
         recordBtn.classList.remove('recording');
         if(recordingIndicator) recordingIndicator.classList.remove('show');
+        if(recordInfoEl) recordInfoEl.classList.remove('show');
         return;
       }
-      const videoStream = canvas.captureStream(RECORD_FPS);
+      const videoStream = canvas.captureStream(recordFps);
       let stream = videoStream;
       let audioTrack = null;
       if(audioMode === 'video'){
@@ -3839,10 +4052,11 @@
         stream = new MediaStream([...videoStream.getVideoTracks(), audioTrack]);
       }
       const hasAudio = !!audioTrack;
-      const mime = hasAudio
-        ? (MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus') ? 'video/webm;codecs=vp9,opus' : (MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus') ? 'video/webm;codecs=vp8,opus' : 'video/webm'))
-        : (MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' : 'video/webm');
-      mediaRecorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 5e6, audioBitsPerSecond: hasAudio ? 128000 : undefined });
+      const mime = pickMime(hasAudio);
+      const isMp4 = mime.startsWith('video/mp4');
+      lastRecordedExt = isMp4 ? 'mp4' : 'webm';
+      const vBitrate = BITRATE_BY_RES[state.internalRes] || 20e6;
+      mediaRecorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: vBitrate, audioBitsPerSecond: hasAudio ? 128000 : undefined });
       recordingChunks = [];
       mediaRecorder.ondataavailable = e => { if(e.data && e.data.size) recordingChunks.push(e.data); };
       mediaRecorder.onstop = ()=>{
@@ -3857,6 +4071,11 @@
       recordBtn.textContent = '■ STOP';
       recordBtn.classList.add('recording');
       if(recordingIndicator) recordingIndicator.classList.add('show');
+      const formatLabel = isMp4 ? 'MP4' : 'WebM';
+      if(recordInfoEl){
+        recordInfoEl.textContent = `${state.internalRes} ${recordFps}fps ${formatLabel}`;
+        recordInfoEl.classList.add('show');
+      }
       recordMaxTimer = setTimeout(()=>{
         if(isRecording && recordBtn) recordBtn.click();
       }, MAX_RECORD_MS);
@@ -3870,7 +4089,7 @@
       const url = URL.createObjectURL(lastRecordedBlob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'glitchlab-' + new Date().toISOString().slice(0,19).replace(/[-:T]/g,'-') + '.webm';
+      a.download = 'glitchlab-' + new Date().toISOString().slice(0,19).replace(/[-:T]/g,'-') + '.' + lastRecordedExt;
       a.click();
       URL.revokeObjectURL(url);
     });
@@ -3934,24 +4153,22 @@
       try{on(v);}catch(_){}
       dirty=false;
     };
-    let drag=false,sy=0,sv=0,wasDragged=false,downX=0,downY=0;
+    const _drags=new Map();
     el.addEventListener('pointerdown',e=>{
-      drag=true; wasDragged=false; sy=e.clientY; sv=v;
-      downX=e.clientX; downY=e.clientY;
+      _drags.set(e.pointerId,{sy:e.clientY,sv:v,dx:e.clientX,dy:e.clientY,moved:false});
       el.setPointerCapture(e.pointerId);
     });
-    window.addEventListener('pointerup',e=>{
-      if(!drag) return;
-      drag=false;
-      if(!wasDragged && knobEl && _knobClickCb){
-        _knobClickCb(knobEl, id.replace('knob_',''));
-      }
+    el.addEventListener('pointermove',e=>{
+      const d=_drags.get(e.pointerId); if(!d) return;
+      if(Math.abs(e.clientX-d.dx)>3||Math.abs(e.clientY-d.dy)>3) d.moved=true;
+      apply(d.sv+(d.sy-e.clientY)/200);
     });
-    window.addEventListener('pointermove',e=>{
-      if(!drag) return;
-      if(Math.abs(e.clientX-downX)>3 || Math.abs(e.clientY-downY)>3) wasDragged=true;
-      apply(sv+(sy-e.clientY)/200);
+    el.addEventListener('pointerup',e=>{
+      const d=_drags.get(e.pointerId); if(!d) return;
+      _drags.delete(e.pointerId);
+      if(!d.moved && knobEl && _knobClickCb) _knobClickCb(knobEl, id.replace('knob_',''));
     });
+    el.addEventListener('pointercancel',e=>{ _drags.delete(e.pointerId); });
     apply(v);
     const api=function(n){ if(typeof n==='number') apply(n); };
     api.nudge=function(dv){ apply(v+dv); };
@@ -4040,11 +4257,312 @@
     buildRow(row2, activeConfig.effectsR2, EFF_CODES_R1, EFF_LABELS_R2, true);
   }
 
+  let _mobileActive = false;
+  const _mobileQuery = window.matchMedia('(max-width:768px)');
+
   function rebuildUI(){
     buildRails();
     buildToggles();
+    if(_mobileActive) buildMobileUI();
   }
   rebuildUI();
+
+  // ═══════════════════════════════════════════
+  // MOBILE INSTRUMENT MODE
+  // ═══════════════════════════════════════════
+
+  let _mobileSwapPopup = null;
+  function closeMobileSwap(){ if(_mobileSwapPopup){ _mobileSwapPopup.remove(); _mobileSwapPopup=null; } }
+
+  function openMobileEffectSwap(btnEl, effId, side, idx){
+    closeMobileSwap();
+    const rect = btnEl.getBoundingClientRect();
+    const popup = document.createElement('div');
+    popup.className = 'm-knob-swap';
+    popup.style.bottom = (window.innerHeight - rect.top + 4) + 'px';
+    popup.style.left = Math.max(4, Math.min(rect.left, window.innerWidth - 190)) + 'px';
+    const cats = {};
+    EFFECT_REGISTRY.forEach(e=>{ (cats[e.cat]=cats[e.cat]||[]).push(e); });
+    const allActive = [...activeConfig.effectsR1,...activeConfig.effectsR2];
+    let html = '';
+    for(const cat in cats){
+      html += `<div class="m-swap-cat">${cat}</div>`;
+      cats[cat].forEach(e=>{
+        const isCurrent = e.id===effId;
+        const isLocked = !isPro && proLockedEffects.has(e.id);
+        const isUsed = !isCurrent && allActive.includes(e.id);
+        if(isLocked) return;
+        html += `<div class="m-swap-item${isCurrent?' current':''}${isUsed?' used':''}" data-eid="${e.id}">${e.label}</div>`;
+      });
+    }
+    popup.innerHTML = html;
+    document.body.appendChild(popup);
+    _mobileSwapPopup = popup;
+    popup.querySelectorAll('.m-swap-item').forEach(item=>{
+      item.addEventListener('click', ()=>{
+        activeConfig[side][idx] = item.dataset.eid;
+        saveActiveConfig();
+        rebuildUI();
+        closeMobileSwap();
+      });
+    });
+    const dismiss = e=>{ if(!popup.contains(e.target)){ closeMobileSwap(); document.removeEventListener('pointerdown',dismiss); }};
+    setTimeout(()=> document.addEventListener('pointerdown', dismiss), 0);
+  }
+
+  function openMobileKnobSwap(knobEl, knobId){
+    closeMobileSwap();
+    const slot = findKnobSlot(knobId);
+    if(!slot) return;
+    const rect = knobEl.getBoundingClientRect();
+    const popup = document.createElement('div');
+    popup.className = 'm-knob-swap';
+    const isLeft = rect.left < window.innerWidth / 2;
+    popup.style.top = Math.max(8, Math.min(rect.top - 20, window.innerHeight - 270)) + 'px';
+    if(isLeft) popup.style.left = (rect.right + 6) + 'px';
+    else popup.style.right = (window.innerWidth - rect.left + 6) + 'px';
+    const cats = {};
+    KNOB_REGISTRY.forEach(k=>{ (cats[k.cat]=cats[k.cat]||[]).push(k); });
+    const allActive = [...activeConfig.left,...activeConfig.right];
+    let html = '';
+    for(const cat in cats){
+      html += `<div class="m-swap-cat">${cat}</div>`;
+      cats[cat].forEach(k=>{
+        const isCurrent = k.id===knobId;
+        const isLocked = !isPro && proLockedKnobs.has(k.id);
+        const isUsed = !isCurrent && allActive.includes(k.id);
+        if(isLocked) return;
+        html += `<div class="m-swap-item${isCurrent?' current':''}${isUsed?' used':''}" data-kid="${k.id}">${k.label}</div>`;
+      });
+    }
+    popup.innerHTML = html;
+    document.body.appendChild(popup);
+    _mobileSwapPopup = popup;
+    popup.querySelectorAll('.m-swap-item').forEach(item=>{
+      item.addEventListener('click', ()=>{
+        activeConfig[slot.side][slot.idx] = item.dataset.kid;
+        saveActiveConfig();
+        rebuildUI();
+        closeMobileSwap();
+      });
+    });
+    const dismiss = e=>{ if(!popup.contains(e.target)){ closeMobileSwap(); document.removeEventListener('pointerdown',dismiss); }};
+    setTimeout(()=> document.addEventListener('pointerdown', dismiss), 0);
+  }
+
+  function buildMobileUI(){
+    const gridL = document.getElementById('mKnobGridLeft');
+    const gridR = document.getElementById('mKnobGridRight');
+    const track = document.getElementById('mEffTrack');
+    if(!gridL||!gridR||!track) return;
+    gridL.innerHTML=''; gridR.innerHTML='';
+
+    function buildMobileKnobs(container, ids, side){
+      ids.forEach((knobId, idx)=>{
+        const def = getKnobDef(knobId);
+        if(!def) return;
+        const locked = !isPro && proLockedKnobs.has(knobId);
+        const dialId = 'm_knob_'+knobId;
+        const div = document.createElement('div');
+        div.className = 'knob' + (locked ? ' pro-locked' : '');
+        div.innerHTML = `<div class="dial" id="${dialId}"><div class="cap"></div><div class="marker"></div></div>`
+          + `<div class="label">${def.label}</div>`;
+        if(locked){
+          div.addEventListener('click', ()=> showComingSoon(def.label));
+        }
+        container.appendChild(div);
+        const noop = ()=>{};
+        const api = makeKnob(dialId, locked ? noop : v=>{ state[def.stateKey] = def.transform(v); }, locked ? 0 : def.def);
+        knobApis['m_'+knobId] = api;
+
+        if(!locked){
+          let lpTimer = null;
+          const dialEl = document.getElementById(dialId);
+          if(dialEl){
+            dialEl.addEventListener('pointerdown', ()=>{
+              lpTimer = setTimeout(()=>{ openMobileKnobSwap(div, knobId); lpTimer=null; }, 500);
+            });
+            dialEl.addEventListener('pointermove', ()=>{ if(lpTimer){ clearTimeout(lpTimer); lpTimer=null; } });
+            dialEl.addEventListener('pointerup', ()=>{ if(lpTimer){ clearTimeout(lpTimer); lpTimer=null; } });
+            dialEl.addEventListener('pointercancel', ()=>{ if(lpTimer){ clearTimeout(lpTimer); lpTimer=null; } });
+          }
+        }
+      });
+    }
+    buildMobileKnobs(gridL, activeConfig.left.slice(0,4), 'left');
+    buildMobileKnobs(gridR, activeConfig.right.slice(0,4), 'right');
+
+    const dotsC = document.getElementById('mEffDots');
+    if(!dotsC) return;
+    track.innerHTML = ''; dotsC.innerHTML = '';
+
+    const allSlots = [];
+    activeConfig.effectsR1.forEach((id,i)=> allSlots.push({id, side:'effectsR1', idx:i}));
+    activeConfig.effectsR2.forEach((id,i)=> allSlots.push({id, side:'effectsR2', idx:i}));
+    const unlocked = allSlots.filter(s=> isPro || !proLockedEffects.has(s.id));
+    const locked = allSlots.filter(s=> !isPro && proLockedEffects.has(s.id));
+    const sorted = [...unlocked, ...locked];
+
+    const total = sorted.length;
+    const numPages = Math.max(1, Math.ceil(total / 10));
+    const perPage = Math.ceil(total / numPages);
+    const pages = [];
+    for(let i=0; i<total; i+=perPage) pages.push(sorted.slice(i, i+perPage));
+    if(pages.length===0) return;
+
+    pages.forEach(pageSlots=>{
+      const page = document.createElement('div');
+      page.className = 'm-eff-page';
+      pageSlots.forEach(slot=>{
+        const def = getEffDef(slot.id);
+        if(!def) return;
+        const isLocked = !isPro && proLockedEffects.has(slot.id);
+        const btn = document.createElement('button');
+        btn.className = 'toggleBtn' + (isLocked ? ' pro-locked' : '');
+        btn.textContent = def.label;
+        if(isLocked){
+          btn.addEventListener('click', e=>{ e.stopPropagation(); showComingSoon(def.label); });
+        } else {
+          if(state[def.stateKey]) btn.classList.add('on');
+          btn.addEventListener('click', ()=>{
+            state[def.stateKey] = state[def.stateKey] ? 0 : 1;
+            btn.classList.toggle('on', !!state[def.stateKey]);
+            const desktopBtn = toggleBtns[slot.id];
+            if(desktopBtn) desktopBtn.classList.toggle('on', !!state[def.stateKey]);
+          });
+          let lpTimer = null;
+          btn.addEventListener('pointerdown', ()=>{
+            lpTimer = setTimeout(()=>{ openMobileEffectSwap(btn, slot.id, slot.side, slot.idx); lpTimer=null; }, 500);
+          });
+          btn.addEventListener('pointermove', ()=>{ if(lpTimer){ clearTimeout(lpTimer); lpTimer=null; } });
+          btn.addEventListener('pointerup', ()=>{ if(lpTimer){ clearTimeout(lpTimer); lpTimer=null; } });
+          btn.addEventListener('pointercancel', ()=>{ if(lpTimer){ clearTimeout(lpTimer); lpTimer=null; } });
+        }
+        page.appendChild(btn);
+      });
+      track.appendChild(page);
+    });
+
+    let curPage = 0;
+    function goPage(p){
+      curPage = Math.max(0, Math.min(pages.length-1, p));
+      track.style.transform = `translateX(-${curPage*100}%)`;
+      dotsC.querySelectorAll('.m-eff-dot').forEach((d,i)=> d.classList.toggle('active', i===curPage));
+    }
+    pages.forEach((_,i)=>{
+      const dot = document.createElement('div');
+      dot.className = 'm-eff-dot' + (i===0?' active':'');
+      dot.addEventListener('click', ()=> goPage(i));
+      dotsC.appendChild(dot);
+    });
+
+    let _pgSx=0, _pgSy=0, _pgDrag=false;
+    const pager = document.getElementById('mEffPager');
+    pager.addEventListener('touchstart', e=>{
+      const t=e.touches[0]; _pgSx=t.clientX; _pgSy=t.clientY; _pgDrag=true;
+    }, {passive:true});
+    pager.addEventListener('touchend', e=>{
+      if(!_pgDrag) return; _pgDrag=false;
+      const t=e.changedTouches[0];
+      const dx=t.clientX-_pgSx, dy=t.clientY-_pgSy;
+      if(Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy)*1.2){
+        if(dx<0) goPage(curPage+1);
+        else goPage(curPage-1);
+      }
+    }, {passive:true});
+  }
+
+  function initMobile(){
+    if(!_mobileQuery.matches) return;
+    _mobileActive = true;
+
+    const drawerL = document.getElementById('mobileDrawerLeft');
+    const drawerR = document.getElementById('mobileDrawerRight');
+    const sheet = document.getElementById('mobileEffectSheet');
+    const sheetHandle = document.getElementById('mSheetHandle');
+    if(!drawerL||!drawerR||!sheet) return;
+
+    sheetHandle.addEventListener('click', ()=> sheet.classList.toggle('closed'));
+
+    const resetBtn = document.getElementById('mResetBtn');
+    if(resetBtn){
+      resetBtn.addEventListener('click', e=>{
+        e.stopPropagation();
+        applyPreset('reset');
+        buildMobileUI();
+      });
+    }
+
+    buildMobileUI();
+
+    setTimeout(()=>{
+      drawerL.classList.remove('closed');
+      drawerR.classList.remove('closed');
+      sheet.classList.remove('closed');
+    }, 300);
+
+    // --- Swipe gesture detection ---
+    let _swT = null;
+    document.addEventListener('touchstart', e=>{
+      const t = e.touches[0];
+      _swT = {x:t.clientX, y:t.clientY, t:Date.now()};
+    }, {passive:true});
+
+    document.addEventListener('touchend', e=>{
+      if(!_swT) return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - _swT.x;
+      const dy = t.clientY - _swT.y;
+      const ax = Math.abs(dx), ay = Math.abs(dy);
+      const elapsed = Date.now() - _swT.t;
+      const startX = _swT.x, startY = _swT.y;
+      _swT = null;
+      if(elapsed > 500) return;
+
+      const W = window.innerWidth, H = window.innerHeight;
+      if(ax > 50 && ax > ay * 1.3){
+        if(dx > 0 && startX < 40 && drawerL.classList.contains('closed')){
+          drawerL.classList.remove('closed');
+        }
+        if(dx < 0 && startX < 100 && !drawerL.classList.contains('closed')){
+          drawerL.classList.add('closed');
+        }
+        if(dx < 0 && startX > W - 40 && drawerR.classList.contains('closed')){
+          drawerR.classList.remove('closed');
+        }
+        if(dx > 0 && startX > W - 100 && !drawerR.classList.contains('closed')){
+          drawerR.classList.add('closed');
+        }
+      }
+
+      if(ay > 50 && ay > ax * 1.3){
+        if(dy < 0 && startY > H - 60){
+          sheet.classList.remove('closed');
+        } else if(dy > 0 && !sheet.classList.contains('closed')){
+          sheet.classList.add('closed');
+        }
+      }
+    }, {passive:true});
+  }
+
+  _mobileQuery.addEventListener('change', e=>{
+    _mobileActive = e.matches;
+    const drawerL = document.getElementById('mobileDrawerLeft');
+    const drawerR = document.getElementById('mobileDrawerRight');
+    const sheet = document.getElementById('mobileEffectSheet');
+    if(e.matches){
+      buildMobileUI();
+      if(drawerL) drawerL.classList.remove('closed');
+      if(drawerR) drawerR.classList.remove('closed');
+      if(sheet) sheet.classList.remove('closed');
+    } else {
+      if(drawerL) drawerL.classList.add('closed');
+      if(drawerR) drawerR.classList.add('closed');
+      if(sheet) sheet.classList.add('closed');
+    }
+  });
+
+  initMobile();
 
   // ═══════════════════════════════════════════
   // KNOB POPUP (click-to-swap)
@@ -4203,6 +4721,15 @@
           const def = getEffDef(eid);
           const slot = document.createElement('div'); slot.className='libSlot';
           slot.innerHTML = `<span class="key">${keyLabels[i]||''}</span>${def?def.label:'?'}`;
+          if(selectedEffect){ slot.style.cursor='pointer'; slot.style.borderColor='var(--skin-accent)'; slot.style.boxShadow='0 0 6px rgba(0,212,255,.3)'; }
+          slot.addEventListener('click', ()=>{
+            if(!selectedEffect) return;
+            activeConfig[side][i] = selectedEffect;
+            saveActiveConfig();
+            rebuildUI();
+            selectedEffect = null;
+            renderEffectLib();
+          });
           row.appendChild(slot);
         });
         slotsDiv.appendChild(rowLabel);
@@ -4239,7 +4766,7 @@
       if(!selectedEffect){
         const hint = document.createElement('div');
         hint.style.cssText='text-align:center;font-size:10px;color:var(--skin-muted);padding:12px 0 4px;letter-spacing:.04em;';
-        hint.textContent = 'Click an effect, then press a number key to assign it to a slot';
+        hint.textContent = 'Tap an effect, then tap a slot above to assign it';
         libBody.insertBefore(hint, slotsDiv.nextSibling);
       }
     }
