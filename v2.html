@@ -2547,9 +2547,10 @@
   async function initCamera(){
     try{
       const _mobCam = window.matchMedia('(max-width:768px)').matches;
-      const _vidC = _mobCam ? {facingMode:'user',width:{ideal:1920},height:{ideal:1080}} : {width:1280,height:720,facingMode:'user'};
+      const _vidC = _mobCam ? {facingMode:'user',width:{min:1280,ideal:1920},height:{min:720,ideal:1080}} : {width:1280,height:720,facingMode:'user'};
       const s = await navigator.mediaDevices.getUserMedia({video:_vidC, audio:true});
       cameraStream = s; video.srcObject = s; await video.play(); hasStream = true;
+      await new Promise(r=>{ if(video.videoWidth) r(); else video.addEventListener('loadedmetadata',r,{once:true}); });
     }catch(e){
       console.warn('[VideoSynth] Camera error', e);
       alert('Camera denied/unavailable. Use HTTPS (or localhost) and allow access.');
@@ -2571,6 +2572,16 @@
     }
     if(typeof fitCanvas==='function') fitCanvas();
   }
+  document.addEventListener('visibilitychange', ()=>{
+    if(!cameraStream) return;
+    if(document.hidden){
+      cameraStream.getVideoTracks().forEach(t=> t.enabled=false);
+      video.pause();
+    } else {
+      cameraStream.getVideoTracks().forEach(t=> t.enabled=true);
+      video.play().catch(()=>{});
+    }
+  });
   let selfieMode = true;
   function getVideoSource(){ return useUpload ? uploadVideo : video; }
   function hasVideoFrame(){
@@ -2583,10 +2594,11 @@
     if(cameraStream) cameraStream.getTracks().forEach(t => t.stop());
     try{
       const s = await navigator.mediaDevices.getUserMedia({
-        video:{facingMode:mode, width:{ideal:1920}, height:{ideal:1080}},
+        video:{facingMode:mode, width:{min:1280,ideal:1920}, height:{min:720,ideal:1080}},
         audio:true
       });
       cameraStream = s; video.srcObject = s; await video.play(); hasStream = true;
+      await new Promise(r=>{ if(video.videoWidth) r(); else video.addEventListener('loadedmetadata',r,{once:true}); });
       canvas.style.transform = selfieMode && window.matchMedia('(max-width:768px)').matches ? 'scaleX(-1)' : '';
       if(typeof fitCanvas==='function') fitCanvas();
     }catch(e){
