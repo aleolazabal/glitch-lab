@@ -162,6 +162,7 @@
     gap:10px;
     flex-wrap:wrap;
   }
+  .flipCamBtn{display:none;}
   .sourceRow{
     display:flex;
     align-items:center;
@@ -1316,6 +1317,95 @@
   }
 
   /* ═══════════════════════════════════════════ */
+  /* CONSENT MODAL                              */
+  /* ═══════════════════════════════════════════ */
+  .consent-overlay{
+    position:fixed;inset:0;z-index:9999;
+    background:rgba(0,0,0,.94);
+    display:flex;align-items:center;justify-content:center;
+    padding:20px;
+  }
+  .consent-overlay.hidden{display:none;}
+  .consent-box{
+    max-width:420px;width:100%;
+    background:rgba(15,15,15,.95);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:16px;
+    padding:32px 28px;
+    text-align:center;
+  }
+  .consent-title{
+    font-size:28px;font-weight:900;letter-spacing:.15em;
+    margin:0 0 16px;color:#fff;
+    position:relative;
+    animation:glitchFlicker 3s infinite;
+  }
+  @keyframes glitchFlicker{
+    0%,93%,97%,100%{text-shadow:none;transform:none;}
+    94%{text-shadow:2px 0 #f0f,−2px 0 #0ff;transform:translateX(2px);}
+    96%{text-shadow:−2px 0 #f0f,2px 0 #0ff;transform:translateX(−1px);}
+    98%{text-shadow:1px 0 #f0f,−1px 0 #0ff;transform:none;}
+  }
+  .consent-warning{
+    font-size:13px;line-height:1.5;
+    color:rgba(255,255,255,.6);
+    margin:0 0 20px;
+  }
+  .consent-warning strong{color:rgba(255,180,180,.9);}
+  .consent-check{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    font-size:12px;color:rgba(255,255,255,.7);
+    cursor:pointer;margin:0 0 6px;
+  }
+  .consent-check input[type="checkbox"]{
+    width:16px;height:16px;accent-color:#fff;cursor:pointer;flex-shrink:0;
+  }
+  .consent-link{
+    text-decoration:underline;cursor:pointer;
+    color:rgba(255,255,255,.85);
+  }
+  .consent-link:hover{color:#fff;}
+  .consent-terms-body{
+    display:none;
+    max-height:200px;overflow-y:auto;
+    text-align:left;font-size:11px;line-height:1.5;
+    color:rgba(255,255,255,.5);
+    margin:10px 0 14px;
+    padding:12px;
+    background:rgba(255,255,255,.03);
+    border-radius:8px;
+    border:1px solid rgba(255,255,255,.06);
+  }
+  .consent-terms-body.open{display:block;}
+  .consent-terms-body h4{color:rgba(255,255,255,.7);margin:0 0 8px;font-size:12px;}
+  .consent-terms-body p{margin:0 0 10px;}
+  .consent-terms-body strong{color:rgba(255,255,255,.7);}
+  .consent-btn{
+    display:inline-block;margin-top:16px;
+    padding:14px 48px;
+    font-size:16px;font-weight:900;letter-spacing:.2em;
+    border:2px solid rgba(255,255,255,.15);
+    border-radius:999px;
+    background:transparent;color:rgba(255,255,255,.25);
+    cursor:not-allowed;
+    transition:all .3s;
+  }
+  .consent-btn:enabled{
+    color:#fff;
+    border-color:rgba(255,255,255,.5);
+    cursor:pointer;
+    background:rgba(255,255,255,.06);
+    box-shadow:0 0 20px rgba(255,255,255,.08);
+  }
+  .consent-btn:enabled:hover{
+    background:rgba(255,255,255,.12);
+    box-shadow:0 0 30px rgba(255,255,255,.15);
+  }
+  .consent-btn:enabled:active{
+    transform:scale(.96);
+  }
+
+  /* ═══════════════════════════════════════════ */
   /* MOBILE RESPONSIVE                          */
   /* ═══════════════════════════════════════════ */
   .m-drawer,.m-sheet,.m-tab{display:none;}
@@ -1345,6 +1435,7 @@
     .headerControls #sourceClear{display:none!important;}
     .headerControls .sourceBtn{padding:5px 8px;font-size:9px;}
     .headerControls .btn{padding:6px 12px;font-size:10px;}
+    .flipCamBtn{display:inline-flex!important;padding:5px 8px!important;font-size:14px!important;line-height:1;}
     .rail{display:none!important;}
     .bottomPanel{display:none!important;}
     .main{
@@ -1503,6 +1594,26 @@
 </style>
 </head>
 <body>
+  <div id="consentModal" class="consent-overlay">
+    <div class="consent-box">
+      <h2 class="consent-title" data-text="GLITCHLAB">GLITCHLAB</h2>
+      <p class="consent-warning">This app produces <strong>flashing and strobing visual effects</strong> that may be harmful to photosensitive individuals.</p>
+      <label class="consent-check">
+        <input type="checkbox" id="consentCheckbox" />
+        <span>I accept the <span id="consentTermsLink" class="consent-link">Terms &amp; Conditions</span></span>
+      </label>
+      <div id="consentTermsBody" class="consent-terms-body">
+        <h4>Terms &amp; Conditions</h4>
+        <p><strong>1. Photosensitive Seizure Warning</strong><br>This application generates rapid flashing lights, strobing patterns, and high-contrast visual effects. If you have epilepsy or are sensitive to flashing lights, do not use this application. Discontinue use immediately if you experience dizziness, altered vision, eye or muscle twitching, disorientation, or any involuntary movement.</p>
+        <p><strong>2. Health Disclaimer</strong><br>Use of this application may cause dizziness, nausea, discomfort, eye strain, or other adverse reactions. You use this application entirely at your own risk and should take regular breaks.</p>
+        <p><strong>3. Assumption of Risk &amp; Limitation of Liability</strong><br>By using GlitchLab, you acknowledge and accept all risks associated with exposure to its visual effects. The developers, operators, and affiliates of GlitchLab shall not be held liable for any injury, damage, loss, or claim arising from your use of this application, to the fullest extent permitted by law.</p>
+        <p><strong>4. Content Responsibility</strong><br>You are solely responsible for any content you create, record, export, or share using this application. GlitchLab bears no responsibility for how you use or distribute generated content.</p>
+        <p><strong>5. Age Requirement</strong><br>You must be at least 13 years of age to use this application. By proceeding, you confirm that you meet this requirement.</p>
+        <p><strong>6. No Warranty</strong><br>This application is provided "as is" without warranties of any kind, express or implied. We do not guarantee uninterrupted or error-free operation.</p>
+      </div>
+      <button id="consentBtn" class="consent-btn" disabled>GLITCH</button>
+    </div>
+  </div>
   <div class="app">
     <div class="custom-skin-bg" id="customSkinBg">
       <div class="cse-img-layer" id="cseImgLayer"></div>
@@ -1524,6 +1635,7 @@
           <button id="audioNone" class="sourceBtn" type="button" title="No audio">None</button>
           <button id="audioVideo" class="sourceBtn on" type="button" title="Mic or uploaded video audio">Video</button>
         </div>
+        <button id="flipCamBtn" class="btn flipCamBtn" type="button" title="Flip camera">&#x1F504;</button>
         <span id="recordingIndicator" class="recordingIndicator">Recording…</span>
         <span id="recordingInfo" class="recordingIndicator" style="color:var(--skin-muted);"></span>
         <!-- Auth row hidden: re-enable when payments are live
@@ -2349,6 +2461,35 @@
 
 <script>
 (async function(){
+  // --- Consent gate ---
+  const _consentKey = 'glitchlab_consent';
+  const _consentModal = document.getElementById('consentModal');
+  const _consentCb = document.getElementById('consentCheckbox');
+  const _consentBtn = document.getElementById('consentBtn');
+  const _consentTermsLink = document.getElementById('consentTermsLink');
+  const _consentTermsBody = document.getElementById('consentTermsBody');
+  let _consentResolve;
+  const _consentPromise = new Promise(r => { _consentResolve = r; });
+
+  if(localStorage.getItem(_consentKey)){
+    _consentModal.classList.add('hidden');
+    _consentResolve();
+  } else {
+    _consentCb.addEventListener('change', ()=>{
+      _consentBtn.disabled = !_consentCb.checked;
+    });
+    _consentTermsLink.addEventListener('click', e=>{
+      e.preventDefault();
+      _consentTermsBody.classList.toggle('open');
+    });
+    _consentBtn.addEventListener('click', ()=>{
+      if(!_consentCb.checked) return;
+      localStorage.setItem(_consentKey, Date.now());
+      _consentModal.classList.add('hidden');
+      _consentResolve();
+    });
+  }
+
   const AUTH_CONFIG = {
     enabled: false,
     supabaseUrl: 'https://xgixjwbkrrjagwxfkczc.supabase.co',
@@ -2398,38 +2539,60 @@
   let uploadObjectURL = null;
   let cameraStream = null;
   let audioMode = 'video';
-  try{
-    const _mobCam = window.matchMedia('(max-width:768px)').matches;
-    const _vidC = _mobCam ? {facingMode:'user'} : {width:1280,height:720,facingMode:'user'};
-    const s = await navigator.mediaDevices.getUserMedia({video:_vidC, audio:true});
-    cameraStream = s; video.srcObject = s; await video.play(); hasStream = true;
-  }catch(e){
-    console.warn('[VideoSynth] Camera error', e);
-    alert('Camera denied/unavailable. Use HTTPS (or localhost) and allow access.');
-  }
   let audioContext = null;
   let analyser = null;
   let waveformData = null;
   let audioLevel = 0;
-  if(cameraStream){
+
+  async function initCamera(){
     try{
-      const ac = new (window.AudioContext || window.webkitAudioContext)();
-      audioContext = ac;
-      const an = ac.createAnalyser();
-      an.fftSize = 256;
-      an.smoothingTimeConstant = 0.7;
-      an.minDecibels = -60;
-      an.maxDecibels = -10;
-      const src = ac.createMediaStreamSource(cameraStream);
-      src.connect(an);
-      analyser = an;
-      waveformData = new Uint8Array(256);
-    }catch(err){ console.warn('[VideoSynth] Audio analyser failed', err); }
+      const _mobCam = window.matchMedia('(max-width:768px)').matches;
+      const _vidC = _mobCam ? {facingMode:'user',width:{ideal:1920},height:{ideal:1080}} : {width:1280,height:720,facingMode:'user'};
+      const s = await navigator.mediaDevices.getUserMedia({video:_vidC, audio:true});
+      cameraStream = s; video.srcObject = s; await video.play(); hasStream = true;
+    }catch(e){
+      console.warn('[VideoSynth] Camera error', e);
+      alert('Camera denied/unavailable. Use HTTPS (or localhost) and allow access.');
+    }
+    if(cameraStream){
+      try{
+        const ac = new (window.AudioContext || window.webkitAudioContext)();
+        audioContext = ac;
+        const an = ac.createAnalyser();
+        an.fftSize = 256;
+        an.smoothingTimeConstant = 0.7;
+        an.minDecibels = -60;
+        an.maxDecibels = -10;
+        const src = ac.createMediaStreamSource(cameraStream);
+        src.connect(an);
+        analyser = an;
+        waveformData = new Uint8Array(256);
+      }catch(err){ console.warn('[VideoSynth] Audio analyser failed', err); }
+    }
+    if(typeof fitCanvas==='function') fitCanvas();
   }
+  let selfieMode = true;
   function getVideoSource(){ return useUpload ? uploadVideo : video; }
   function hasVideoFrame(){
     if(useUpload) return uploadVideo.readyState >= 2;
     return hasStream && video.readyState >= 2;
+  }
+  async function flipCamera(){
+    selfieMode = !selfieMode;
+    const mode = selfieMode ? 'user' : 'environment';
+    if(cameraStream) cameraStream.getTracks().forEach(t => t.stop());
+    try{
+      const s = await navigator.mediaDevices.getUserMedia({
+        video:{facingMode:mode, width:{ideal:1920}, height:{ideal:1080}},
+        audio:true
+      });
+      cameraStream = s; video.srcObject = s; await video.play(); hasStream = true;
+      canvas.style.transform = selfieMode && window.matchMedia('(max-width:768px)').matches ? 'scaleX(-1)' : '';
+      if(typeof fitCanvas==='function') fitCanvas();
+    }catch(e){
+      console.warn('[VideoSynth] Flip camera error', e);
+      selfieMode = !selfieMode;
+    }
   }
 
   // --- GL setup ---
@@ -3832,8 +3995,10 @@
     let iw, ih;
     if(mob){
       const src = getVideoSource();
-      iw = src.videoWidth || 1080;
-      ih = src.videoHeight || 1920;
+      let vw = src.videoWidth || 1280, vh = src.videoHeight || 720;
+      const maxDim = Math.max(vw, vh);
+      if(maxDim < 1080){ const s = 1080/maxDim; vw = Math.round(vw*s); vh = Math.round(vh*s); }
+      iw = vw; ih = vh;
     } else {
       const [w,h] = RESOLUTIONS[state.internalRes] || RESOLUTIONS['1080p'];
       iw = w; ih = h;
@@ -3848,6 +4013,8 @@
   window.addEventListener('resize', fitCanvas);
   video.addEventListener('resize', fitCanvas);
   fitCanvas();
+
+  _consentPromise.then(()=> initCamera());
 
   // render loop
   let ping=true;
@@ -3974,6 +4141,8 @@
       updateSourceUI();
     });
   }
+  const flipCamBtn = document.getElementById('flipCamBtn');
+  if(flipCamBtn) flipCamBtn.addEventListener('click', flipCamera);
   if(sourceUploadBtn){
     sourceUploadBtn.addEventListener('click', ()=> fileInput && fileInput.click());
   }
