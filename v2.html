@@ -2599,7 +2599,7 @@
       });
       cameraStream = s; video.srcObject = s; await video.play(); hasStream = true;
       await new Promise(r=>{ if(video.videoWidth) r(); else video.addEventListener('loadedmetadata',r,{once:true}); });
-      canvas.style.transform = selfieMode && window.matchMedia('(max-width:768px)').matches ? 'scaleX(-1)' : '';
+      canvas.style.transform = selfieMode && window.matchMedia('(max-width:768px)').matches ? 'scaleX(-1)' : 'none';
       if(typeof fitCanvas==='function') fitCanvas();
     }catch(e){
       console.warn('[VideoSynth] Flip camera error', e);
@@ -3693,7 +3693,7 @@
     {id:'rgb',label:'RGB SHIFT',cat:'Core',def:0,transform:v=>v,stateKey:'rgb',desc:'Channel offset'},
     {id:'feedback',label:'FEEDBACK',cat:'Core',def:0,transform:v=>v*0.95,stateKey:'feedbackAmt',desc:'Trails intensity'},
     {id:'noise',label:'NOISE',cat:'Core',def:0,transform:v=>v,stateKey:'noise',desc:'Static noise'},
-    {id:'speed',label:'SPEED',cat:'Core',def:0.33,transform:v=>v,stateKey:'speed',desc:'Time multiplier'},
+    {id:'speed',label:'SPEED',cat:'Core',def:0,transform:v=>v,stateKey:'speed',desc:'Time multiplier'},
     // -- Color --
     {id:'hue',label:'HUE',cat:'Color',def:0,transform:v=>v,stateKey:'hue',desc:'Hue rotation'},
     {id:'palette',label:'PALETTE',cat:'Color',def:0,transform:v=>v,stateKey:'palette',desc:'Cosmic palette'},
@@ -3719,7 +3719,7 @@
     {id:'fractal',label:'FRACTAL',cat:'Geo',def:0,transform:v=>v,stateKey:'fractal',desc:'Fractal zoom'},
     // -- Creative --
     {id:'bloom',label:'BLOOM',cat:'Creative',def:0.1,transform:v=>v,stateKey:'bloom',desc:'Glow bloom'},
-    {id:'poster',label:'POSTER',cat:'Creative',def:0.33,transform:v=>2+Math.floor(v*14),stateKey:'poster',desc:'Color steps'},
+    {id:'poster',label:'POSTER',cat:'Creative',def:0,transform:v=>2+Math.floor((1-v)*14),stateKey:'poster',desc:'Color steps'},
     {id:'halftone',label:'HALFTONE',cat:'Creative',def:0,transform:v=>v,stateKey:'halftone',desc:'Dot screen'},
     {id:'emboss',label:'EMBOSS',cat:'Creative',def:0,transform:v=>v,stateKey:'emboss',desc:'Relief effect'},
     {id:'sharpen',label:'SHARPEN',cat:'Creative',def:0,transform:v=>v,stateKey:'sharpen',desc:'Edge sharpen'},
@@ -3818,8 +3818,8 @@
     default:{
       label:'DEFAULT',
       desc:'Balanced starter kit with core glitch, color, and geometry tools',
-      left:['tempo','chaos','glitch','pixel','rgb','feedback','hue','palette'],
-      right:['sat','bright','contrast','bloom','foldAmt','contour','warp','poster'],
+      left:['hue','duotone','tile','feedback','tempo','chaos','glitch','pixel'],
+      right:['bright','threshold','dither','palette','sat','contrast','bloom','poster'],
       effectsR1:['fold','solar','slit','xorMelt','phaseWarp','fractalMap','shred','corrupt','ringMod','overflow','recurse','glitchDNA'],
       effectsR2:['reaction','conway','logistic','hashMelt','mirrorFold','powerCrush','staircase','digit','smear','topo','mosh','freeze'],
     },
@@ -3878,7 +3878,7 @@
     return { left:[...m.left], right:[...m.right], effectsR1:[...m.effectsR1], effectsR2:[...m.effectsR2] };
   }
 
-  const CONFIG_VERSION = 5;
+  const CONFIG_VERSION = 6;
   let activeConfig;
   try {
     const stored = localStorage.getItem(ACTIVE_STORAGE);
