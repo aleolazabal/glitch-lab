@@ -1356,7 +1356,7 @@
     }
     .stage{max-width:none;border-radius:0;box-shadow:none;border:none;width:100%;height:100%;}
     .screen{border-radius:0;padding:0;width:100%;height:100%;max-height:100dvh;aspect-ratio:auto;}
-    canvas{border-radius:0;object-fit:cover;width:100%!important;height:100%!important;}
+    canvas{border-radius:0;object-fit:cover;width:100%!important;height:100%!important;transform:scaleX(-1);}
     .dial{touch-action:none;}
 
     .m-drawer{
@@ -1374,26 +1374,29 @@
     .m-drawer .m-handle{display:none;}
 
     .m-tab{
-      display:block;position:fixed;z-index:24;
-      background:rgba(255,255,255,.12);
-      backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
-      border:1px solid rgba(255,255,255,.08);
+      display:flex;align-items:center;justify-content:center;
+      position:fixed;z-index:26;
+      background:rgba(255,255,255,.15);
+      backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+      border:1px solid rgba(255,255,255,.12);
       cursor:pointer;
-      transition:opacity .3s;
+      font-size:10px;color:rgba(255,255,255,.6);
     }
     .m-tab--left,.m-tab--right{
-      top:50%;width:10px;height:48px;
-      border-radius:0 6px 6px 0;
+      top:50%;width:18px;height:56px;
+      border-radius:0 8px 8px 0;
       transform:translateY(-50%);
     }
     .m-tab--left{left:0;}
-    .m-tab--right{right:0;border-radius:6px 0 0 6px;}
+    .m-tab--left::after{content:'\203A';}
+    .m-tab--right{right:0;border-radius:8px 0 0 8px;}
+    .m-tab--right::after{content:'\2039';}
     .m-tab--bottom{
       bottom:0;left:50%;transform:translateX(-50%);
-      width:48px;height:10px;
-      border-radius:6px 6px 0 0;
+      width:56px;height:18px;
+      border-radius:8px 8px 0 0;
     }
-    .m-tab.hidden{opacity:0;pointer-events:none;}
+    .m-tab--bottom::after{content:'\2303';}
 
     .m-knob-grid{
       display:flex;flex-direction:column;
@@ -2397,7 +2400,7 @@
   let audioMode = 'video';
   try{
     const _mobCam = window.matchMedia('(max-width:768px)').matches;
-    const _vidC = _mobCam ? {width:1080,height:1920,facingMode:'user'} : {width:1280,height:720,facingMode:'user'};
+    const _vidC = _mobCam ? {facingMode:'user'} : {width:1280,height:720,facingMode:'user'};
     const s = await navigator.mediaDevices.getUserMedia({video:_vidC, audio:true});
     cameraStream = s; video.srcObject = s; await video.play(); hasStream = true;
   }catch(e){
@@ -2442,7 +2445,6 @@
  uniform vec2 u_res;
  uniform vec2 u_texRes;
  uniform float u_time;
- uniform int u_coverMode;
  // -- knob uniforms (float) --
  uniform float u_glitch;
  uniform float u_pixel;
@@ -2602,12 +2604,6 @@
    else { float sc=can/tex, pad=(1.0-sc)*0.5; uv.y=(uv.y-pad)/sc; }
    return clamp(uv,0.0,1.0);
  }
- vec2 cover(vec2 uv, vec2 res, vec2 texRes){
-   float tex=texRes.x/texRes.y, can=res.x/res.y;
-   if(can>tex){ float sc=can/tex, pad=(1.0-1.0/sc)*0.5; uv.y=uv.y/sc+pad; }
-   else { float sc=tex/can, pad=(1.0-1.0/sc)*0.5; uv.x=uv.x/sc+pad; }
-   return clamp(uv,0.0,1.0);
- }
  vec2 pixelate(vec2 uv,float px){
    if(px<=1.0) return uv;
    vec2 p=floor(uv*u_res/px)+0.5; return p*px/u_res;
@@ -2637,7 +2633,7 @@
    float MH=u_h_depth*chaos(t,u_h_rate,u_h_wave,u_h_seed);
    float MPL=u_pal_depth*chaos(t,u_pal_rate,u_pal_wave,u_pal_seed);
 
-   vec2 uv=u_coverMode==1 ? cover(v_uv,u_res,u_texRes) : contain(v_uv,u_res,u_texRes);
+   vec2 uv=contain(v_uv,u_res,u_texRes);
 
    // -- chaos: stochastic UV disruption --
    if(u_chaos > 0.01){
@@ -3765,7 +3761,7 @@
   if(analyser) freqData = new Uint8Array(analyser.frequencyBinCount);
 
   // Dynamic uniform cache from registries
-  const uni={ res:U(mainProg,'u_res'), texRes:U(mainProg,'u_texRes'), time:U(mainProg,'u_time'), decay:U(mainProg,'u_decay'), coverMode:U(mainProg,'u_coverMode') };
+  const uni={ res:U(mainProg,'u_res'), texRes:U(mainProg,'u_texRes'), time:U(mainProg,'u_time'), decay:U(mainProg,'u_decay') };
   const knobUni = {};
   KNOB_REGISTRY.forEach(k => { knobUni[k.stateKey] = U(mainProg, 'u_'+k.stateKey); });
   const effUni = {};
@@ -3833,9 +3829,15 @@
   const _mobileQuery = window.matchMedia('(max-width:768px)');
   function fitCanvas(){
     const mob = _mobileQuery.matches;
-    const key = state.internalRes;
-    const pKey = key + '-portrait';
-    const [iw, ih] = (mob && RESOLUTIONS[pKey]) ? RESOLUTIONS[pKey] : (RESOLUTIONS[key] || RESOLUTIONS['1080p']);
+    let iw, ih;
+    if(mob){
+      const src = getVideoSource();
+      iw = src.videoWidth || 1080;
+      ih = src.videoHeight || 1920;
+    } else {
+      const [w,h] = RESOLUTIONS[state.internalRes] || RESOLUTIONS['1080p'];
+      iw = w; ih = h;
+    }
     canvas.width = iw;
     canvas.height = ih;
     canvas.style.width = '100%';
@@ -3844,6 +3846,7 @@
     resizeFBOS();
   }
   window.addEventListener('resize', fitCanvas);
+  video.addEventListener('resize', fitCanvas);
   fitCanvas();
 
   // render loop
@@ -3878,7 +3881,6 @@
     gl.uniform2f(uni.res,canvas.width,canvas.height);
     const vw = src.videoWidth || 1280, vh = src.videoHeight || 720;
     gl.uniform2f(uni.texRes, vw, vh);
-    gl.uniform1i(uni.coverMode, _mobileQuery.matches ? 1 : 0);
     gl.uniform1f(uni.time,t);
     gl.uniform1f(uni.decay,state.decay);
 
@@ -4437,8 +4439,8 @@
         }
       });
     }
-    buildMobileKnobs(gridL, activeConfig.left.slice(0,6), 'left');
-    buildMobileKnobs(gridR, activeConfig.right.slice(0,6), 'right');
+    buildMobileKnobs(gridL, activeConfig.left.slice(0,4), 'left');
+    buildMobileKnobs(gridR, activeConfig.right.slice(0,4), 'right');
 
     const dotsC = document.getElementById('mEffDots');
     if(!dotsC) return;
@@ -4547,28 +4549,14 @@
     const tabR = document.getElementById('mTabRight');
     const tabB = document.getElementById('mTabBottom');
 
-    function syncTabs(){
-      tabL.classList.toggle('hidden', !drawerL.classList.contains('closed'));
-      tabR.classList.toggle('hidden', !drawerR.classList.contains('closed'));
-      tabB.classList.toggle('hidden', !sheet.classList.contains('closed'));
-    }
-
-    tabL.addEventListener('click', ()=>{ drawerL.classList.remove('closed'); syncTabs(); });
-    tabR.addEventListener('click', ()=>{ drawerR.classList.remove('closed'); syncTabs(); });
-    tabB.addEventListener('click', ()=>{ sheet.classList.remove('closed'); syncTabs(); });
-
-    drawerL.addEventListener('click', e=>{
-      if(e.target===drawerL){ drawerL.classList.add('closed'); syncTabs(); }
-    });
-    drawerR.addEventListener('click', e=>{
-      if(e.target===drawerR){ drawerR.classList.add('closed'); syncTabs(); }
-    });
+    tabL.addEventListener('click', ()=>{ drawerL.classList.toggle('closed'); });
+    tabR.addEventListener('click', ()=>{ drawerR.classList.toggle('closed'); });
+    tabB.addEventListener('click', ()=>{ sheet.classList.toggle('closed'); });
 
     setTimeout(()=>{
       drawerL.classList.remove('closed');
       drawerR.classList.remove('closed');
       sheet.classList.remove('closed');
-      syncTabs();
     }, 300);
   }
 
