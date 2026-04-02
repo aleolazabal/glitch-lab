@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
 <title>""</title>
 <!-- Supabase SDK hidden: re-enable when payments are live
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1318,8 +1318,14 @@
   /* ═══════════════════════════════════════════ */
   /* MOBILE RESPONSIVE                          */
   /* ═══════════════════════════════════════════ */
-  .m-drawer,.m-sheet{display:none;}
+  .m-drawer,.m-sheet,.m-tab{display:none;}
   @media(max-width:768px){
+    html,body{
+      touch-action:manipulation;
+      -webkit-user-select:none;user-select:none;
+      -webkit-touch-callout:none;
+      overscroll-behavior:none;
+    }
     .app{
       grid-template-rows:minmax(0,1fr);
       overflow:hidden;
@@ -1366,6 +1372,28 @@
     .m-drawer--right{right:0;transform:translateY(-50%);}
     .m-drawer--right.closed{transform:translate(100%,-50%);}
     .m-drawer .m-handle{display:none;}
+
+    .m-tab{
+      display:block;position:fixed;z-index:24;
+      background:rgba(255,255,255,.12);
+      backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+      border:1px solid rgba(255,255,255,.08);
+      cursor:pointer;
+      transition:opacity .3s;
+    }
+    .m-tab--left,.m-tab--right{
+      top:50%;width:10px;height:48px;
+      border-radius:0 6px 6px 0;
+      transform:translateY(-50%);
+    }
+    .m-tab--left{left:0;}
+    .m-tab--right{right:0;border-radius:6px 0 0 6px;}
+    .m-tab--bottom{
+      bottom:0;left:50%;transform:translateX(-50%);
+      width:48px;height:10px;
+      border-radius:6px 6px 0 0;
+    }
+    .m-tab.hidden{opacity:0;pointer-events:none;}
 
     .m-knob-grid{
       display:flex;flex-direction:column;
@@ -2141,11 +2169,14 @@
     <div id="mobileDrawerLeft" class="m-drawer m-drawer--left closed">
       <div class="m-knob-grid" id="mKnobGridLeft"></div>
     </div>
+    <div id="mTabLeft" class="m-tab m-tab--left"></div>
     <div id="mobileDrawerRight" class="m-drawer m-drawer--right closed">
       <div class="m-knob-grid" id="mKnobGridRight"></div>
     </div>
+    <div id="mTabRight" class="m-tab m-tab--right"></div>
 
     <!-- MOBILE EFFECT SHEET (populated by JS) -->
+    <div id="mTabBottom" class="m-tab m-tab--bottom"></div>
     <div id="mobileEffectSheet" class="m-sheet closed">
       <div class="m-sheet-bar">
         <div class="m-sheet-handle" id="mSheetHandle"></div>
@@ -2411,6 +2442,7 @@
  uniform vec2 u_res;
  uniform vec2 u_texRes;
  uniform float u_time;
+ uniform int u_coverMode;
  // -- knob uniforms (float) --
  uniform float u_glitch;
  uniform float u_pixel;
@@ -2570,6 +2602,12 @@
    else { float sc=can/tex, pad=(1.0-sc)*0.5; uv.y=(uv.y-pad)/sc; }
    return clamp(uv,0.0,1.0);
  }
+ vec2 cover(vec2 uv, vec2 res, vec2 texRes){
+   float tex=texRes.x/texRes.y, can=res.x/res.y;
+   if(can>tex){ float sc=can/tex, pad=(1.0-1.0/sc)*0.5; uv.y=uv.y/sc+pad; }
+   else { float sc=tex/can, pad=(1.0-1.0/sc)*0.5; uv.x=uv.x/sc+pad; }
+   return clamp(uv,0.0,1.0);
+ }
  vec2 pixelate(vec2 uv,float px){
    if(px<=1.0) return uv;
    vec2 p=floor(uv*u_res/px)+0.5; return p*px/u_res;
@@ -2599,7 +2637,7 @@
    float MH=u_h_depth*chaos(t,u_h_rate,u_h_wave,u_h_seed);
    float MPL=u_pal_depth*chaos(t,u_pal_rate,u_pal_wave,u_pal_seed);
 
-   vec2 uv=contain(v_uv,u_res,u_texRes);
+   vec2 uv=u_coverMode==1 ? cover(v_uv,u_res,u_texRes) : contain(v_uv,u_res,u_texRes);
 
    // -- chaos: stochastic UV disruption --
    if(u_chaos > 0.01){
@@ -3727,7 +3765,7 @@
   if(analyser) freqData = new Uint8Array(analyser.frequencyBinCount);
 
   // Dynamic uniform cache from registries
-  const uni={ res:U(mainProg,'u_res'), texRes:U(mainProg,'u_texRes'), time:U(mainProg,'u_time'), decay:U(mainProg,'u_decay') };
+  const uni={ res:U(mainProg,'u_res'), texRes:U(mainProg,'u_texRes'), time:U(mainProg,'u_time'), decay:U(mainProg,'u_decay'), coverMode:U(mainProg,'u_coverMode') };
   const knobUni = {};
   KNOB_REGISTRY.forEach(k => { knobUni[k.stateKey] = U(mainProg, 'u_'+k.stateKey); });
   const effUni = {};
@@ -3840,6 +3878,7 @@
     gl.uniform2f(uni.res,canvas.width,canvas.height);
     const vw = src.videoWidth || 1280, vh = src.videoHeight || 720;
     gl.uniform2f(uni.texRes, vw, vh);
+    gl.uniform1i(uni.coverMode, _mobileQuery.matches ? 1 : 0);
     gl.uniform1f(uni.time,t);
     gl.uniform1f(uni.decay,state.decay);
 
@@ -4504,54 +4543,33 @@
 
     buildMobileUI();
 
+    const tabL = document.getElementById('mTabLeft');
+    const tabR = document.getElementById('mTabRight');
+    const tabB = document.getElementById('mTabBottom');
+
+    function syncTabs(){
+      tabL.classList.toggle('hidden', !drawerL.classList.contains('closed'));
+      tabR.classList.toggle('hidden', !drawerR.classList.contains('closed'));
+      tabB.classList.toggle('hidden', !sheet.classList.contains('closed'));
+    }
+
+    tabL.addEventListener('click', ()=>{ drawerL.classList.remove('closed'); syncTabs(); });
+    tabR.addEventListener('click', ()=>{ drawerR.classList.remove('closed'); syncTabs(); });
+    tabB.addEventListener('click', ()=>{ sheet.classList.remove('closed'); syncTabs(); });
+
+    drawerL.addEventListener('click', e=>{
+      if(e.target===drawerL){ drawerL.classList.add('closed'); syncTabs(); }
+    });
+    drawerR.addEventListener('click', e=>{
+      if(e.target===drawerR){ drawerR.classList.add('closed'); syncTabs(); }
+    });
+
     setTimeout(()=>{
       drawerL.classList.remove('closed');
       drawerR.classList.remove('closed');
       sheet.classList.remove('closed');
+      syncTabs();
     }, 300);
-
-    // --- Swipe gesture detection ---
-    let _swT = null;
-    document.addEventListener('touchstart', e=>{
-      const t = e.touches[0];
-      _swT = {x:t.clientX, y:t.clientY, t:Date.now()};
-    }, {passive:true});
-
-    document.addEventListener('touchend', e=>{
-      if(!_swT) return;
-      const t = e.changedTouches[0];
-      const dx = t.clientX - _swT.x;
-      const dy = t.clientY - _swT.y;
-      const ax = Math.abs(dx), ay = Math.abs(dy);
-      const elapsed = Date.now() - _swT.t;
-      const startX = _swT.x, startY = _swT.y;
-      _swT = null;
-      if(elapsed > 500) return;
-
-      const W = window.innerWidth, H = window.innerHeight;
-      if(ax > 50 && ax > ay * 1.3){
-        if(dx > 0 && startX < 40 && drawerL.classList.contains('closed')){
-          drawerL.classList.remove('closed');
-        }
-        if(dx < 0 && startX < 100 && !drawerL.classList.contains('closed')){
-          drawerL.classList.add('closed');
-        }
-        if(dx < 0 && startX > W - 40 && drawerR.classList.contains('closed')){
-          drawerR.classList.remove('closed');
-        }
-        if(dx > 0 && startX > W - 100 && !drawerR.classList.contains('closed')){
-          drawerR.classList.add('closed');
-        }
-      }
-
-      if(ay > 50 && ay > ax * 1.3){
-        if(dy < 0 && startY > H - 60){
-          sheet.classList.remove('closed');
-        } else if(dy > 0 && !sheet.classList.contains('closed')){
-          sheet.classList.add('closed');
-        }
-      }
-    }, {passive:true});
   }
 
   _mobileQuery.addEventListener('change', e=>{
