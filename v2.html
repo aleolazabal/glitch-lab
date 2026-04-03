@@ -2548,7 +2548,8 @@
     try{
       const _mobCam = window.matchMedia('(max-width:768px)').matches;
       const _vidC = _mobCam ? {facingMode:'user',width:{min:1280,ideal:1920},height:{min:720,ideal:1080}} : {width:1280,height:720,facingMode:'user'};
-      const s = await navigator.mediaDevices.getUserMedia({video:_vidC, audio:true});
+      const _audC = {echoCancellation:false,noiseSuppression:false,autoGainControl:false,sampleRate:{ideal:48000},channelCount:{ideal:2}};
+      const s = await navigator.mediaDevices.getUserMedia({video:_vidC, audio:_audC});
       cameraStream = s; video.srcObject = s; await video.play(); hasStream = true;
       await new Promise(r=>{ if(video.videoWidth) r(); else video.addEventListener('loadedmetadata',r,{once:true}); });
     }catch(e){
@@ -2595,7 +2596,7 @@
     try{
       const s = await navigator.mediaDevices.getUserMedia({
         video:{facingMode:mode, width:{min:1280,ideal:1920}, height:{min:720,ideal:1080}},
-        audio:true
+        audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false,sampleRate:{ideal:48000},channelCount:{ideal:2}}
       });
       cameraStream = s; video.srcObject = s; await video.play(); hasStream = true;
       await new Promise(r=>{ if(video.videoWidth) r(); else video.addEventListener('loadedmetadata',r,{once:true}); });
@@ -4288,7 +4289,7 @@
       const isMp4 = mime.startsWith('video/mp4');
       lastRecordedExt = isMp4 ? 'mp4' : 'webm';
       const vBitrate = BITRATE_BY_RES[state.internalRes] || 20e6;
-      mediaRecorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: vBitrate, audioBitsPerSecond: hasAudio ? 128000 : undefined });
+      mediaRecorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: vBitrate, audioBitsPerSecond: hasAudio ? 256000 : undefined });
       recordingChunks = [];
       mediaRecorder.ondataavailable = e => { if(e.data && e.data.size) recordingChunks.push(e.data); };
       mediaRecorder.onstop = ()=>{
